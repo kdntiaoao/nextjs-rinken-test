@@ -1,9 +1,16 @@
-import { DefaultLayout } from "components/template/DefaultLayout"
+import { Container, Heading } from 'components/atoms'
+import { DefaultLayout } from 'components/template/DefaultLayout'
 
 const Home = () => {
   return (
     <DefaultLayout title="臨検テスト">
-      <h1 className='text-3xl font-bold underline text-primary-500'>Hello world!</h1>
+      <Container>
+        <div className="py-8">
+          <div className='mb-4'>
+            <Heading component="h2">問題一覧</Heading>
+          </div>
+        </div>
+      </Container>
     </DefaultLayout>
   )
 }

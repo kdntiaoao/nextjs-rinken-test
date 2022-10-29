@@ -1,3 +1,4 @@
+import { Container } from 'components/atoms'
 import Head from 'next/head'
 import { memo, ReactNode } from 'react'
 
@@ -16,9 +17,9 @@ export const DefaultLayout = memo(({ title = 'お問合せフォーム', childre
 
       <div className="min-h-screen flex flex-col">
         <header className="py-4 bg-primary-400 text-primary-900">
-          <div className="container mx-auto px-4">
+          <Container>
             <h1 className="text-xl font-bold">臨検テスト</h1>
-          </div>
+          </Container>
         </header>
         <main className="flex-1">{children}</main>
         <footer className="py-4 text-center">
