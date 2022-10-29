@@ -2,21 +2,22 @@
 module.exports = {
   content: ['./src/pages/**/*.{js,ts,jsx,tsx}', './src/components/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    colors: {
-      primary: {
-        50: '#ecf2ff',
-        100: '#dce7ff',
-        200: '#c0d2ff',
-        300: '#9bb3ff',
-        400: '#7389ff',
-        500: '#5261ff',
-        600: '#3334f8',
-        700: '#2927db',
-        800: '#2222b1',
-        900: '#272a96',
+    extend: {
+      colors: {
+        primary: {
+          50: '#f6faf3',
+          100: '#e9f5e3',
+          200: '#d3eac8',
+          300: '#afd89d',
+          400: '#82bd69',
+          500: '#61a146',
+          600: '#4c8435',
+          700: '#3d692c',
+          800: '#345427',
+          900: '#2b4522',
+        },
       },
     },
-    extend: {},
   },
   plugins: [],
 }
