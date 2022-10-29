@@ -2,8 +2,19 @@ import { Container, IconOutlinedButton, LinkButton, PageHeading } from 'componen
 import { DefaultLayout } from 'components/template/DefaultLayout'
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, NextPage } from 'next'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { memo, useMemo } from 'react'
+
+type PageProps = {
+  year: string
+  timeframe: 'am' | 'pm'
+}
+
+type PathsType = {
+  params: {
+    year: string
+    timeframe: 'am' | 'pm'
+  }
+}
 
 const chevronRight = (
   <svg
@@ -19,13 +30,11 @@ const chevronRight = (
 )
 
 // eslint-disable-next-line react/display-name
-const AmPage: NextPage = memo(() => {
-  const router = useRouter()
-
-  const year = useMemo(() => Number(router.query.year), [router])
+const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe }: PageProps) => {
+  const timeframeToJapanese = useMemo(() => (timeframe === 'am' ? '午前' : '午後'), [timeframe])
 
   return (
-    <DefaultLayout title={`foo`}>
+    <DefaultLayout title={`第${Number(year) - 1953}回${timeframeToJapanese} | 臨検テスト`}>
       <Container>
         <div className="py-10">
           <Link href="/">
@@ -33,20 +42,26 @@ const AmPage: NextPage = memo(() => {
           </Link>
 
           <div className="mt-4">
-            <PageHeading component="h2">第{year - 1953}回午前</PageHeading>
+            <PageHeading component="h2">
+              第{Number(year) - 1953}回{timeframeToJapanese}
+            </PageHeading>
           </div>
 
           <div className="mt-8">
             <ul className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-8">
               {[...Array(10)].map((_, index) => (
                 <li key={index.toString()} className="break-keep">
-                  <IconOutlinedButton icon={chevronRight}>
-                    {index * 10 + 1}〜{index * 10 + 10}
-                  </IconOutlinedButton>
+                  <Link href={`/${year}/${timeframe}/${index * 10 + 1}-${index * 10 + 10}`}>
+                    <IconOutlinedButton icon={chevronRight}>
+                      {index * 10 + 1}〜{index * 10 + 10}
+                    </IconOutlinedButton>
+                  </Link>
                 </li>
               ))}
               <li className="break-keep">
-                <IconOutlinedButton icon={chevronRight}>1〜100</IconOutlinedButton>
+                <Link href="1-100">
+                  <IconOutlinedButton icon={chevronRight}>1〜100</IconOutlinedButton>
+                </Link>
               </li>
             </ul>
           </div>
@@ -57,23 +72,27 @@ const AmPage: NextPage = memo(() => {
 })
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [
-      { params: { year: '2020' } },
-      { params: { year: '2019' } },
-      { params: { year: '2018' } },
-      { params: { year: '2017' } },
-      { params: { year: '2016' } },
-      { params: { year: '2015' } },
+  const years = ['2020', '2019', '2018', '2017', '2016', '2015']
+  const timeframes: ['am', 'pm'] = ['am', 'pm']
+  const paths = years.reduce<PathsType[]>(
+    (previousArray, currentYears) => [
+      ...previousArray,
+      ...timeframes.map((timeframe) => ({ params: { year: currentYears, timeframe } })),
     ],
-    fallback: false, // can also be true or 'blocking'
+    []
+  )
+  return {
+    paths,
+    fallback: false,
   }
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsContext) => {
+  const year = params?.year
+  const timeframe = params?.timeframe
   return {
-    props: {},
+    props: { year, timeframe },
   }
 }
 
-export default AmPage
+export default TimeframePage
