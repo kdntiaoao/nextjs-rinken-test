@@ -1,5 +1,8 @@
 import { Container, PageHeading, MarkerHeading, IconOutlinedButton } from 'components/atoms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
+import { NextPage } from 'next'
+import Link from 'next/link'
+import { memo } from 'react'
 
 const years = [2020, 2019, 2018, 2017, 2016, 2015]
 
@@ -16,7 +19,8 @@ const chevronRight = (
   </svg>
 )
 
-const Home = () => {
+// eslint-disable-next-line react/display-name
+const HomePage: NextPage = memo(() => {
   return (
     <DefaultLayout title="臨検テスト">
       <Container>
@@ -34,16 +38,17 @@ const Home = () => {
 
                   <ul className="mt-4 grid grid-cols-2 gap-4">
                     <li className="break-keep">
-                      <IconOutlinedButton icon={chevronRight}>
-                        第{year - 1953}回<wbr />
-                        午前
-                      </IconOutlinedButton>
+                      <Link href={`/${year}/am`}>
+                        <IconOutlinedButton icon={chevronRight}>第{year - 1953}回 午前</IconOutlinedButton>
+                      </Link>
                     </li>
                     <li className="break-keep">
-                      <IconOutlinedButton icon={chevronRight}>
-                        第{year - 1953}回<wbr />
-                        午後
-                      </IconOutlinedButton>
+                      <Link href={`/${year}/pm`}>
+                        <IconOutlinedButton icon={chevronRight}>
+                          第{year - 1953}回<wbr />
+                          午後
+                        </IconOutlinedButton>
+                      </Link>
                     </li>
                   </ul>
                 </li>
@@ -54,6 +59,6 @@ const Home = () => {
       </Container>
     </DefaultLayout>
   )
-}
+})
 
-export default Home
+export default HomePage

@@ -1,4 +1,5 @@
 export { Container } from './Container'
 export { IconOutlinedButton } from './IconOutlinedButton'
+export { LinkButton } from './LinkButton'
 export { PageHeading } from './PageHeading'
 export { MarkerHeading } from './MarkerHeading'
