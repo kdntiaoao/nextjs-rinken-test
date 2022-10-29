@@ -1,4 +1,4 @@
-import { Container, Heading } from 'components/atoms'
+import { Container, PageHeading } from 'components/atoms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 
 const Home = () => {
@@ -7,7 +7,7 @@ const Home = () => {
       <Container>
         <div className="py-8">
           <div className='mb-4'>
-            <Heading component="h2">問題一覧</Heading>
+            <PageHeading component="h2">問題一覧</PageHeading>
           </div>
         </div>
       </Container>
