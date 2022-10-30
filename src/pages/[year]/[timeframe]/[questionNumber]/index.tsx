@@ -1,10 +1,10 @@
-import { Container, LinkButton, PrimaryButton, SmallHeading } from 'components/atoms'
-import { DefaultLayout } from 'components/template/DefaultLayout'
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, NextPage } from 'next'
 import Link from 'next/link'
 import { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { questions } from 'assets/questions'
+import { Container, LinkButton, PrimaryButton, SmallHeading } from 'components/atoms'
+import { DefaultLayout } from 'components/template/DefaultLayout'
 
 type PageProps = {
   year: string
@@ -44,7 +44,7 @@ const checkCircle = (
 
 // eslint-disable-next-line react/display-name
 const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber, questionData }: PageProps) => {
-  const [currentNumber, setCurrentNumber] = useState<number>(1)
+  const [currentNumber, setCurrentNumber] = useState<number>(Number(questionNumber.split('-')[0]))
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([])
   const [orders, setOrders] = useState<Orders>(['order-1', 'order-2', 'order-3', 'order-4', 'order-5'])
 

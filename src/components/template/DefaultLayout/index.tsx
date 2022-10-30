@@ -1,6 +1,7 @@
-import { Container } from 'components/atoms'
 import Head from 'next/head'
 import { memo, ReactNode } from 'react'
+
+import { Container } from 'components/atoms'
 
 type Props = {
   title?: string
