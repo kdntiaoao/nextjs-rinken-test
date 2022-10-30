@@ -1,9 +1,11 @@
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, NextPage } from 'next'
 import Link from 'next/link'
-import { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useMemo, useState } from 'react'
 
 import { questions } from 'assets/questions'
 import { Container, LinkButton, PrimaryButton, SmallHeading } from 'components/atoms'
+import { ResultIcon } from 'components/molecules'
+import { CheckBoxListContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 
 type PageProps = {
@@ -20,10 +22,6 @@ type PathsType = {
     questionNumber: string
   }
 }
-
-type Order = 'order-1' | 'order-2' | 'order-3' | 'order-4' | 'order-5'
-
-type Orders = [Order, Order, Order, Order, Order]
 
 const checkCircle = (
   <svg
@@ -44,35 +42,45 @@ const checkCircle = (
 
 // eslint-disable-next-line react/display-name
 const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber, questionData }: PageProps) => {
-  const [currentNumber, setCurrentNumber] = useState<number>(Number(questionNumber.split('-')[0]))
-  const [selectedAnswers, setSelectedAnswers] = useState<number[]>([])
-  const [orders, setOrders] = useState<Orders>(['order-1', 'order-2', 'order-3', 'order-4', 'order-5'])
+  const [currentNumber, setCurrentNumber] = useState<number>(Number(questionNumber.split('-')[0])) // 現在解答中の問題番号
+  const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]) // 選択されている解答
+  const [thinking, setThinking] = useState<boolean>(true) // 解答中はtrue, 答え合わせ中はfalse
+  const [correct, setCorrect] = useState<boolean>(true) // 正誤フラグ
 
   const timeframeToJapanese = useMemo(() => (timeframe === 'am' ? '午前' : '午後'), [timeframe])
-
   const currentQuestion = useMemo(() => questionData.questionData[currentNumber - 1], [currentNumber, questionData])
-
-  const handleChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>, selectedIndex: number) => {
-      const answerLength = questionData.answerData[currentNumber - 1].length
-      setSelectedAnswers((prev) => [...prev, selectedIndex].slice(-answerLength))
-    },
+  const answers = useMemo(
+    () => questionData.answerData[currentNumber - 1].map((answer) => answer - 1),
     [currentNumber, questionData.answerData]
   )
 
-  const handleClick = useCallback(() => {
-    console.log({ selectedAnswers })
-  }, [selectedAnswers])
+  const handleChange = useCallback(
+    (selectedIndex: number) => {
+      if (thinking) {
+        const answerLength = answers.length
+        setSelectedAnswers((prev) => [...prev, selectedIndex].slice(-answerLength))
+      }
+    },
+    [answers.length, thinking]
+  )
 
-  useEffect(() => {
-    const numberArray: Orders = ['order-1', 'order-2', 'order-3', 'order-4', 'order-5']
-    const newArray = []
-    for (let i = 5; i > 0; i--) {
-      const randomNumber = Math.trunc(Math.random() * i)
-      const removed = numberArray.splice(randomNumber, 1)[0]
-      newArray.push(removed)
+  const handleAnswer = useCallback(() => {
+    console.log(selectedAnswers, answers)
+    const sortedAnswers = selectedAnswers.sort()
+    for (let i = 0; i < answers.length; i++) {
+      if (sortedAnswers[i] !== answers[i]) {
+        setCorrect(false)
+        break
+      }
+      setCorrect(true)
     }
-    setOrders(newArray as Orders)
+    setThinking(false)
+  }, [answers, selectedAnswers])
+
+  const handleNextQuestion = useCallback(() => {
+    setCurrentNumber((current) => current + 1)
+    setThinking(true)
+    setSelectedAnswers([])
   }, [])
 
   return (
@@ -90,35 +98,31 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe, questionNumb
             <div className="mt-4">
               <p>{currentQuestion.question}</p>
 
-              <div className="flex flex-col border border-primary-400 rounded mt-6">
-                {currentQuestion.options.map((option, index) => (
-                  <label
-                    key={option}
-                    className={`flex items-center gap-2 ${
-                      orders[index] !== 'order-1' && 'border-t'
-                    } border-t-primary-400 text-primary-900 px-3 min-h-[50px] relative cursor-pointer ${
-                      orders[index]
-                    } ${selectedAnswers.indexOf(index) >= 0 && 'bg-primary-400/20'} ${
-                      selectedAnswers.indexOf(index) < 0 && 'hover:bg-primary-400/5'
-                    } `}
-                  >
-                    <input
-                      checked={selectedAnswers.indexOf(index) >= 0}
-                      name="selectedAnswer"
-                      type="checkbox"
-                      value={index}
-                      className="accent-primary-500"
-                      onChange={(event) => handleChange(event, index)}
-                    />
-                    <span className="flex-1">{option}</span>
-                  </label>
-                ))}
+              <div className="mt-6 relative">
+                <CheckBoxListContainer
+                  answers={answers}
+                  options={currentQuestion.options}
+                  selectedAnswers={selectedAnswers}
+                  thinking={thinking}
+                  handleChange={handleChange}
+                />
+                {!thinking && (
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <ResultIcon correct={correct} />
+                  </div>
+                )}
               </div>
 
               <div className="mt-10">
-                <PrimaryButton component="button" icon={checkCircle} onClick={handleClick}>
-                  解答
-                </PrimaryButton>
+                {thinking ? (
+                  <PrimaryButton component="button" icon={checkCircle} onClick={handleAnswer}>
+                    解答する
+                  </PrimaryButton>
+                ) : (
+                  <PrimaryButton component="button" onClick={handleNextQuestion}>
+                    次の問題へ
+                  </PrimaryButton>
+                )}
               </div>
             </div>
           </div>
