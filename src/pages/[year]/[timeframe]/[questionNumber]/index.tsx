@@ -1,10 +1,11 @@
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, NextPage } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { memo, useCallback, useMemo, useState } from 'react'
 
 import { questions } from 'assets/questions'
 import { Container, LinkButton, PrimaryButton, SmallHeading } from 'components/atoms'
-import { ResultIcon } from 'components/molecules'
+import { ImageDialog, ResultIcon } from 'components/molecules'
 import { CheckBoxListContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 
@@ -40,12 +41,30 @@ const checkCircle = (
   </svg>
 )
 
+const magnifyingGlassPlus = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6"
+    />
+  </svg>
+)
+
 // eslint-disable-next-line react/display-name
 const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber, questionData }: PageProps) => {
   const [currentNumber, setCurrentNumber] = useState<number>(Number(questionNumber.split('-')[0])) // 現在解答中の問題番号
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]) // 選択されている解答
   const [thinking, setThinking] = useState<boolean>(true) // 解答中はtrue, 答え合わせ中はfalse
   const [correct, setCorrect] = useState<boolean>(true) // 正誤フラグ
+  const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
 
   const timeframeToJapanese = useMemo(() => (timeframe === 'am' ? '午前' : '午後'), [timeframe])
   const currentQuestion = useMemo(() => questionData.questionData[currentNumber - 1], [currentNumber, questionData])
@@ -83,6 +102,10 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe, questionNumb
     setSelectedAnswers([])
   }, [])
 
+  const handleOpenDialog = useCallback(() => setOpenDialog(true), [])
+
+  const handleCloseDialog = useCallback(() => setOpenDialog(false), [])
+
   return (
     <DefaultLayout title={`${questionNumber} | 臨検テスト`}>
       <Container>
@@ -98,14 +121,44 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe, questionNumb
             <div className="mt-4">
               <p>{currentQuestion.question}</p>
 
+              {currentQuestion.img && (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleOpenDialog}
+                    className="block mt-6 mx-auto w-fit relative text-black/40 hover:text-black "
+                  >
+                    <Image
+                      width={240}
+                      height={240}
+                      src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
+                      alt={`問題${currentNumber}の画像`}
+                    />
+                    <span className="absolute bottom-4 right-4">{magnifyingGlassPlus}</span>
+                  </button>
+                  {openDialog && (
+                    <ImageDialog onClose={handleCloseDialog}>
+                      <Image
+                        fill
+                        className="object-contain object-center"
+                        src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
+                        alt={`問題${currentNumber}の画像`}
+                      />
+                    </ImageDialog>
+                  )}
+                </>
+              )}
+
               <div className="mt-6 relative">
-                <CheckBoxListContainer
-                  answers={answers}
-                  options={currentQuestion.options}
-                  selectedAnswers={selectedAnswers}
-                  thinking={thinking}
-                  handleChange={handleChange}
-                />
+                <div className="flex-1">
+                  <CheckBoxListContainer
+                    answers={answers}
+                    options={currentQuestion.options}
+                    selectedAnswers={selectedAnswers}
+                    thinking={thinking}
+                    handleChange={handleChange}
+                  />
+                </div>
                 {!thinking && (
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                     <ResultIcon correct={correct} />
