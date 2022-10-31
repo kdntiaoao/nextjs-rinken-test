@@ -129,10 +129,12 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe, questionNumb
                     className="block mt-6 mx-auto w-fit relative text-black/40 hover:text-black "
                   >
                     <Image
-                      width={240}
-                      height={240}
+                      priority
+                      width={200}
+                      height={200}
                       src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
                       alt={`問題${currentNumber}の画像`}
+                      className="w-auto"
                     />
                     <span className="absolute bottom-4 right-4">{magnifyingGlassPlus}</span>
                   </button>
