@@ -38,7 +38,7 @@ export const QuestionAccordion = memo(
                 open: { height: 'auto', marginTop: 12 },
                 collapsed: { height: 0, marginTop: 0 },
               }}
-              transition={{ duration: 0.8, ease: [0.04, 0.62, 0.23, 0.98] }}
+              transition={{ duration: 0.6, ease: [0.04, 0.62, 0.23, 0.98] }}
             >
               {options.map((option, index) => (
                 <div
@@ -69,7 +69,7 @@ export const QuestionAccordion = memo(
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className={`w-6 h-6 transition ${open && 'rotate-180'}`}
+            className={`w-6 h-6 transition delay-700 ${open && '-rotate-180'}`}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
           </svg>
