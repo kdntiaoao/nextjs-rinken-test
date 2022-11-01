@@ -3,6 +3,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { memo, useCallback, useMemo, useState } from 'react'
 
+import { motion, AnimatePresence } from 'framer-motion'
+import * as Scroll from 'react-scroll'
+
 import { questions } from 'assets/questions'
 import { Container, LinkButton, PrimaryButton, SmallHeading } from 'components/atoms'
 import { ImageDialog, ResultIcon } from 'components/molecules'
@@ -24,6 +27,8 @@ type PathsType = {
   }
 }
 
+const scroll = Scroll.animateScroll
+
 const checkCircle = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -37,6 +42,23 @@ const checkCircle = (
       strokeLinecap="round"
       strokeLinejoin="round"
       d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+)
+
+const arrowRightCircle = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
     />
   </svg>
 )
@@ -75,16 +97,20 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe, questionNumb
 
   const handleChange = useCallback(
     (selectedIndex: number) => {
-      if (thinking) {
+      if (!thinking) return
+
+      const index = selectedAnswers.indexOf(selectedIndex)
+      if (index < 0) {
         const answerLength = answers.length
         setSelectedAnswers((prev) => [...prev, selectedIndex].slice(-answerLength))
+      } else {
+        setSelectedAnswers((prev) => prev.filter((answer) => answer !== selectedIndex))
       }
     },
-    [answers.length, thinking]
+    [answers.length, selectedAnswers, thinking]
   )
 
   const handleAnswer = useCallback(() => {
-    console.log(selectedAnswers, answers)
     const sortedAnswers = selectedAnswers.sort()
     for (let i = 0; i < answers.length; i++) {
       if (sortedAnswers[i] !== answers[i]) {
@@ -97,6 +123,7 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe, questionNumb
   }, [answers, selectedAnswers])
 
   const handleNextQuestion = useCallback(() => {
+    scroll.scrollToTop({ duration: 0 })
     setCurrentNumber((current) => current + 1)
     setThinking(true)
     setSelectedAnswers([])
@@ -116,70 +143,81 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe, questionNumb
             </LinkButton>
           </Link>
 
-          <div className="mt-6">
-            <SmallHeading>問題{currentNumber}</SmallHeading>
-            <div className="mt-4">
-              <p>{currentQuestion.question}</p>
+          <div className="mt-6 relative">
+            <AnimatePresence>
+              <motion.div
+                layout
+                key={currentNumber}
+                initial={{ opacity: 0, position: 'absolute', top: 0, left: 0, right: 0 }}
+                animate={{ opacity: 1, x: 0, position: 'relative' }}
+                exit={{ x: '-100vw', position: 'absolute', zIndex: 1 }}
+                transition={{ duration: 1 }}
+              >
+                <SmallHeading>問題{currentNumber}</SmallHeading>
+                <div className="mt-4">
+                  <p>{currentQuestion.question}</p>
 
-              {currentQuestion.img && (
-                <>
-                  <button
-                    type="button"
-                    onClick={handleOpenDialog}
-                    className="block mt-6 mx-auto w-fit relative text-black/40 hover:text-black "
-                  >
-                    <Image
-                      priority
-                      width={200}
-                      height={200}
-                      src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
-                      alt={`問題${currentNumber}の画像`}
-                      className="w-auto"
-                    />
-                    <span className="absolute bottom-4 right-4">{magnifyingGlassPlus}</span>
-                  </button>
-                  {openDialog && (
-                    <ImageDialog onClose={handleCloseDialog}>
-                      <Image
-                        fill
-                        className="object-contain object-center"
-                        src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
-                        alt={`問題${currentNumber}の画像`}
-                      />
-                    </ImageDialog>
+                  {currentQuestion.img && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={handleOpenDialog}
+                        className="block mt-6 mx-auto w-fit relative text-black/40 hover:text-black "
+                      >
+                        <Image
+                          priority
+                          width={200}
+                          height={200}
+                          src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
+                          alt={`問題${currentNumber}の画像`}
+                          className="w-auto"
+                        />
+                        <span className="absolute bottom-4 right-4">{magnifyingGlassPlus}</span>
+                      </button>
+                      {openDialog && (
+                        <ImageDialog onClose={handleCloseDialog}>
+                          <Image
+                            fill
+                            className="object-contain object-center"
+                            src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
+                            alt={`問題${currentNumber}の画像`}
+                          />
+                        </ImageDialog>
+                      )}
+                    </>
                   )}
-                </>
-              )}
 
-              <div className="mt-6 relative">
-                <div className="flex-1">
-                  <CheckBoxListContainer
-                    answers={answers}
-                    options={currentQuestion.options}
-                    selectedAnswers={selectedAnswers}
-                    thinking={thinking}
-                    handleChange={handleChange}
-                  />
-                </div>
-                {!thinking && (
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <ResultIcon correct={correct} />
+                  <div className="mt-6 relative">
+                    <div className="flex-1">
+                      <CheckBoxListContainer
+                        answers={answers}
+                        options={currentQuestion.options}
+                        selectedAnswers={selectedAnswers}
+                        thinking={thinking}
+                        handleChange={handleChange}
+                      />
+                    </div>
+                    {!thinking && (
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                        <ResultIcon correct={correct} />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
 
-              <div className="mt-10">
-                {thinking ? (
-                  <PrimaryButton component="button" icon={checkCircle} onClick={handleAnswer}>
-                    解答する
-                  </PrimaryButton>
-                ) : (
-                  <PrimaryButton component="button" onClick={handleNextQuestion}>
-                    次の問題へ
-                  </PrimaryButton>
-                )}
-              </div>
-            </div>
+                  <div className="mt-10">
+                    {thinking ? (
+                      <PrimaryButton component="button" icon={checkCircle} onClick={handleAnswer}>
+                        解答する
+                      </PrimaryButton>
+                    ) : (
+                      <PrimaryButton component="button" icon={arrowRightCircle} onClick={handleNextQuestion}>
+                        次の問題へ
+                      </PrimaryButton>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
       </Container>

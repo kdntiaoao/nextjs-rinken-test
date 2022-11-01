@@ -24,7 +24,7 @@ export const CheckBoxList = memo(({ answers, options, orders, selectedAnswers, t
               orders[index] !== 'order-1' && 'border-t'
             } border-t-primary-400 text-primary-900 px-3 min-h-[50px] relative ${thinking && 'cursor-pointer'} ${
               orders[index]
-            } ${bgcolor} ${thinking && selectedAnswers.indexOf(index) < 0 && 'hover:bg-primary-400/5'} `}
+            } ${bgcolor || 'bg-white'} ${thinking && selectedAnswers.indexOf(index) < 0 && 'hover:bg-primary-400/5'} `}
           >
             <input
               checked={selectedAnswers.indexOf(index) >= 0}
