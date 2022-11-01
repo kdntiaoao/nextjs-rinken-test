@@ -1,6 +1,7 @@
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, NextPage } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { memo, useCallback, useMemo, useState } from 'react'
 
 import { motion, AnimatePresence } from 'framer-motion'
@@ -81,15 +82,18 @@ const magnifyingGlassPlus = (
 )
 
 // eslint-disable-next-line react/display-name
-const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber, questionData }: PageProps) => {
+const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber, questionData }: PageProps) => {
+  const router = useRouter()
   const [currentNumber, setCurrentNumber] = useState<number>(Number(questionNumber.split('-')[0])) // 現在解答中の問題番号
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]) // 選択されている解答
   const [thinking, setThinking] = useState<boolean>(true) // 解答中はtrue, 答え合わせ中はfalse
   const [correct, setCorrect] = useState<boolean>(true) // 正誤フラグ
   const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
+  const [results, setResults] = useState<string[]>([])
 
   const timeframeToJapanese = useMemo(() => (timeframe === 'am' ? '午前' : '午後'), [timeframe])
   const currentQuestion = useMemo(() => questionData.questionData[currentNumber - 1], [currentNumber, questionData])
+  const endNumber = useMemo(() => Number(questionNumber.split('-')[1]), [questionNumber])
   const answers = useMemo(
     () => questionData.answerData[currentNumber - 1].map((answer) => answer - 1),
     [currentNumber, questionData.answerData]
@@ -112,22 +116,28 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe, questionNumb
 
   const handleAnswer = useCallback(() => {
     const sortedAnswers = selectedAnswers.sort()
-    for (let i = 0; i < answers.length; i++) {
-      if (sortedAnswers[i] !== answers[i]) {
-        setCorrect(false)
-        break
-      }
-      setCorrect(true)
-    }
+    const result = sortedAnswers.toString() === answers.toString()
+    setCorrect(result)
+    setResults((prev) => [...prev, result ? '1' : '0'])
+
     setThinking(false)
   }, [answers, selectedAnswers])
 
   const handleNextQuestion = useCallback(() => {
+    console.log(currentNumber, endNumber)
+    if (currentNumber >= endNumber) {
+      router.push(
+        { pathname: `/${year}/${timeframe}/${questionNumber}/result`, query: { results } },
+        `/${year}/${timeframe}/${questionNumber}/result`
+      )
+      return
+    }
+
     scroll.scrollToTop({ duration: 0 })
     setCurrentNumber((current) => current + 1)
     setThinking(true)
     setSelectedAnswers([])
-  }, [])
+  }, [currentNumber, endNumber, questionNumber, results, router, timeframe, year])
 
   const handleOpenDialog = useCallback(() => setOpenDialog(true), [])
 
@@ -150,7 +160,7 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe, questionNumb
                 key={currentNumber}
                 initial={{ opacity: 0, position: 'absolute', top: 0, left: 0, right: 0 }}
                 animate={{ opacity: 1, x: 0, position: 'relative' }}
-                exit={{ x: '-100vw', position: 'absolute', zIndex: 1 }}
+                exit={{ x: '-100vw', position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}
                 transition={{ duration: 1 }}
               >
                 <SmallHeading>問題{currentNumber}</SmallHeading>
@@ -265,4 +275,4 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
   }
 }
 
-export default TimeframePage
+export default QuestionNumberPage
