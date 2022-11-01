@@ -30,40 +30,6 @@ type PathsType = {
 
 const scroll = Scroll.animateScroll
 
-const checkCircle = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className="w-6 h-6"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-    />
-  </svg>
-)
-
-const arrowRightCircle = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className="w-6 h-6"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-    />
-  </svg>
-)
-
 const magnifyingGlassPlus = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -85,16 +51,19 @@ const magnifyingGlassPlus = (
 const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber, questionData }: PageProps) => {
   const router = useRouter()
   const [currentNumber, setCurrentNumber] = useState<number>(Number(questionNumber.split('-')[0])) // 現在解答中の問題番号
-  const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]) // 選択されている解答
+  const [selectedAnswer, setSelectedAnswer] = useState<number[]>([]) // 選択されている解答
   const [thinking, setThinking] = useState<boolean>(true) // 解答中はtrue, 答え合わせ中はfalse
   const [correct, setCorrect] = useState<boolean>(true) // 正誤フラグ
   const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
-  const [results, setResults] = useState<string[]>([])
+  const [history, setHistory] = useState<{ selectedAnswers: string[]; correctCount: number }>({
+    selectedAnswers: [],
+    correctCount: 0,
+  })
 
   const timeframeToJapanese = useMemo(() => (timeframe === 'am' ? '午前' : '午後'), [timeframe])
   const currentQuestion = useMemo(() => questionData.questionData[currentNumber - 1], [currentNumber, questionData])
   const endNumber = useMemo(() => Number(questionNumber.split('-')[1]), [questionNumber])
-  const answers = useMemo(
+  const answer = useMemo(
     () => questionData.answerData[currentNumber - 1].map((answer) => answer - 1),
     [currentNumber, questionData.answerData]
   )
@@ -103,31 +72,36 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
     (selectedIndex: number) => {
       if (!thinking) return
 
-      const index = selectedAnswers.indexOf(selectedIndex)
+      const index = selectedAnswer.indexOf(selectedIndex)
       if (index < 0) {
-        const answerLength = answers.length
-        setSelectedAnswers((prev) => [...prev, selectedIndex].slice(-answerLength))
+        const answerLength = answer.length
+        setSelectedAnswer((prev) => [...prev, selectedIndex].slice(-answerLength))
       } else {
-        setSelectedAnswers((prev) => prev.filter((answer) => answer !== selectedIndex))
+        setSelectedAnswer((prev) => prev.filter((answer) => answer !== selectedIndex))
       }
     },
-    [answers.length, selectedAnswers, thinking]
+    [answer.length, selectedAnswer, thinking]
   )
 
   const handleAnswer = useCallback(() => {
-    const sortedAnswers = selectedAnswers.sort()
-    const result = sortedAnswers.toString() === answers.toString()
+    const sortedAnswer = selectedAnswer.sort()
+    const result = sortedAnswer.toString() === answer.toString()
     setCorrect(result)
-    setResults((prev) => [...prev, result ? '1' : '0'])
+    setHistory(({ selectedAnswers, correctCount }) => ({
+      selectedAnswers: [...selectedAnswers, sortedAnswer.join(',')],
+      correctCount: result ? correctCount + 1 : correctCount,
+    }))
 
     setThinking(false)
-  }, [answers, selectedAnswers])
+  }, [answer, selectedAnswer])
 
   const handleNextQuestion = useCallback(() => {
-    console.log(currentNumber, endNumber)
     if (currentNumber >= endNumber) {
       router.push(
-        { pathname: `/${year}/${timeframe}/${questionNumber}/result`, query: { results } },
+        {
+          pathname: `/${year}/${timeframe}/${questionNumber}/result`,
+          query: { selectedAnswers: history.selectedAnswers, correctCount: history.correctCount.toString() },
+        },
         `/${year}/${timeframe}/${questionNumber}/result`
       )
       return
@@ -136,8 +110,8 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
     scroll.scrollToTop({ duration: 0 })
     setCurrentNumber((current) => current + 1)
     setThinking(true)
-    setSelectedAnswers([])
-  }, [currentNumber, endNumber, questionNumber, results, router, timeframe, year])
+    setSelectedAnswer([])
+  }, [currentNumber, endNumber, history.correctCount, history.selectedAnswers, questionNumber, router, timeframe, year])
 
   const handleOpenDialog = useCallback(() => setOpenDialog(true), [])
 
@@ -162,6 +136,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                 animate={{ opacity: 1, x: 0, position: 'relative' }}
                 exit={{ x: '-100vw', position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}
                 transition={{ duration: 1 }}
+                className="bg-white"
               >
                 <SmallHeading>問題{currentNumber}</SmallHeading>
                 <div className="mt-4">
@@ -200,9 +175,9 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                   <div className="mt-6 relative">
                     <div className="flex-1">
                       <CheckBoxListContainer
-                        answers={answers}
+                        answer={answer}
                         options={currentQuestion.options}
-                        selectedAnswers={selectedAnswers}
+                        selectedAnswer={selectedAnswer}
                         thinking={thinking}
                         handleChange={handleChange}
                       />
@@ -216,11 +191,11 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
 
                   <div className="mt-10">
                     {thinking ? (
-                      <PrimaryButton component="button" icon={checkCircle} onClick={handleAnswer}>
+                      <PrimaryButton component="button" onClick={handleAnswer}>
                         解答する
                       </PrimaryButton>
                     ) : (
-                      <PrimaryButton component="button" icon={arrowRightCircle} onClick={handleNextQuestion}>
+                      <PrimaryButton color="secondary" component="button" onClick={handleNextQuestion}>
                         次の問題へ
                       </PrimaryButton>
                     )}

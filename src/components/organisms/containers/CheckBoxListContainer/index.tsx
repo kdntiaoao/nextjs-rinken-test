@@ -3,15 +3,15 @@ import { memo, useEffect, useState } from 'react'
 import { CheckBoxList } from 'components/organisms/presentations/CheckBoxList'
 
 type Props = {
-  answers: number[]
+  answer: number[]
   options: string[]
-  selectedAnswers: number[]
+  selectedAnswer: number[]
   thinking: boolean
   handleChange: (selectedIndex: number) => void
 }
 
 // eslint-disable-next-line react/display-name
-export const CheckBoxListContainer = memo(({ answers, options, selectedAnswers, thinking, handleChange }: Props) => {
+export const CheckBoxListContainer = memo(({ answer, options, selectedAnswer, thinking, handleChange }: Props) => {
   const [orders, setOrders] = useState(['order-1', 'order-2', 'order-3', 'order-4', 'order-5'])
 
   useEffect(() => {
@@ -27,10 +27,10 @@ export const CheckBoxListContainer = memo(({ answers, options, selectedAnswers, 
 
   return (
     <CheckBoxList
-      answers={answers}
+      answer={answer}
       options={options}
       orders={orders}
-      selectedAnswers={selectedAnswers}
+      selectedAnswer={selectedAnswer}
       thinking={thinking}
       handleChange={handleChange}
     />

@@ -4,7 +4,9 @@ import { useRouter } from 'next/router'
 import { memo, useEffect, useMemo } from 'react'
 
 import { questions } from 'assets/questions'
-import { CircleProgress, Container, LinkButton, PageHeading } from 'components/atoms'
+import { CircleProgress, Container, LinkButton, PageHeading, SmallHeading } from 'components/atoms'
+import { LoadingScreen } from 'components/molecules'
+import { QuestionAccordionContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 
 type PageProps = {
@@ -22,28 +24,34 @@ type PathsType = {
   }
 }
 
+const range = (start: number, end: number) => {
+  return Array(end - start + 1)
+    .fill(start)
+    .map((number, idx) => number + idx)
+}
+
 // eslint-disable-next-line react/display-name
 const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber, questionData }: PageProps) => {
   const router = useRouter()
 
+  const selectedAnswers = router.query.selectedAnswers as string[] | undefined
+  const correctCount = router.query.correctCount ? Number(router.query.correctCount) : 0
+  const percent = selectedAnswers && correctCount ? correctCount / selectedAnswers.length : 0
+
   const timeframeToJapanese = useMemo(() => (timeframe === 'am' ? '午前' : '午後'), [timeframe])
 
-  const correctCount = useMemo(() => {
-    const results = router?.query?.results as string[] | undefined
-    return results && results.reduce<number>((previous: number, current: string) => previous + Number(current), 0)
-  }, [router?.query?.results])
-  const percent = useMemo(() => {
-    if (typeof correctCount === 'undefined' || typeof router.query.results === 'undefined') {
-      return 0
-    }
-    return correctCount / router.query.results.length
-  }, [correctCount, router.query.results])
-
   useEffect(() => {
-    if (router?.query && (!router.query.results || router.query.results.length === 0)) {
+    if (
+      router?.query &&
+      (typeof correctCount === 'undefined' || typeof selectedAnswers === 'undefined' || selectedAnswers.length === 0)
+    ) {
       router.push(`/${year}/${timeframe}/${questionNumber}`)
     }
-  }, [questionNumber, router, timeframe, year])
+  }, [correctCount, questionNumber, router, selectedAnswers, timeframe, year])
+
+  if (!selectedAnswers) {
+    return <LoadingScreen />
+  }
 
   return (
     <DefaultLayout title={`${questionNumber} | 臨検テスト`}>
@@ -65,14 +73,27 @@ const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber,
                   <p className="text-primary-900 font-bold">
                     <span className="text-3xl mr-2">{Math.round(percent * 100)}</span>%
                   </p>
-                  <div className="mt-4">
-                    <p className="text-sm text-gray-400">
-                      {correctCount}問正解 / {router.query.results?.length}問中
-                    </p>
-                  </div>
+                  <p className="mt-4">
+                    <span className="text-sm text-gray-400">
+                      {correctCount}問正解 / {selectedAnswers.length}問中
+                    </span>
+                  </p>
                 </div>
               </CircleProgress>
             </div>
+          </div>
+
+          <div className="mt-10 flex flex-col gap-4">
+            {range(Number(questionNumber.split('-')[0]), Number(questionNumber.split('-')[1])).map((number, index) => (
+              <QuestionAccordionContainer
+                key={number}
+                answer={questionData.answerData[number - 1]}
+                question={questionData.questionData[number - 1].question}
+                questionNumber={number}
+                options={questionData.questionData[number - 1].options}
+                selectedAnswer={selectedAnswers[index]}
+              />
+            ))}
           </div>
         </div>
       </Container>
