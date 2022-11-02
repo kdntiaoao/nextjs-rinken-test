@@ -12,6 +12,8 @@ import { Container, LinkButton, PrimaryButton, SmallHeading } from 'components/a
 import { ImageDialog, ResultIcon } from 'components/molecules'
 import { CheckBoxListContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
+import { useAnswer, useSelectedAnswer, useStartEndNumber } from 'hooks'
+import { timeframeToJapanese } from 'utils/timeToJapanese'
 
 type PageProps = {
   year: string
@@ -50,53 +52,19 @@ const magnifyingGlassPlus = (
 // eslint-disable-next-line react/display-name
 const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber, questionData }: PageProps) => {
   const router = useRouter()
-  const [currentNumber, setCurrentNumber] = useState<number>(Number(questionNumber.split('-')[0])) // 現在解答中の問題番号
-  const [selectedAnswer, setSelectedAnswer] = useState<number[]>([]) // 選択されている解答
-  const [thinking, setThinking] = useState<boolean>(true) // 解答中はtrue, 答え合わせ中はfalse
-  const [correct, setCorrect] = useState<boolean>(true) // 正誤フラグ
+  const { start, end } = useStartEndNumber(questionNumber)
+  const [currentNumber, setCurrentNumber] = useState<number>(start) // 現在解答中の問題番号
   const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
-  const [history, setHistory] = useState<{ selectedAnswers: string[]; correctCount: number }>({
-    selectedAnswers: [],
-    correctCount: 0,
-  })
-
-  const timeframeToJapanese = useMemo(() => (timeframe === 'am' ? '午前' : '午後'), [timeframe])
   const currentQuestion = useMemo(() => questionData.questionData[currentNumber - 1], [currentNumber, questionData])
-  const endNumber = useMemo(() => Number(questionNumber.split('-')[1]), [questionNumber])
-  const answer = useMemo(
+  const answerIndex = useMemo(
     () => questionData.answerData[currentNumber - 1].map((answer) => answer - 1),
     [currentNumber, questionData.answerData]
   )
-
-  const handleChange = useCallback(
-    (selectedIndex: number) => {
-      if (!thinking) return
-
-      const index = selectedAnswer.indexOf(selectedIndex)
-      if (index < 0) {
-        const answerLength = answer.length
-        setSelectedAnswer((prev) => [...prev, selectedIndex].slice(-answerLength))
-      } else {
-        setSelectedAnswer((prev) => prev.filter((answer) => answer !== selectedIndex))
-      }
-    },
-    [answer.length, selectedAnswer, thinking]
-  )
-
-  const handleAnswer = useCallback(() => {
-    const sortedAnswer = selectedAnswer.sort()
-    const result = sortedAnswer.toString() === answer.toString()
-    setCorrect(result)
-    setHistory(({ selectedAnswers, correctCount }) => ({
-      selectedAnswers: [...selectedAnswers, sortedAnswer.join(',')],
-      correctCount: result ? correctCount + 1 : correctCount,
-    }))
-
-    setThinking(false)
-  }, [answer, selectedAnswer])
+  const { correct, history, thinking, checkAnswer, resetThinking } = useAnswer(answerIndex)
+  const { selectedAnswer, changeSelect, resetSelect } = useSelectedAnswer(answerIndex.length, thinking)
 
   const handleNextQuestion = useCallback(() => {
-    if (currentNumber >= endNumber) {
+    if (currentNumber >= end) {
       router.push(
         {
           pathname: `/${year}/${timeframe}/${questionNumber}/result`,
@@ -109,9 +77,9 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
 
     scroll.scrollToTop({ duration: 0 })
     setCurrentNumber((current) => current + 1)
-    setThinking(true)
-    setSelectedAnswer([])
-  }, [currentNumber, endNumber, history.correctCount, history.selectedAnswers, questionNumber, router, timeframe, year])
+    resetThinking()
+    resetSelect()
+  }, [currentNumber, end, history, questionNumber, resetSelect, resetThinking, router, timeframe, year])
 
   const handleOpenDialog = useCallback(() => setOpenDialog(true), [])
 
@@ -123,14 +91,13 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
         <div className="py-10">
           <Link href={`/${year}/${timeframe}`}>
             <LinkButton reverse>
-              第{Number(year) - 1953}回{timeframeToJapanese}
+              第{Number(year) - 1953}回{timeframeToJapanese(timeframe)}
             </LinkButton>
           </Link>
 
           <div className="mt-6 relative">
             <AnimatePresence>
               <motion.div
-                layout
                 key={currentNumber}
                 initial={{ opacity: 0, position: 'absolute', top: 0, left: 0, right: 0 }}
                 animate={{ opacity: 1, x: 0, position: 'relative' }}
@@ -159,27 +126,17 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                         />
                         <span className="absolute bottom-4 right-4">{magnifyingGlassPlus}</span>
                       </button>
-                      {openDialog && (
-                        <ImageDialog onClose={handleCloseDialog}>
-                          <Image
-                            fill
-                            className="object-contain object-center"
-                            src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
-                            alt={`問題${currentNumber}の画像`}
-                          />
-                        </ImageDialog>
-                      )}
                     </>
                   )}
 
                   <div className="mt-6 relative">
                     <div className="flex-1">
                       <CheckBoxListContainer
-                        answer={answer}
+                        answer={answerIndex}
                         options={currentQuestion.options}
                         selectedAnswer={selectedAnswer}
                         thinking={thinking}
-                        handleChange={handleChange}
+                        handleChange={changeSelect}
                       />
                     </div>
                     {!thinking && (
@@ -191,7 +148,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
 
                   <div className="mt-10">
                     {thinking ? (
-                      <PrimaryButton component="button" onClick={handleAnswer}>
+                      <PrimaryButton component="button" onClick={() => checkAnswer(selectedAnswer)}>
                         解答する
                       </PrimaryButton>
                     ) : (
@@ -203,6 +160,17 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                 </div>
               </motion.div>
             </AnimatePresence>
+
+            {openDialog && (
+              <ImageDialog onClose={handleCloseDialog}>
+                <Image
+                  fill
+                  className="object-contain object-center"
+                  src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
+                  alt={`問題${currentNumber}の画像`}
+                />
+              </ImageDialog>
+            )}
           </div>
         </div>
       </Container>

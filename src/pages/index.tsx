@@ -29,7 +29,7 @@ const HomePage: NextPage = memo(() => {
           <PageHeading component="h2">問題一覧</PageHeading>
 
           <div className="mt-8">
-            <ul className="grid md:grid-cols-2 gap-8 lg:gap-10">
+            <ul className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
               {years.map((year) => (
                 <li key={year}>
                   <MarkerHeading component="h3">
@@ -37,7 +37,7 @@ const HomePage: NextPage = memo(() => {
                     <span className="text-sm ml-1">年度</span>
                   </MarkerHeading>
 
-                  <ul className="mt-4 grid grid-cols-2 gap-4">
+                  <ul className="mt-4 grid gap-4">
                     <li className="break-keep">
                       <Link href={`/${year}/am`}>
                         <IconOutlinedButton icon={chevronRight}>第{year - 1953}回 午前</IconOutlinedButton>
