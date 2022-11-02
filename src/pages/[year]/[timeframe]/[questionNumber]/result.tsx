@@ -4,10 +4,11 @@ import { useRouter } from 'next/router'
 import { memo, useEffect, useMemo } from 'react'
 
 import { questions } from 'assets/questions'
-import { CircleProgress, Container, LinkButton, PageHeading, SmallHeading } from 'components/atoms'
+import { CircleProgress, Container, LinkButton, PageHeading } from 'components/atoms'
 import { LoadingScreen } from 'components/molecules'
 import { QuestionAccordionContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
+import { timeframeToJapanese } from 'utils/timeToJapanese'
 
 type PageProps = {
   year: string
@@ -38,8 +39,6 @@ const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber,
   const correctCount = router.query.correctCount ? Number(router.query.correctCount) : 0
   const percent = selectedAnswers && correctCount ? correctCount / selectedAnswers.length : 0
 
-  const timeframeToJapanese = useMemo(() => (timeframe === 'am' ? '午前' : '午後'), [timeframe])
-
   useEffect(() => {
     if (
       router?.query &&
@@ -54,12 +53,12 @@ const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber,
   }
 
   return (
-    <DefaultLayout title={`${questionNumber} | 臨検テスト`}>
+    <DefaultLayout title={`第${Number(year) - 1953}回${timeframeToJapanese(timeframe)}${questionNumber} | 臨検テスト`}>
       <Container>
         <div className="py-10">
           <Link href={`/${year}/${timeframe}`}>
             <LinkButton reverse>
-              第{Number(year) - 1953}回{timeframeToJapanese}
+              第{Number(year) - 1953}回{timeframeToJapanese(timeframe)}
             </LinkButton>
           </Link>
 
@@ -88,9 +87,10 @@ const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber,
               <QuestionAccordionContainer
                 key={number}
                 answer={questionData.answerData[number - 1]}
-                question={questionData.questionData[number - 1].question}
+                question={questionData.questionData[number - 1]}
                 questionNumber={number}
-                options={questionData.questionData[number - 1].options}
+                timeframe={timeframe}
+                year={year}
                 selectedAnswer={selectedAnswers[index]}
               />
             ))}

@@ -86,7 +86,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
   const handleCloseDialog = useCallback(() => setOpenDialog(false), [])
 
   return (
-    <DefaultLayout title={`${questionNumber} | 臨検テスト`}>
+    <DefaultLayout title={`第${Number(year) - 1953}回${timeframeToJapanese(timeframe)}${questionNumber} | 臨検テスト`}>
       <Container>
         <div className="py-10">
           <Link href={`/${year}/${timeframe}`}>
@@ -110,23 +110,21 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                   <p>{currentQuestion.question}</p>
 
                   {currentQuestion.img && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={handleOpenDialog}
-                        className="block mt-6 mx-auto w-fit relative text-black/40 hover:text-black "
-                      >
-                        <Image
-                          priority
-                          width={200}
-                          height={200}
-                          src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
-                          alt={`問題${currentNumber}の画像`}
-                          className="w-auto"
-                        />
-                        <span className="absolute bottom-4 right-4">{magnifyingGlassPlus}</span>
-                      </button>
-                    </>
+                    <button
+                      type="button"
+                      onClick={handleOpenDialog}
+                      className="block mt-6 mx-auto w-fit relative text-black/40 hover:text-black "
+                    >
+                      <Image
+                        priority
+                        width={200}
+                        height={200}
+                        src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
+                        alt={`問題${currentNumber}の画像`}
+                        className="w-auto"
+                      />
+                      <span className="absolute bottom-4 right-4">{magnifyingGlassPlus}</span>
+                    </button>
                   )}
 
                   <div className="mt-6 relative">

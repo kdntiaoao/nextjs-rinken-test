@@ -1,36 +1,47 @@
 import { memo, useCallback, useMemo, useState } from 'react'
 
 import { QuestionAccordion } from 'components/organisms/presentations/QuestionAccordion'
+import { Question } from 'types/question'
 
 type Props = {
   answer: number[]
-  options: string[]
-  question: string
+  question: Question
   questionNumber: number
   selectedAnswer: string
+  timeframe: 'am' | 'pm'
+  year: string
 }
 
 // eslint-disable-next-line react/display-name
 export const QuestionAccordionContainer = memo(
-  ({ answer, options, question, questionNumber, selectedAnswer }: Props) => {
-    const [open, setOpen] = useState<boolean>(false)
+  ({ answer, question, questionNumber, timeframe, year, selectedAnswer }: Props) => {
+    const [openAccordion, setOpenAccordion] = useState<boolean>(false)
+    const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
 
     const formattedSelectedAnswer = useMemo(
       () => selectedAnswer ? selectedAnswer.split(',').map((str) => Number(str)) : [],
       [selectedAnswer]
     )
 
-    const handleToggle = useCallback(() => setOpen((prev) => !prev), [])
+    const handleToggle = useCallback(() => setOpenAccordion((prev) => !prev), [])
+
+    const handleOpenDialog = useCallback(() => setOpenDialog(true), [])
+
+    const handleCloseDialog = useCallback(() => setOpenDialog(false), [])
 
     return (
       <QuestionAccordion
         answer={answer}
-        open={open}
-        options={options}
+        openAccordion={openAccordion}
+        openDialog={openDialog}
         question={question}
         questionNumber={questionNumber}
         selectedAnswer={formattedSelectedAnswer}
+        timeframe={timeframe}
+        year={year}
         onToggle={handleToggle}
+        handleOpenDialog={handleOpenDialog}
+        handleCloseDialog={handleCloseDialog}
       />
     )
   }
