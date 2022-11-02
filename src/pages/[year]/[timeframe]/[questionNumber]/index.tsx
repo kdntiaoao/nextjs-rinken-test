@@ -2,7 +2,7 @@ import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, NextPage } from 
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { memo, useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { motion, AnimatePresence } from 'framer-motion'
 import * as Scroll from 'react-scroll'
@@ -55,6 +55,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
   const { start, end } = useStartEndNumber(questionNumber)
   const [currentNumber, setCurrentNumber] = useState<number>(start) // 現在解答中の問題番号
   const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
+  const [disabled, setDisabled] = useState<boolean>(false)
   const currentQuestion = useMemo(() => questionData.questionData[currentNumber - 1], [currentNumber, questionData])
   const answerIndex = useMemo(
     () => questionData.answerData[currentNumber - 1].map((answer) => answer - 1),
@@ -64,7 +65,23 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
   const { selectedAnswer, changeSelect, resetSelect } = useSelectedAnswer(answerIndex.length, thinking)
 
   const handleNextQuestion = useCallback(() => {
-    if (currentNumber >= end) {
+    setDisabled(true)
+    try {
+      scroll.scrollToTop({ duration: 0 })
+      setCurrentNumber((current) => current + 1)
+      resetThinking()
+      resetSelect()
+    } finally {
+      setDisabled(false)
+    }
+  }, [resetSelect, resetThinking])
+
+  const handleOpenDialog = useCallback(() => setOpenDialog(true), [])
+
+  const handleCloseDialog = useCallback(() => setOpenDialog(false), [])
+
+  useEffect(() => {
+    if (currentNumber > end || end - start + 1 === history.selectedAnswers.length) {
       router.push(
         {
           pathname: `/${year}/${timeframe}/${questionNumber}/result`,
@@ -72,18 +89,8 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
         },
         `/${year}/${timeframe}/${questionNumber}/result`
       )
-      return
     }
-
-    scroll.scrollToTop({ duration: 0 })
-    setCurrentNumber((current) => current + 1)
-    resetThinking()
-    resetSelect()
-  }, [currentNumber, end, history, questionNumber, resetSelect, resetThinking, router, timeframe, year])
-
-  const handleOpenDialog = useCallback(() => setOpenDialog(true), [])
-
-  const handleCloseDialog = useCallback(() => setOpenDialog(false), [])
+  }, [currentNumber, end, history, history.selectedAnswers, questionNumber, router, start, timeframe, year])
 
   return (
     <DefaultLayout title={`第${Number(year) - 1953}回${timeframeToJapanese(timeframe)}${questionNumber} | 臨検テスト`}>
@@ -99,10 +106,30 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
             <AnimatePresence>
               <motion.div
                 key={currentNumber}
-                initial={{ opacity: 0, position: 'absolute', top: 0, left: 0, right: 0 }}
-                animate={{ opacity: 1, x: 0, position: 'relative' }}
-                exit={{ x: '-100vw', position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}
+                initial="left"
+                animate="center"
+                exit="right"
                 transition={{ duration: 1 }}
+                variants={{
+                  left: {
+                    opacity: 0,
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    pointerEvents: 'none',
+                  },
+                  center: { opacity: 1, x: 0, position: 'relative', transitionEnd: { pointerEvents: 'auto' } },
+                  right: {
+                    x: '-100vw',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    zIndex: 1,
+                    pointerEvents: 'none',
+                  },
+                }}
                 className="bg-white"
               >
                 <SmallHeading>問題{currentNumber}</SmallHeading>
@@ -146,11 +173,16 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
 
                   <div className="mt-10">
                     {thinking ? (
-                      <PrimaryButton component="button" onClick={() => checkAnswer(selectedAnswer)}>
+                      <PrimaryButton component="button" disabled={disabled} onClick={() => checkAnswer(selectedAnswer)}>
                         解答する
                       </PrimaryButton>
                     ) : (
-                      <PrimaryButton color="secondary" component="button" onClick={handleNextQuestion}>
+                      <PrimaryButton
+                        color="secondary"
+                        component="button"
+                        disabled={disabled}
+                        onClick={handleNextQuestion}
+                      >
                         次の問題へ
                       </PrimaryButton>
                     )}
