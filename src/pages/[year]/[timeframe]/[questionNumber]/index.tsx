@@ -102,7 +102,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
             </LinkButton>
           </Link>
 
-          <div className="mt-6 relative">
+          <div className="mt-8 relative">
             <AnimatePresence>
               <motion.div
                 key={currentNumber}

@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { memo, ReactNode } from 'react'
 
 import { Container } from 'components/atoms'
+import { HeaderContainer } from 'components/organisms'
 
 type Props = {
   title?: string
@@ -17,11 +18,7 @@ export const DefaultLayout = memo(({ title = 'お問合せフォーム', childre
       </Head>
 
       <div className="min-h-screen flex flex-col">
-        <header className="py-4 text-primary-900 border-b border-primary-100">
-          <Container>
-            <h1 className="text-xl font-bold">臨検テスト</h1>
-          </Container>
-        </header>
+        <HeaderContainer />
         <main className="flex-1 relative">{children}</main>
         <footer className="py-4 text-center">
           <small className="text-gray-400">&copy;臨検テスト</small>

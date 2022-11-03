@@ -28,7 +28,7 @@ const HomePage: NextPage = memo(() => {
         <div className="py-10">
           <PageHeading component="h2">問題一覧</PageHeading>
 
-          <div className="mt-8">
+          <div className="mt-12">
             <ul className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
               {years.map((year) => (
                 <li key={year}>

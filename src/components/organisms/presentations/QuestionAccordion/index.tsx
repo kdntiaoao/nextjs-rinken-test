@@ -55,7 +55,7 @@ export const QuestionAccordion = memo(
   }: Props) => {
     return (
       <div className="border border-primary-400 text-primary-900 rounded">
-        <div className="px-3 pt-4 min-h-[50px]">
+        <div className="px-3 pt-4 min-h-[48px]">
           <SmallHeading>問題{questionNumber}</SmallHeading>
           <div className="mt-4">
             <p>{question.question}</p>
@@ -97,7 +97,7 @@ export const QuestionAccordion = memo(
                 <div
                   key={option}
                   className={`flex items-center gap-2 px-3 py-2 min-h-[50px] ${
-                    answer.indexOf(index + 1) >= 0 && 'bg-red-400/20'
+                    answer.indexOf(index) >= 0 && 'bg-red-400/20'
                   }`}
                 >
                   <input
@@ -133,7 +133,7 @@ export const QuestionAccordion = memo(
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className={`w-6 h-6 transition delay-700 ${openAccordion && '-rotate-180'}`}
+            className={`w-6 h-6 transition duration-300 delay-300 ${openAccordion && '-rotate-180'}`}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
           </svg>

@@ -42,13 +42,13 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe }: PageProps)
             <LinkButton reverse>問題一覧へ</LinkButton>
           </Link>
 
-          <div className="mt-4">
-            <PageHeading component="h2">
+          <div className="mt-8">
+            <PageHeading component="h1">
               第{Number(year) - 1953}回{timeframeToJapanese}
             </PageHeading>
           </div>
 
-          <div className="mt-8">
+          <div className="mt-12">
             <ul className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-8">
               {[...Array(10)].map((_, index) => (
                 <li key={index.toString()} className="break-keep">
