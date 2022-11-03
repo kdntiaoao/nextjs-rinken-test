@@ -3,14 +3,15 @@ import { ComponentPropsWithoutRef, memo, ReactNode, useMemo } from 'react'
 type Props = ComponentPropsWithoutRef<'button'> & {
   color?: 'primary' | 'secondary'
   component?: 'div' | 'button'
-  icon?: ReactNode
+  startIcon?: ReactNode
+  endIcon?: ReactNode
   onClick?: () => void
   children: ReactNode
 }
 
 // eslint-disable-next-line react/display-name
 export const PrimaryButton = memo(
-  ({ color = 'primary', component: CustomTag = 'div', disabled, icon, onClick, children }: Props) => {
+  ({ color = 'primary', component: CustomTag = 'div', disabled, startIcon, endIcon,  onClick, children }: Props) => {
     return (
       <CustomTag
         type={CustomTag === 'button' ? 'button' : undefined}
@@ -20,8 +21,9 @@ export const PrimaryButton = memo(
         disabled={disabled}
         onClick={onClick}
       >
-        {icon}
+        <span className='absolute top-1/2 left-4 -translate-y-1/2'>{startIcon}</span>
         {children}
+        <span className='absolute top-1/2 right-4 -translate-y-1/2'>{endIcon}</span>
       </CustomTag>
     )
   }

@@ -22,7 +22,7 @@ export const DefaultLayout = memo(({ title = 'お問合せフォーム', childre
             <h1 className="text-xl font-bold">臨検テスト</h1>
           </Container>
         </header>
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 relative">{children}</main>
         <footer className="py-4 text-center">
           <small className="text-gray-400">&copy;臨検テスト</small>
         </footer>
