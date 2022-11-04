@@ -11,6 +11,7 @@ import { LoadingScreen } from 'components/molecules'
 import { QuestionAccordionContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 import { useStartEndNumber } from 'hooks'
+import { getRangeArray } from 'utils/getRange'
 import { timeframeToJapanese } from 'utils/timeToJapanese'
 
 type PageProps = {
@@ -26,12 +27,6 @@ type PathsType = {
     timeframe: 'am' | 'pm'
     questionNumber: string
   }
-}
-
-const range = (start: number, end: number) => {
-  return Array(end - start + 1)
-    .fill(start)
-    .map((number, idx) => number + idx)
 }
 
 // eslint-disable-next-line react/display-name
@@ -89,7 +84,7 @@ const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber,
           </div>
 
           <div className="mt-10 flex flex-col gap-4">
-            {range(start, end).map((number, index) => {
+            {getRangeArray(start, end).map((number, index) => {
               return (
                 <QuestionAccordionContainer
                   key={number}

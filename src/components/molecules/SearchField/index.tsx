@@ -28,17 +28,17 @@ const magnifyingGlass = (
 // eslint-disable-next-line react/display-name
 export const SearchField = memo(({ word, handleChange, handleSearch }: Props) => {
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-wrap gap-2 sm:gap-4">
       <input
-        type="text"
+        type="search"
         value={word}
-        className="border-b-2 border-b-primary-900 px-4 py-2 flex-1"
+        className="border-b-2 border-b-primary-900 px-2 sm:px-4 py-2 flex-1 outline-none"
         onChange={handleChange}
       />
       <div>
-        <PrimaryButton type="button" onClick={handleSearch}>
+        <PrimaryButton component="button" aria-label="検索" onClick={handleSearch}>
           {magnifyingGlass}
-          検索
+          <span className="hidden sm:inline-block">検索</span>
         </PrimaryButton>
       </div>
     </div>
