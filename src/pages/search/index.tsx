@@ -53,11 +53,11 @@ const SearchPage: NextPage = memo(() => {
         <div className="py-10">
           <PageHeading component="h1">検索</PageHeading>
 
-          <div className="mt-12">
+          <div className="mt-8 sm:mt-12">
             <SearchFieldContainer word={word} handleChange={handleChange} onSearch={handleSearch} />
 
             {resultQuestions && (
-              <div className="mt-12 flex flex-col gap-4">
+              <div className="mt-8 sm:mt-12 flex flex-col gap-4">
                 {(
                   [
                     '2015am',
@@ -76,7 +76,7 @@ const SearchPage: NextPage = memo(() => {
                 ).map((y) => (
                   <Fragment key={y}>
                     {resultQuestions[y].length !== 0 && (
-                      <div className="mt-10">
+                      <div className="mt-6 sm:mt-10">
                         <div className="mb-4">
                           <p className="text-primary-900 text-xl">
                             第{Number(y.slice(0, 4)) - 1953}回 {timeframeToJapanese(y.slice(-2) as 'am' | 'pm')}

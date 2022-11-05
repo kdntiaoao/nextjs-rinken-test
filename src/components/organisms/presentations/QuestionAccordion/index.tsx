@@ -17,7 +17,8 @@ type Props = {
   selectedAnswer: number[]
   timeframe: 'am' | 'pm'
   year: string
-  onToggle: () => void
+  handleOpenAccordion: () => void
+  handleCloseAccordion: () => void
   handleOpenDialog: () => void
   handleCloseDialog: () => void
 }
@@ -50,12 +51,18 @@ export const QuestionAccordion = memo(
     selectedAnswer,
     timeframe,
     year,
-    onToggle,
+    handleOpenAccordion,
+    handleCloseAccordion,
     handleOpenDialog,
     handleCloseDialog,
   }: Props) => {
     return (
-      <div className="border border-primary-400 text-primary-900 rounded">
+      <div
+        className={`border border-primary-400 text-primary-900 rounded ${
+          openAccordion ? 'cursor-auto' : 'cursor-pointer'
+        }`}
+        onClick={openAccordion ? undefined : handleOpenAccordion}
+      >
         <div className="px-3 pt-4 min-h-[48px]">
           <SmallHeading>問題{questionNumber}</SmallHeading>
           <div className="mt-4">
@@ -127,7 +134,11 @@ export const QuestionAccordion = memo(
           </ImageDialog>
         )}
 
-        <button className="flex items-center justify-center w-full py-4" onClick={onToggle}>
+        <button
+          className="flex items-center justify-center w-full py-4"
+          onClick={openAccordion ? handleCloseAccordion : handleOpenAccordion}
+          aria-label={openAccordion ? 'アコーディオンを閉じる' : 'アコーディオンを開く'}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

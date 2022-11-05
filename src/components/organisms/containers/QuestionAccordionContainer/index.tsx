@@ -24,7 +24,9 @@ export const QuestionAccordionContainer = memo(
       [selectedAnswer]
     )
 
-    const handleToggle = useCallback(() => setOpenAccordion((prev) => !prev), [])
+    const handleOpenAccordion = useCallback(() => setOpenAccordion((prev) => true), [])
+
+    const handleCloseAccordion = useCallback(() => setOpenAccordion((prev) => false), [])
 
     const handleOpenDialog = useCallback(() => setOpenDialog(true), [])
 
@@ -40,7 +42,8 @@ export const QuestionAccordionContainer = memo(
         selectedAnswer={formattedSelectedAnswer}
         timeframe={timeframe}
         year={year}
-        onToggle={handleToggle}
+        handleOpenAccordion={handleOpenAccordion}
+        handleCloseAccordion={handleCloseAccordion}
         handleOpenDialog={handleOpenDialog}
         handleCloseDialog={handleCloseDialog}
       />
