@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .fade-in-enter {
+    @apply animate-fade-in;
+  }
+}
