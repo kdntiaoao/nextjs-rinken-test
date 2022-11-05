@@ -53,7 +53,7 @@ const SearchPage: NextPage = memo(() => {
           <div className="mt-8 sm:mt-12">
             <SearchFieldContainer word={word} handleChange={handleChange} onSearch={handleSearch} />
 
-            {resultQuestions && (
+            {word && resultQuestions && (
               <div className="mt-8 sm:mt-12 flex flex-col gap-4">
                 {(
                   [
@@ -70,39 +70,58 @@ const SearchPage: NextPage = memo(() => {
                     '2020am',
                     '2020pm',
                   ] as const
-                ).map((y) => (
-                  <Fragment key={y}>
-                    {resultQuestions[y].length !== 0 && (
-                      <div className="mt-6 sm:mt-10">
-                        <div className="mb-4">
-                          <p className="text-primary-900 text-xl">
-                            第{Number(y.slice(0, 4)) - 1953}回 {timeframeToJapanese(y.slice(-2) as 'am' | 'pm')}
-                          </p>
+                ).reduce((prev, current) => prev + resultQuestions[current].length, 0) > 0 ? (
+                  (
+                    [
+                      '2015am',
+                      '2015pm',
+                      '2016am',
+                      '2016pm',
+                      '2017am',
+                      '2017pm',
+                      '2018am',
+                      '2018pm',
+                      '2019am',
+                      '2019pm',
+                      '2020am',
+                      '2020pm',
+                    ] as const
+                  ).map((y) => (
+                    <Fragment key={y}>
+                      {resultQuestions[y].length !== 0 && (
+                        <div className="mt-6 sm:mt-10">
+                          <div className="mb-4">
+                            <p className="text-primary-900 text-xl">
+                              第{Number(y.slice(0, 4)) - 1953}回 {timeframeToJapanese(y.slice(-2) as 'am' | 'pm')}
+                            </p>
+                          </div>
+                          <div className=" flex flex-col gap-4">
+                            {resultQuestions[y].map(({ num, question, img, options, answer }) => {
+                              return (
+                                <QuestionAccordionContainer
+                                  key={`${y}-${num}`}
+                                  answer={answer.map((answer) => answer - 1)}
+                                  question={{
+                                    num,
+                                    question: highlightWord(question, word),
+                                    img,
+                                    options: options.map((option) => highlightWord(option, word)),
+                                  }}
+                                  questionNumber={num}
+                                  timeframe={y.slice(-2) as 'am' | 'pm'}
+                                  year={y.slice(0, 4)}
+                                  selectedAnswer={''}
+                                />
+                              )
+                            })}
+                          </div>
                         </div>
-                        <div className=" flex flex-col gap-4">
-                          {resultQuestions[y].map(({ num, question, img, options, answer }) => {
-                            return (
-                              <QuestionAccordionContainer
-                                key={`${y}-${num}`}
-                                answer={answer.map((answer) => answer - 1)}
-                                question={{
-                                  num,
-                                  question: highlightWord(question, word),
-                                  img,
-                                  options: options.map((option) => highlightWord(option, word)),
-                                }}
-                                questionNumber={num}
-                                timeframe={y.slice(-2) as 'am' | 'pm'}
-                                year={y.slice(0, 4)}
-                                selectedAnswer={''}
-                              />
-                            )
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </Fragment>
-                ))}
+                      )}
+                    </Fragment>
+                  ))
+                ) : (
+                  <p>検索結果は0件です。違うキーワードで検索してください。</p>
+                )}
               </div>
             )}
           </div>

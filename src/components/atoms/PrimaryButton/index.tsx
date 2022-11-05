@@ -25,9 +25,9 @@ export const PrimaryButton = memo(
     return (
       <CustomTag
         type={type || CustomTag === 'button' ? 'button' : undefined}
-        className={`flex items-center justify-center gap-2 rounded-full text-white py-3 px-3 sm:px-8 relative text-center cursor-pointer w-full select-none ${
-          color === 'primary' && 'bg-primary-500 hover:bg-primary-600'
-        } ${color === 'secondary' && 'bg-secondary-500 hover:bg-secondary-600'}`}
+        className={`flex items-center justify-center gap-2 rounded-full text-white py-3 px-3 sm:px-8 relative text-center w-full select-none overflow-hidden ${
+          color === 'primary' && 'bg-primary-500 hover:bg-primary-600 active:bg-primary-700'
+        } ${color === 'secondary' && 'bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700'}`}
         disabled={disabled}
         aria-label={rest['aria-label']}
         onClick={onClick}

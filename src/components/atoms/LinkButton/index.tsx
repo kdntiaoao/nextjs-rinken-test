@@ -34,7 +34,7 @@ const chevronLeft = (
 // eslint-disable-next-line react/display-name
 export const LinkButton = memo(({ reverse = false, children }: Props) => {
   return (
-    <div className="flex w-fit items-center gap-1 cursor-pointer text-primary-900 relative before:block before:absolute before:bottom-0 before:left-0 before:right-0 before:h-px before:scale-x-0 before:bg-primary-900 before:transition hover:before:scale-100">
+    <div className="flex w-fit items-center gap-1 text-primary-900 relative before:block before:absolute before:bottom-0 before:left-0 before:right-0 before:h-px before:scale-x-0 before:bg-primary-900 before:transition hover:before:scale-100">
       {reverse && chevronLeft}
       {children}
       {!reverse && chevronRight}

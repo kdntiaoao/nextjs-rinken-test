@@ -66,7 +66,7 @@ export const Header = memo(({ menus, openMenu, handleToggleMenu, preventPropagat
         <AnimatePresence>
           {openMenu && (
             <div
-              className="fixed top-0 bottom-0 right-0 left-0 z-10 bg-black/40 cursor-pointer"
+              className="fixed top-0 bottom-0 right-0 left-0 z-10 bg-black/40"
               onClick={handleToggleMenu}
             >
               <motion.div
