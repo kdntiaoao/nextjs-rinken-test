@@ -5,12 +5,10 @@ import { questions } from 'assets/questions'
 import { Container, PageHeading } from 'components/atoms'
 import { QuestionAccordionContainer, SearchFieldContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
+import { Question } from 'types/question'
 import { highlightWord, timeframeToJapanese } from 'utils'
 
-type ResultQuestions = Record<
-  keyof typeof questions,
-  (typeof questions['2015am']['questionData'][0] & { answer: number[] })[]
->
+type ResultQuestions = Record<keyof typeof questions, (Question & { answer: number[] })[]>
 
 // eslint-disable-next-line react/display-name
 const SearchPage: NextPage = memo(() => {
@@ -44,7 +42,6 @@ const SearchPage: NextPage = memo(() => {
       resultQuestions[questionKey] = matchQuestions
     }
     setResultQuestions(resultQuestions)
-    console.log('result: ', resultQuestions)
   }, [word])
 
   return (

@@ -4,7 +4,11 @@ import { Header } from 'components/organisms/presentations/Header'
 
 const preventPropagation = (event: MouseEvent<HTMLElement>) => event.stopPropagation()
 
-const menus = [{title: '見直し', url: '/check'}, {title: '検索', url: '/search'}]
+const menus = [
+  { title: 'ホーム', url: '/' },
+  { title: '見直し', url: '/check' },
+  { title: '検索', url: '/search' },
+]
 
 // eslint-disable-next-line react/display-name
 export const HeaderContainer = memo(() => {
@@ -12,5 +16,12 @@ export const HeaderContainer = memo(() => {
 
   const handleToggleMenu = useCallback(() => setOpenMenu((prev) => !prev), [])
 
-  return <Header menus={menus} openMenu={openMenu} handleToggleMenu={handleToggleMenu} preventPropagation={preventPropagation} />
+  return (
+    <Header
+      menus={menus}
+      openMenu={openMenu}
+      handleToggleMenu={handleToggleMenu}
+      preventPropagation={preventPropagation}
+    />
+  )
 })

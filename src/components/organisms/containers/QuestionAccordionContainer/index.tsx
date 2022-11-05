@@ -1,4 +1,4 @@
-import { memo, ReactNode, useCallback, useMemo, useState } from 'react'
+import { memo, MouseEvent, ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { QuestionAccordion } from 'components/organisms/presentations/QuestionAccordion'
 import { Question } from 'types/question'
@@ -11,11 +11,17 @@ type Props = {
   selectedAnswer: string
   timeframe: 'am' | 'pm'
   year: string
+  handleDeleteQuestion?: (
+    event: MouseEvent<HTMLButtonElement>,
+    year: string,
+    timeframe: 'am' | 'pm',
+    questionNumber: number
+  ) => void
 }
 
 // eslint-disable-next-line react/display-name
 export const QuestionAccordionContainer = memo(
-  ({ answer, question, questionNumber, timeframe, year, selectedAnswer }: Props) => {
+  ({ answer, question, questionNumber, timeframe, year, selectedAnswer, handleDeleteQuestion }: Props) => {
     const [openAccordion, setOpenAccordion] = useState<boolean>(false)
     const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
 
@@ -46,6 +52,7 @@ export const QuestionAccordionContainer = memo(
         handleCloseAccordion={handleCloseAccordion}
         handleOpenDialog={handleOpenDialog}
         handleCloseDialog={handleCloseDialog}
+        handleDeleteQuestion={handleDeleteQuestion}
       />
     )
   }

@@ -109,7 +109,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                 initial="left"
                 animate="center"
                 exit="right"
-                transition={{ duration: 1 }}
+                transition={{ duration: 0.8 }}
                 variants={{
                   left: {
                     opacity: 0,
@@ -173,7 +173,11 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
 
                   <div className="mt-10">
                     {thinking ? (
-                      <PrimaryButton component="button" disabled={disabled} onClick={() => checkAnswer(selectedAnswer)}>
+                      <PrimaryButton
+                        component="button"
+                        disabled={disabled}
+                        onClick={() => checkAnswer(year, timeframe, currentNumber, selectedAnswer)}
+                      >
                         解答する
                       </PrimaryButton>
                     ) : (
