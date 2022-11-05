@@ -1,11 +1,11 @@
-import { ChangeEvent, memo } from 'react'
+import { ChangeEvent, FormEvent, memo } from 'react'
 
 import { PrimaryButton } from 'components/atoms'
 
 type Props = {
   word: string
   handleChange: (event: ChangeEvent<HTMLInputElement>) => void
-  handleSearch: () => void
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void
 }
 
 const magnifyingGlass = (
@@ -26,21 +26,21 @@ const magnifyingGlass = (
 )
 
 // eslint-disable-next-line react/display-name
-export const SearchField = memo(({ word, handleChange, handleSearch }: Props) => {
+export const SearchField = memo(({ word, handleChange, onSubmit }: Props) => {
   return (
-    <div className="flex gap-4">
+    <form className="flex flex-wrap gap-2 sm:gap-4" onSubmit={onSubmit}>
       <input
-        type="text"
+        type="search"
         value={word}
-        className="border-b-2 border-b-primary-900 px-4 py-2 flex-1"
+        className="border-b-2 border-b-primary-900 px-2 sm:px-4 py-2 flex-1 outline-none"
         onChange={handleChange}
       />
       <div>
-        <PrimaryButton type="button" onClick={handleSearch}>
+        <PrimaryButton type="submit" component="button" aria-label="検索">
           {magnifyingGlass}
-          検索
+          <span className="hidden sm:inline-block">検索</span>
         </PrimaryButton>
       </div>
-    </div>
+    </form>
   )
 })

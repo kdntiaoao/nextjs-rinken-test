@@ -1,22 +1,24 @@
 import Image from 'next/image'
-import { memo } from 'react'
+import { memo, ReactNode } from 'react'
 
 import { AnimatePresence, motion } from 'framer-motion'
 
 import { SmallHeading } from 'components/atoms'
 import { ImageDialog } from 'components/molecules'
 import { Question } from 'types/question'
+import { Overwrite } from 'types/utils'
 
 type Props = {
   answer: number[]
   openAccordion: boolean
   openDialog: boolean
-  question: Question
+  question: Overwrite<Question, { question: ReactNode; options: ReactNode[] }>
   questionNumber: number
   selectedAnswer: number[]
   timeframe: 'am' | 'pm'
   year: string
-  onToggle: () => void
+  handleOpenAccordion: () => void
+  handleCloseAccordion: () => void
   handleOpenDialog: () => void
   handleCloseDialog: () => void
 }
@@ -49,16 +51,22 @@ export const QuestionAccordion = memo(
     selectedAnswer,
     timeframe,
     year,
-    onToggle,
+    handleOpenAccordion,
+    handleCloseAccordion,
     handleOpenDialog,
     handleCloseDialog,
   }: Props) => {
     return (
-      <div className="border border-primary-400 text-primary-900 rounded">
+      <div
+        className={`border border-primary-400 text-primary-900 rounded ${
+          openAccordion ? 'cursor-auto' : 'cursor-pointer'
+        }`}
+        onClick={openAccordion ? undefined : handleOpenAccordion}
+      >
         <div className="px-3 pt-4 min-h-[48px]">
           <SmallHeading>問題{questionNumber}</SmallHeading>
           <div className="mt-4">
-            <p>{question.question}</p>
+            <p className={openAccordion ? '' : 'truncate'}>{question.question}</p>
           </div>
         </div>
 
@@ -95,7 +103,7 @@ export const QuestionAccordion = memo(
               )}
               {question.options.map((option, index) => (
                 <div
-                  key={option}
+                  key={option?.toString()}
                   className={`flex items-center gap-2 px-3 py-2 min-h-[50px] ${
                     answer.indexOf(index) >= 0 && 'bg-red-400/20'
                   }`}
@@ -126,7 +134,11 @@ export const QuestionAccordion = memo(
           </ImageDialog>
         )}
 
-        <button className="flex items-center justify-center w-full py-4" onClick={onToggle}>
+        <button
+          className="flex items-center justify-center w-full py-4"
+          onClick={openAccordion ? handleCloseAccordion : handleOpenAccordion}
+          aria-label={openAccordion ? 'アコーディオンを閉じる' : 'アコーディオンを開く'}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

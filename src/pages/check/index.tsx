@@ -5,6 +5,7 @@ import { questions } from 'assets/questions'
 import { Container, PageHeading } from 'components/atoms'
 import { QuestionAccordionContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
+import { getRangeArray } from 'utils'
 
 const years = [2020, 2019, 2018, 2017, 2016, 2015]
 
@@ -21,22 +22,16 @@ const chevronRight = (
   </svg>
 )
 
-const range = (start: number, end: number) => {
-  return Array(end - start + 1)
-    .fill(start)
-    .map((number, idx) => number + idx)
-}
-
 // eslint-disable-next-line react/display-name
 const CheckPage: NextPage = memo(() => {
   return (
-    <DefaultLayout title="臨検テスト">
+    <DefaultLayout title="見直し | 臨検テスト">
       <Container>
         <div className="py-10">
           <PageHeading component="h1">見直し</PageHeading>
 
           <div className="mt-12 flex flex-col gap-4">
-            {range(21, 30).map((number, index) => {
+            {getRangeArray(21, 30).map((number) => {
               return (
                 <QuestionAccordionContainer
                   key={number}
