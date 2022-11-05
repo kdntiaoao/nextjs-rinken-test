@@ -1,11 +1,12 @@
-import { memo, useCallback, useMemo, useState } from 'react'
+import { memo, ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { QuestionAccordion } from 'components/organisms/presentations/QuestionAccordion'
 import { Question } from 'types/question'
+import { Overwrite } from 'types/utils'
 
 type Props = {
   answer: number[]
-  question: Question
+  question: Overwrite<Question, { question: ReactNode; options: ReactNode[] }>
   questionNumber: number
   selectedAnswer: string
   timeframe: 'am' | 'pm'
@@ -19,7 +20,7 @@ export const QuestionAccordionContainer = memo(
     const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
 
     const formattedSelectedAnswer = useMemo(
-      () => selectedAnswer ? selectedAnswer.split(',').map((str) => Number(str)) : [],
+      () => (selectedAnswer ? selectedAnswer.split(',').map((str) => Number(str)) : []),
       [selectedAnswer]
     )
 

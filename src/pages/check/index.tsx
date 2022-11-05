@@ -5,7 +5,7 @@ import { questions } from 'assets/questions'
 import { Container, PageHeading } from 'components/atoms'
 import { QuestionAccordionContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
-import { getRangeArray } from 'utils/getRange'
+import { getRangeArray } from 'utils'
 
 const years = [2020, 2019, 2018, 2017, 2016, 2015]
 

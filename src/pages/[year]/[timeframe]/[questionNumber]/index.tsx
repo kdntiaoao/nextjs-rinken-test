@@ -13,7 +13,7 @@ import { ImageDialog, ResultIcon } from 'components/molecules'
 import { CheckBoxListContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 import { useAnswer, useSelectedAnswer, useStartEndNumber } from 'hooks'
-import { timeframeToJapanese } from 'utils/timeToJapanese'
+import { timeframeToJapanese } from 'utils'
 
 type PageProps = {
   year: string

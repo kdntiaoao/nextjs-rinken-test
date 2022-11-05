@@ -11,8 +11,7 @@ import { LoadingScreen } from 'components/molecules'
 import { QuestionAccordionContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 import { useStartEndNumber } from 'hooks'
-import { getRangeArray } from 'utils/getRange'
-import { timeframeToJapanese } from 'utils/timeToJapanese'
+import { getRangeArray, timeframeToJapanese } from 'utils'
 
 type PageProps = {
   year: string

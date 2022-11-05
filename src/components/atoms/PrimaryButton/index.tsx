@@ -15,6 +15,7 @@ export const PrimaryButton = memo(
     color = 'primary',
     component: CustomTag = 'div',
     disabled,
+    type,
     startIcon,
     endIcon,
     onClick,
@@ -23,7 +24,7 @@ export const PrimaryButton = memo(
   }: Props) => {
     return (
       <CustomTag
-        type={CustomTag === 'button' ? 'button' : undefined}
+        type={type || CustomTag === 'button' ? 'button' : undefined}
         className={`flex items-center justify-center gap-2 rounded-full text-white py-3 px-3 sm:px-8 relative text-center cursor-pointer w-full ${
           color === 'primary' && 'bg-primary-500 hover:bg-primary-600'
         } ${color === 'secondary' && 'bg-secondary-500 hover:bg-secondary-600'}`}

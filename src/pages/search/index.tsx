@@ -2,12 +2,10 @@ import { NextPage } from 'next'
 import { ChangeEvent, Fragment, memo, useCallback, useState } from 'react'
 
 import { questions } from 'assets/questions'
-import { Container, MarkerHeading, PageHeading } from 'components/atoms'
-import { SearchField } from 'components/molecules'
-import { QuestionAccordionContainer } from 'components/organisms'
+import { Container, PageHeading } from 'components/atoms'
+import { QuestionAccordionContainer, SearchFieldContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
-import { getRangeArray } from 'utils/getRange'
-import { timeframeToJapanese } from 'utils/timeToJapanese'
+import { highlightWord, timeframeToJapanese } from 'utils'
 
 type ResultQuestions = Record<
   keyof typeof questions,
@@ -56,7 +54,7 @@ const SearchPage: NextPage = memo(() => {
           <PageHeading component="h1">検索</PageHeading>
 
           <div className="mt-12">
-            <SearchField word={word} handleChange={handleChange} handleSearch={handleSearch} />
+            <SearchFieldContainer word={word} handleChange={handleChange} onSearch={handleSearch} />
 
             {resultQuestions && (
               <div className="mt-12 flex flex-col gap-4">
@@ -90,7 +88,12 @@ const SearchPage: NextPage = memo(() => {
                               <QuestionAccordionContainer
                                 key={`${y}-${num}`}
                                 answer={answer.map((answer) => answer - 1)}
-                                question={{ num, question, img, options }}
+                                question={{
+                                  num,
+                                  question: highlightWord(question, word),
+                                  img,
+                                  options: options.map((option) => highlightWord(option, word)),
+                                }}
                                 questionNumber={num}
                                 timeframe={y.slice(-2) as 'am' | 'pm'}
                                 year={y.slice(0, 4)}
