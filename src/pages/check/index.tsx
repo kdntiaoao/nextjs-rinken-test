@@ -1,49 +1,58 @@
 import { NextPage } from 'next'
-import { memo } from 'react'
+import { memo, MouseEvent, useCallback, useEffect, useState } from 'react'
+
+import { motion, AnimatePresence } from 'framer-motion'
 
 import { questions } from 'assets/questions'
 import { Container, PageHeading } from 'components/atoms'
 import { QuestionAccordionContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
-import { getRangeArray } from 'utils'
-
-const years = [2020, 2019, 2018, 2017, 2016, 2015]
-
-const chevronRight = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className="w-5 h-5"
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-  </svg>
-)
+import { useCheck } from 'hooks'
 
 // eslint-disable-next-line react/display-name
 const CheckPage: NextPage = memo(() => {
+  const { questionsToCheck, removeQuestion } = useCheck()
+
+  const handleDeleteQuestion = useCallback(
+    (event: MouseEvent, year: string, timeframe: 'am' | 'pm', questionNumber: number) => {
+      event.stopPropagation()
+      removeQuestion(year, timeframe, questionNumber)
+    },
+    [removeQuestion]
+  )
+
   return (
     <DefaultLayout title="見直し | 臨検テスト">
       <Container>
         <div className="py-10">
           <PageHeading component="h1">見直し</PageHeading>
 
-          <div className="mt-12 flex flex-col gap-4">
-            {getRangeArray(21, 30).map((number) => {
-              return (
-                <QuestionAccordionContainer
-                  key={number}
-                  answer={questions['2015am'].answerData[number - 1].map((answer) => answer - 1)}
-                  question={questions['2015am'].questionData[number - 1]}
-                  questionNumber={number}
-                  timeframe={'am'}
-                  year={'2015'}
-                  selectedAnswer={'1'}
-                />
-              )
-            })}
+          <div className="mt-12">
+            <AnimatePresence>
+              {questionsToCheck &&
+                [...questionsToCheck].reverse().map(({ year, timeframe, questionNumber, selectedAnswer }) => (
+                  <motion.div
+                    key={`${year}-${timeframe}-${questionNumber}`}
+                    animate={{ opacity: 1, marginTop: 12 }}
+                    exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <QuestionAccordionContainer
+                      answer={questions[(year + timeframe) as keyof typeof questions].answerData[
+                        questionNumber - 1
+                      ].map((answer) => answer - 1)}
+                      question={
+                        questions[(year + timeframe) as keyof typeof questions].questionData[questionNumber - 1]
+                      }
+                      questionNumber={questionNumber}
+                      timeframe={timeframe}
+                      year={year}
+                      selectedAnswer={selectedAnswer}
+                      handleDeleteQuestion={handleDeleteQuestion}
+                    />
+                  </motion.div>
+                ))}
+            </AnimatePresence>
           </div>
         </div>
       </Container>

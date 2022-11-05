@@ -25,7 +25,7 @@ export const PrimaryButton = memo(
     return (
       <CustomTag
         type={type || CustomTag === 'button' ? 'button' : undefined}
-        className={`flex items-center justify-center gap-2 rounded-full text-white py-3 px-3 sm:px-8 relative text-center cursor-pointer w-full ${
+        className={`flex items-center justify-center gap-2 rounded-full text-white py-3 px-3 sm:px-8 relative text-center cursor-pointer w-full select-none ${
           color === 'primary' && 'bg-primary-500 hover:bg-primary-600'
         } ${color === 'secondary' && 'bg-secondary-500 hover:bg-secondary-600'}`}
         disabled={disabled}

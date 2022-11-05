@@ -56,7 +56,7 @@ export const Header = memo(({ menus, openMenu, handleToggleMenu, preventPropagat
 
         <button
           type="button"
-          className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-primary-400/5 active:bg-primary-400/10 select-none"
+          className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-primary-400/10 active:bg-primary-400/20 select-none"
           onClick={handleToggleMenu}
           aria-label="メニューを開く"
         >
@@ -81,7 +81,7 @@ export const Header = memo(({ menus, openMenu, handleToggleMenu, preventPropagat
                 <div className="p-4">
                   <button
                     type="button"
-                    className="w-12 h-12 ml-auto flex items-center justify-center rounded-full hover:bg-primary-400/5 active:bg-primary-400/10 select-none"
+                    className="w-12 h-12 ml-auto flex items-center justify-center rounded-full hover:bg-primary-400/10 active:bg-primary-400/20 select-none"
                     onClick={handleToggleMenu}
                     aria-label="メニューを閉じる"
                   >
@@ -93,7 +93,7 @@ export const Header = memo(({ menus, openMenu, handleToggleMenu, preventPropagat
                     {menus.map(({ title, url }, index) => (
                       <li key={title} className={`${index !== 0 && 'border-t'} border-t-primary-100 select-none`}>
                         <Link href={url} legacyBehavior>
-                          <a className="p-4 flex items-center gap-4 hover:bg-primary-400/5 active:bg-primary-400/10">
+                          <a className="p-4 flex items-center gap-4 hover:bg-primary-400/10 active:bg-primary-400/20">
                             <span className="flex-1">{title}</span>
                             {chevronRight}
                           </a>
