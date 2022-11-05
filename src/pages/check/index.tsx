@@ -28,31 +28,35 @@ const CheckPage: NextPage = memo(() => {
           <PageHeading component="h1">見直し</PageHeading>
 
           <div className="mt-12">
-            <AnimatePresence>
-              {questionsToCheck &&
-                [...questionsToCheck].reverse().map(({ year, timeframe, questionNumber, selectedAnswer }) => (
-                  <motion.div
-                    key={`${year}-${timeframe}-${questionNumber}`}
-                    animate={{ opacity: 1, marginTop: 12 }}
-                    exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <QuestionAccordionContainer
-                      answer={questions[(year + timeframe) as keyof typeof questions].answerData[
-                        questionNumber - 1
-                      ].map((answer) => answer - 1)}
-                      question={
-                        questions[(year + timeframe) as keyof typeof questions].questionData[questionNumber - 1]
-                      }
-                      questionNumber={questionNumber}
-                      timeframe={timeframe}
-                      year={year}
-                      selectedAnswer={selectedAnswer}
-                      handleDeleteQuestion={handleDeleteQuestion}
-                    />
-                  </motion.div>
-                ))}
-            </AnimatePresence>
+            {questionsToCheck && questionsToCheck.length > 0 ? (
+              <AnimatePresence>
+                {questionsToCheck &&
+                  [...questionsToCheck].reverse().map(({ year, timeframe, questionNumber, selectedAnswer }) => (
+                    <motion.div
+                      key={`${year}-${timeframe}-${questionNumber}`}
+                      animate={{ opacity: 1, marginTop: 12 }}
+                      exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <QuestionAccordionContainer
+                        answer={questions[(year + timeframe) as keyof typeof questions].answerData[
+                          questionNumber - 1
+                        ].map((answer) => answer - 1)}
+                        question={
+                          questions[(year + timeframe) as keyof typeof questions].questionData[questionNumber - 1]
+                        }
+                        questionNumber={questionNumber}
+                        timeframe={timeframe}
+                        year={year}
+                        selectedAnswer={selectedAnswer}
+                        handleDeleteQuestion={handleDeleteQuestion}
+                      />
+                    </motion.div>
+                  ))}
+              </AnimatePresence>
+            ) : (
+              <p>見直す問題はありません。</p>
+            )}
           </div>
         </div>
       </Container>

@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  a,
+  button {
+    @apply cursor-default;
+  }
+}
+
 @layer components {
   .fade-in-enter {
     @apply animate-fade-in;

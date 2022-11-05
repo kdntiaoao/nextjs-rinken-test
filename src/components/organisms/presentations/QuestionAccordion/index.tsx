@@ -7,6 +7,7 @@ import { SmallHeading } from 'components/atoms'
 import { ImageDialog } from 'components/molecules'
 import { Question } from 'types/question'
 import { Overwrite } from 'types/utils'
+import { timeframeToJapanese } from 'utils'
 
 type Props = {
   answer: number[]
@@ -82,13 +83,13 @@ export const QuestionAccordion = memo(
   }: Props) => {
     return (
       <div
-        className={`border border-primary-400 text-primary-900 rounded ${
-          openAccordion ? 'cursor-auto' : 'cursor-pointer'
-        }`}
+        className="border border-primary-400 text-primary-900 rounded"
         onClick={openAccordion ? undefined : handleOpenAccordion}
       >
         <div className="px-3 pt-4 min-h-[48px]">
-          <SmallHeading>問題{questionNumber}</SmallHeading>
+          <SmallHeading>
+            {handleDeleteQuestion && `第${Number(year) - 1953}回${timeframeToJapanese(timeframe)} `}問題{questionNumber}
+          </SmallHeading>
           <div className="mt-4">
             <div className="flex gap-2 justify-between items-start">
               <p className={`flex-1 ${openAccordion ? '' : 'truncate'}`}>{question.question}</p>
@@ -122,7 +123,7 @@ export const QuestionAccordion = memo(
                 <button
                   type="button"
                   onClick={handleOpenDialog}
-                  className="block mt-6 mx-auto w-fit relative text-black/40 hover:text-black "
+                  className="block mt-6 mx-auto w-fit relative text-black/40 hover:text-black cursor-zoom-in"
                 >
                   <Image
                     priority
@@ -137,7 +138,7 @@ export const QuestionAccordion = memo(
               )}
               {question.options.map((option, index) => (
                 <div
-                  key={option?.toString()}
+                  key={index.toString()}
                   className={`flex items-center gap-2 px-3 py-2 min-h-[50px] ${
                     answer.indexOf(index) >= 0 && 'bg-red-400/20'
                   }`}
