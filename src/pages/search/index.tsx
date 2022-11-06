@@ -20,7 +20,7 @@ const SearchPage: NextPage = memo(() => {
   }, [])
 
   const handleSearch = useCallback(() => {
-    const resultQuestions: ResultQuestions = {
+    const results: ResultQuestions = {
       '2015am': [],
       '2015pm': [],
       '2016am': [],
@@ -39,9 +39,9 @@ const SearchPage: NextPage = memo(() => {
       const matchQuestions = questions[questionKey].questionData
         .filter((q) => q.question.indexOf(word) >= 0 || q.options.join(' ').indexOf(word) >= 0)
         .map((q) => ({ ...q, answer: questions[questionKey].answerData[q.num - 1] }))
-      resultQuestions[questionKey] = matchQuestions
+      results[questionKey] = matchQuestions
     }
-    setResultQuestions(resultQuestions)
+    setResultQuestions(results)
   }, [word])
 
   return (

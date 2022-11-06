@@ -41,11 +41,10 @@ export const PrimaryButton = memo(
           : 'hover:bg-secondary-400/10 active:bg-secondary-400/20 text-secondary-900'
       }
     }, [color, variant])
-    console.log(bgcolor)
 
     return (
       <CustomTag
-        type={type || CustomTag === 'button' ? 'button' : undefined}
+        type={type || (CustomTag === 'button' ? 'button' : undefined)}
         className={`flex items-center justify-center gap-2 py-3 px-3 sm:px-8 relative text-center w-full select-none overflow-hidden ${
           shape === 'square' ? '' : shape
         } ${bgcolor}`}
