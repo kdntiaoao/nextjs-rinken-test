@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  body {
+    @apply overflow-y-scroll;
+  }
+
   a,
   button {
     @apply cursor-default;

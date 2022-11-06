@@ -169,7 +169,7 @@ export const QuestionAccordion = memo(
         )}
 
         <button
-          className="flex items-center justify-center w-full py-2 hover:bg-primary-400/10 active:bg-primary-400/20"
+          className="flex items-center justify-center w-full py-2"
           onClick={openAccordion ? handleCloseAccordion : handleOpenAccordion}
           aria-label={openAccordion ? 'アコーディオンを閉じる' : 'アコーディオンを開く'}
         >

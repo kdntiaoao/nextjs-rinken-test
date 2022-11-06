@@ -32,7 +32,7 @@ export const SearchField = memo(({ word, handleChange, onSubmit }: Props) => {
       <input
         type="search"
         value={word}
-        className="border-b-2 border-b-primary-900 px-2 sm:px-4 py-2 flex-1 outline-none"
+        className="border-b-2 border-b-primary-900 px-2 sm:px-4 py-2 flex-1 outline-none rounded-none"
         onChange={handleChange}
       />
       <div>
