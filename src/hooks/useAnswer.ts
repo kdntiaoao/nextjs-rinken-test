@@ -41,7 +41,16 @@ export const useAnswer = (answerIndex: number[]) => {
     [answerIndex]
   )
 
+  const resetHistory = useCallback(
+    () =>
+      setHistory({
+        selectedAnswers: [],
+        correctCount: 0,
+      }),
+    []
+  )
+
   const resetThinking = useCallback(() => setThinking(true), [])
 
-  return { correct, history, thinking, checkAnswer, resetThinking }
+  return { correct, history, thinking, checkAnswer, resetHistory, resetThinking }
 }

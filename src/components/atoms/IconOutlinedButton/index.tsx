@@ -1,13 +1,13 @@
 import { memo, ReactNode } from 'react'
 
 type Props = {
-  component?: 'div' | 'button'
+  component?: 'span' | 'button'
   icon: ReactNode
   children: ReactNode
 }
 
 // eslint-disable-next-line react/display-name
-export const IconOutlinedButton = memo(({ component: CustomTag = 'div', icon, children }: Props) => {
+export const IconOutlinedButton = memo(({ component: CustomTag = 'span', icon, children }: Props) => {
   return (
     <CustomTag
       type={CustomTag === 'button' ? 'button' : undefined}

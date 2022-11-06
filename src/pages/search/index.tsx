@@ -95,23 +95,27 @@ const SearchPage: NextPage = memo(() => {
                               第{Number(y.slice(0, 4)) - 1953}回 {timeframeToJapanese(y.slice(-2) as 'am' | 'pm')}
                             </p>
                           </div>
-                          <div className=" flex flex-col gap-4">
-                            {resultQuestions[y].map(({ num, question, img, options, answer }) => {
+                          <div className="border border-primary-400 rounded overflow-hidden">
+                            {resultQuestions[y].map(({ num, question, img, options, answer }, index) => {
                               return (
-                                <QuestionAccordionContainer
+                                <div
                                   key={`${y}-${num}`}
-                                  answer={answer.map((answer) => answer - 1)}
-                                  question={{
-                                    num,
-                                    question: highlightWord(question, word),
-                                    img,
-                                    options: options.map((option) => highlightWord(option, word)),
-                                  }}
-                                  questionNumber={num}
-                                  timeframe={y.slice(-2) as 'am' | 'pm'}
-                                  year={y.slice(0, 4)}
-                                  selectedAnswer={''}
-                                />
+                                  className={`${index !== 0 && 'border-t border-t-primary-400'}`}
+                                >
+                                  <QuestionAccordionContainer
+                                    answer={answer.map((answer) => answer - 1)}
+                                    question={{
+                                      num,
+                                      question: highlightWord(question, word),
+                                      img,
+                                      options: options.map((option) => highlightWord(option, word)),
+                                    }}
+                                    questionNumber={num}
+                                    timeframe={y.slice(-2) as 'am' | 'pm'}
+                                    year={y.slice(0, 4)}
+                                    selectedAnswer={''}
+                                  />
+                                </div>
                               )
                             })}
                           </div>
@@ -120,7 +124,11 @@ const SearchPage: NextPage = memo(() => {
                     </Fragment>
                   ))
                 ) : (
-                  <p>検索結果は0件です。違うキーワードで検索してください。</p>
+                  <p>
+                    検索結果は0件です。
+                    <br />
+                    違うキーワードで検索してください。
+                  </p>
                 )}
               </div>
             )}
