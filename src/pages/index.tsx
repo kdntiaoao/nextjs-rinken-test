@@ -2,7 +2,7 @@ import { NextPage } from 'next'
 import Link from 'next/link'
 import { memo } from 'react'
 
-import { Container, PageHeading, MarkerHeading, IconOutlinedButton } from 'components/atoms'
+import { Container, PageHeading, MarkerHeading, PrimaryButton } from 'components/atoms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 
 const years = [2020, 2019, 2018, 2017, 2016, 2015]
@@ -37,18 +37,20 @@ const HomePage: NextPage = memo(() => {
                     <span className="text-sm ml-1">年度</span>
                   </MarkerHeading>
 
-                  <ul className="mt-4 grid gap-4">
+                  <ul className="mt-4 border border-primary-400 rounded overflow-hidden">
                     <li className="break-keep">
                       <Link href={`/${year}/am`}>
-                        <IconOutlinedButton icon={chevronRight}>第{year - 1953}回 午前</IconOutlinedButton>
+                        <PrimaryButton shape="square" startIcon={chevronRight}>
+                          第{year - 1953}回 午前
+                        </PrimaryButton>
                       </Link>
                     </li>
-                    <li className="break-keep">
+                    <li className="break-keep border-t border-t-primary-400">
                       <Link href={`/${year}/pm`}>
-                        <IconOutlinedButton icon={chevronRight}>
+                        <PrimaryButton shape="square" startIcon={chevronRight}>
                           第{year - 1953}回<wbr />
                           午後
-                        </IconOutlinedButton>
+                        </PrimaryButton>
                       </Link>
                     </li>
                   </ul>

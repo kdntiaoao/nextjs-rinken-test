@@ -28,7 +28,7 @@ const NotFoundPage: NextPage = memo(() => {
           <div className="mt-20">
             <div className="max-w-full md:w-80 mx-auto">
               <Link href="/">
-                <PrimaryButton endIcon={chevronRight}>
+                <PrimaryButton shape="rounded-full" variant="contained" endIcon={chevronRight}>
                   トップページ
                 </PrimaryButton>
               </Link>

@@ -36,7 +36,7 @@ export const SearchField = memo(({ word, handleChange, onSubmit }: Props) => {
         onChange={handleChange}
       />
       <div>
-        <PrimaryButton type="submit" component="button" aria-label="検索">
+        <PrimaryButton component="button" shape="rounded-full" type="submit" variant="contained" aria-label="検索">
           {magnifyingGlass}
           <span className="hidden sm:inline-block">検索</span>
         </PrimaryButton>

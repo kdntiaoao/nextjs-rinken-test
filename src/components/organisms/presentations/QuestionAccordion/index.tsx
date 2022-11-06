@@ -82,10 +82,7 @@ export const QuestionAccordion = memo(
     handleDeleteQuestion,
   }: Props) => {
     return (
-      <div
-        className="border border-primary-400 text-primary-900 rounded"
-        onClick={openAccordion ? undefined : handleOpenAccordion}
-      >
+      <div className="text-primary-900 rounded" onClick={openAccordion ? undefined : handleOpenAccordion}>
         <div className="px-3 pt-4 min-h-[48px]">
           <SmallHeading>
             {handleDeleteQuestion && `第${Number(year) - 1953}回${timeframeToJapanese(timeframe)} `}問題{questionNumber}
@@ -120,21 +117,23 @@ export const QuestionAccordion = memo(
               transition={{ duration: 0.6, ease: [0.04, 0.62, 0.23, 0.98] }}
             >
               {question.img && (
-                <button
-                  type="button"
-                  onClick={handleOpenDialog}
-                  className="block mt-6 mx-auto w-fit relative text-black/40 hover:text-black cursor-zoom-in"
-                >
-                  <Image
-                    priority
-                    width={200}
-                    height={200}
-                    src={`/images/${year}${timeframe}/${question.img}.jpg`}
-                    alt={`問題${questionNumber}の画像`}
-                    className="w-auto"
-                  />
-                  <span className="absolute bottom-4 right-4">{magnifyingGlassPlus}</span>
-                </button>
+                <div className='mb-3'>
+                  <button
+                    type="button"
+                    onClick={handleOpenDialog}
+                    className="block mt-6 mx-auto w-fit relative text-black/40 hover:text-black cursor-zoom-in"
+                    aria-label="画像を拡大する"
+                  >
+                    <Image
+                      priority
+                      width={200}
+                      height={200}
+                      src={`/images/${year}${timeframe}/${question.img}.jpg`}
+                      alt={`問題${questionNumber}の画像`}
+                    />
+                    <span className="absolute bottom-4 right-4">{magnifyingGlassPlus}</span>
+                  </button>
+                </div>
               )}
               {question.options.map((option, index) => (
                 <div
@@ -170,7 +169,7 @@ export const QuestionAccordion = memo(
         )}
 
         <button
-          className="flex items-center justify-center w-full py-4"
+          className="flex items-center justify-center w-full py-2 hover:bg-primary-400/10 active:bg-primary-400/20"
           onClick={openAccordion ? handleCloseAccordion : handleOpenAccordion}
           aria-label={openAccordion ? 'アコーディオンを閉じる' : 'アコーディオンを開く'}
         >

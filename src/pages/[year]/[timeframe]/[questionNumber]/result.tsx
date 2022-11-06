@@ -10,7 +10,7 @@ import { CircleProgress, Container, LinkButton, PageHeading } from 'components/a
 import { LoadingScreen } from 'components/molecules'
 import { QuestionAccordionContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
-import { useStartEndNumber } from 'hooks'
+import { useFirstLastNumber } from 'hooks'
 import { getRangeArray, timeframeToJapanese } from 'utils'
 
 type PageProps = {
@@ -31,7 +31,7 @@ type PathsType = {
 // eslint-disable-next-line react/display-name
 const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber, questionData }: PageProps) => {
   const router = useRouter()
-  const { start, end } = useStartEndNumber(questionNumber)
+  const { first, last } = useFirstLastNumber(questionNumber)
   const selectedAnswers = router.query.selectedAnswers as string[] | undefined
   const correctCount = router.query.correctCount ? Number(router.query.correctCount) : 0
   const percent = selectedAnswers && correctCount ? correctCount / selectedAnswers.length : 0
@@ -82,18 +82,19 @@ const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber,
             </div>
           </div>
 
-          <div className="mt-10 flex flex-col gap-4">
-            {getRangeArray(start, end).map((number, index) => {
+          <div className="mt-10 border border-primary-400 rounded overflow-hidden">
+            {getRangeArray(first, last).map((number, index) => {
               return (
-                <QuestionAccordionContainer
-                  key={number}
-                  answer={questionData.answerData[number - 1].map((answer) => answer - 1)}
-                  question={questionData.questionData[number - 1]}
-                  questionNumber={number}
-                  timeframe={timeframe}
-                  year={year}
-                  selectedAnswer={selectedAnswers[index]}
-                />
+                <div key={number} className={`${index !== 0 && 'border-t border-t-primary-400'}`}>
+                  <QuestionAccordionContainer
+                    answer={questionData.answerData[number - 1].map((answer) => answer - 1)}
+                    question={questionData.questionData[number - 1]}
+                    questionNumber={number}
+                    timeframe={timeframe}
+                    year={year}
+                    selectedAnswer={selectedAnswers[index]}
+                  />
+                </div>
               )
             })}
           </div>

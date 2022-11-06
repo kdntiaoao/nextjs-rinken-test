@@ -12,7 +12,7 @@ import { Container, LinkButton, PrimaryButton, SmallHeading } from 'components/a
 import { ImageDialog, ResultIcon } from 'components/molecules'
 import { CheckBoxListContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
-import { useAnswer, useSelectedAnswer, useStartEndNumber } from 'hooks'
+import { useAnswer, useSelectedAnswer, useFirstLastNumber } from 'hooks'
 import { timeframeToJapanese } from 'utils'
 
 type PageProps = {
@@ -52,8 +52,8 @@ const magnifyingGlassPlus = (
 // eslint-disable-next-line react/display-name
 const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber, questionData }: PageProps) => {
   const router = useRouter()
-  const { start, end } = useStartEndNumber(questionNumber)
-  const [currentNumber, setCurrentNumber] = useState<number>(start) // 現在解答中の問題番号
+  const { first, last } = useFirstLastNumber(questionNumber)
+  const [currentNumber, setCurrentNumber] = useState<number>(first) // 現在解答中の問題番号
   const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
   const [disabled, setDisabled] = useState<boolean>(false)
   const currentQuestion = useMemo(() => questionData.questionData[currentNumber - 1], [currentNumber, questionData])
@@ -61,7 +61,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
     () => questionData.answerData[currentNumber - 1].map((answer) => answer - 1),
     [currentNumber, questionData.answerData]
   )
-  const { correct, history, thinking, checkAnswer, resetThinking } = useAnswer(answerIndex)
+  const { correct, history, thinking, checkAnswer, resetHistory, resetThinking } = useAnswer(answerIndex)
   const { selectedAnswer, changeSelect, resetSelect } = useSelectedAnswer(answerIndex.length, thinking)
 
   const handleNextQuestion = useCallback(() => {
@@ -81,7 +81,21 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
   const handleCloseDialog = useCallback(() => setOpenDialog(false), [])
 
   useEffect(() => {
-    if (currentNumber > end || end - start + 1 === history.selectedAnswers.length) {
+    if (currentNumber === first) {
+      resetHistory()
+      resetThinking()
+      resetSelect()
+    }
+  }, [currentNumber, first, resetHistory, resetSelect, resetThinking])
+
+  useEffect(() => {
+    if (thinking && currentNumber - first !== history.selectedAnswers.length) {
+      setCurrentNumber(first)
+    }
+  }, [currentNumber, first, history.selectedAnswers.length, thinking])
+
+  useEffect(() => {
+    if (currentNumber > last || last - first + 1 === history.selectedAnswers.length) {
       router.push(
         {
           pathname: `/${year}/${timeframe}/${questionNumber}/result`,
@@ -90,7 +104,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
         `/${year}/${timeframe}/${questionNumber}/result`
       )
     }
-  }, [currentNumber, end, history, history.selectedAnswers, questionNumber, router, start, timeframe, year])
+  }, [currentNumber, last, history, history.selectedAnswers, questionNumber, router, first, timeframe, year])
 
   return (
     <DefaultLayout title={`第${Number(year) - 1953}回${timeframeToJapanese(timeframe)}${questionNumber} | 臨検テスト`}>
@@ -176,6 +190,8 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                       <PrimaryButton
                         component="button"
                         disabled={disabled}
+                        shape="rounded-full"
+                        variant="contained"
                         onClick={() => checkAnswer(year, timeframe, currentNumber, selectedAnswer)}
                       >
                         解答する
@@ -185,6 +201,8 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                         color="secondary"
                         component="button"
                         disabled={disabled}
+                        shape="rounded-full"
+                        variant="contained"
                         onClick={handleNextQuestion}
                       >
                         次の問題へ
