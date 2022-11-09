@@ -20,7 +20,7 @@ export const DefaultLayout = memo(({ title = 'お問合せフォーム', childre
       <div className="min-h-screen flex flex-col">
         <HeaderContainer />
         <main className="flex-1 relative">{children}</main>
-        <footer className="py-4 text-center">
+        <footer className="py-4 text-center select-none">
           <small className="text-gray-400">&copy;臨検テスト</small>
         </footer>
       </div>

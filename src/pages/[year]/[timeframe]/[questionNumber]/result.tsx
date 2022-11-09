@@ -66,14 +66,14 @@ const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber,
             <div className="w-80 h-80 max-w-full mx-auto">
               <CircleProgress percent={percent}>
                 <div className="text-center">
-                  <p className="text-primary-900 font-bold">
-                    <span className="text-3xl mr-2">
+                  <p className="text-primary-900 font-bold text-3xl">
+                    <span className="text-6xl mr-2">
                       <CountUp start={0} end={Math.round(percent * 100)} duration={1} />
                     </span>
                     %
                   </p>
                   <p className="mt-4">
-                    <span className="text-sm text-gray-400">
+                    <span className="text-gray-400">
                       {correctCount}問正解 / {selectedAnswers.length}問中
                     </span>
                   </p>
