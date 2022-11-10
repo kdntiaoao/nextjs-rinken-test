@@ -4,7 +4,9 @@ import { PrimaryButton } from 'components/atoms'
 
 type Props = {
   word: string
+  // eslint-disable-next-line no-unused-vars
   handleChange: (event: ChangeEvent<HTMLInputElement>) => void
+  // eslint-disable-next-line no-unused-vars
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
 }
 

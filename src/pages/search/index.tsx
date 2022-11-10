@@ -113,7 +113,7 @@ const SearchPage: NextPage = memo(() => {
                                     questionNumber={num}
                                     timeframe={y.slice(-2) as 'am' | 'pm'}
                                     year={y.slice(0, 4)}
-                                    selectedAnswer={''}
+                                    selectedAnswer={[]}
                                   />
                                 </div>
                               )

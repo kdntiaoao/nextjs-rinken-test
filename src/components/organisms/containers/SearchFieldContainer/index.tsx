@@ -4,6 +4,7 @@ import { SearchField } from 'components/organisms/presentations/SearchField'
 
 type Props = {
   word: string
+  // eslint-disable-next-line no-unused-vars
   handleChange: (event: ChangeEvent<HTMLInputElement>) => void
   onSearch: () => void
 }

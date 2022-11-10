@@ -7,6 +7,7 @@ type Props = {
   menus: { title: string; url: string }[]
   openMenu: boolean
   handleToggleMenu: () => void
+  // eslint-disable-next-line no-unused-vars
   preventPropagation: (event: MouseEvent<HTMLElement>) => void
 }
 

@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import { memo, ReactNode } from 'react'
 
-import { Container } from 'components/atoms'
 import { HeaderContainer } from 'components/organisms'
 
 type Props = {

@@ -1,4 +1,4 @@
-import { memo, MouseEvent, ReactNode, useCallback, useMemo, useState } from 'react'
+import { memo, MouseEvent, ReactNode, useCallback, useState } from 'react'
 
 import { QuestionAccordion } from 'components/organisms/presentations/QuestionAccordion'
 import { Question } from 'types/question'
@@ -8,13 +8,17 @@ type Props = {
   answer: number[]
   question: Overwrite<Question, { question: ReactNode; options: ReactNode[] }>
   questionNumber: number
-  selectedAnswer: string
+  selectedAnswer: number[]
   timeframe: 'am' | 'pm'
   year: string
   handleDeleteQuestion?: (
+    // eslint-disable-next-line no-unused-vars
     event: MouseEvent<HTMLButtonElement>,
+    // eslint-disable-next-line no-unused-vars
     year: string,
+    // eslint-disable-next-line no-unused-vars
     timeframe: 'am' | 'pm',
+    // eslint-disable-next-line no-unused-vars
     questionNumber: number
   ) => void
 }
@@ -25,14 +29,9 @@ export const QuestionAccordionContainer = memo(
     const [openAccordion, setOpenAccordion] = useState<boolean>(false)
     const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
 
-    const formattedSelectedAnswer = useMemo(
-      () => (selectedAnswer ? selectedAnswer.split(',').map((str) => Number(str)) : []),
-      [selectedAnswer]
-    )
+    const handleOpenAccordion = useCallback(() => setOpenAccordion(true), [])
 
-    const handleOpenAccordion = useCallback(() => setOpenAccordion((prev) => true), [])
-
-    const handleCloseAccordion = useCallback(() => setOpenAccordion((prev) => false), [])
+    const handleCloseAccordion = useCallback(() => setOpenAccordion(false), [])
 
     const handleOpenDialog = useCallback(() => setOpenDialog(true), [])
 
@@ -45,7 +44,7 @@ export const QuestionAccordionContainer = memo(
         openDialog={openDialog}
         question={question}
         questionNumber={questionNumber}
-        selectedAnswer={formattedSelectedAnswer}
+        selectedAnswer={selectedAnswer}
         timeframe={timeframe}
         year={year}
         handleOpenAccordion={handleOpenAccordion}
