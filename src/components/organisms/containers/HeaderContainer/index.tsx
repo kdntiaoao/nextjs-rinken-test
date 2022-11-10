@@ -1,4 +1,4 @@
-import { memo, MouseEvent, MouseEventHandler, useCallback, useState } from 'react'
+import { memo, MouseEvent, useCallback, useState } from 'react'
 
 import { Header } from 'components/organisms/presentations/Header'
 

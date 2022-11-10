@@ -23,9 +23,13 @@ type Props = {
   handleOpenDialog: () => void
   handleCloseDialog: () => void
   handleDeleteQuestion?: (
+    // eslint-disable-next-line no-unused-vars
     event: MouseEvent<HTMLButtonElement>,
+    // eslint-disable-next-line no-unused-vars
     year: string,
+    // eslint-disable-next-line no-unused-vars
     timeframe: 'am' | 'pm',
+    // eslint-disable-next-line no-unused-vars
     questionNumber: number
   ) => void
 }
@@ -83,7 +87,7 @@ export const QuestionAccordion = memo(
   }: Props) => {
     return (
       <div className="text-primary-900 rounded" onClick={openAccordion ? undefined : handleOpenAccordion}>
-        <div className="px-3 pt-4 min-h-[48px]">
+        <div className="px-3 py-4 min-h-[48px] bg-amber-50/30">
           <SmallHeading>
             {handleDeleteQuestion && `第${Number(year) - 1953}回${timeframeToJapanese(timeframe)} `}問題{questionNumber}
           </SmallHeading>
@@ -111,13 +115,13 @@ export const QuestionAccordion = memo(
               className="overflow-hidden"
               exit="collapsed"
               variants={{
-                open: { height: 'auto', marginTop: 12 },
-                collapsed: { height: 0, marginTop: 0 },
+                open: { height: 'auto' },
+                collapsed: { height: 0 },
               }}
               transition={{ duration: 0.6, ease: [0.04, 0.62, 0.23, 0.98] }}
             >
               {question.img && (
-                <div className='mb-3'>
+                <div className="mb-3">
                   <button
                     type="button"
                     onClick={handleOpenDialog}
@@ -130,6 +134,7 @@ export const QuestionAccordion = memo(
                       height={200}
                       src={`/images/${year}${timeframe}/${question.img}.jpg`}
                       alt={`問題${questionNumber}の画像`}
+                      className="w-auto"
                     />
                     <span className="absolute bottom-4 right-4">{magnifyingGlassPlus}</span>
                   </button>
@@ -169,7 +174,7 @@ export const QuestionAccordion = memo(
         )}
 
         <button
-          className="flex items-center justify-center w-full py-2"
+          className="flex items-center justify-center w-full py-2 bg-amber-50/30"
           onClick={openAccordion ? handleCloseAccordion : handleOpenAccordion}
           aria-label={openAccordion ? 'アコーディオンを閉じる' : 'アコーディオンを開く'}
         >

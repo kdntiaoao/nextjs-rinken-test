@@ -7,6 +7,7 @@ type Props = {
   options: string[]
   selectedAnswer: number[]
   thinking: boolean
+  // eslint-disable-next-line no-unused-vars
   handleChange: (selectedIndex: number) => void
 }
 

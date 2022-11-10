@@ -5,14 +5,18 @@ import { useRouter } from 'next/router'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { motion, AnimatePresence } from 'framer-motion'
+import { useAtom } from 'jotai'
+import { useUpdateAtom } from 'jotai/utils'
 import * as Scroll from 'react-scroll'
 
 import { questions } from 'assets/questions'
+import { answeringAtom } from 'atoms/answeringAtom'
+import { incorrectsAtom } from 'atoms/incorrectsAtom'
 import { Container, LinkButton, PrimaryButton, SmallHeading } from 'components/atoms'
-import { ImageDialog, ResultIcon } from 'components/molecules'
+import { ImageDialog, LoadingScreen, ResultIcon } from 'components/molecules'
 import { CheckBoxListContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
-import { useAnswer, useSelectedAnswer, useFirstLastNumber } from 'hooks'
+import { useSelectedAnswer } from 'hooks'
 import { timeframeToJapanese } from 'utils'
 
 type PageProps = {
@@ -51,60 +55,98 @@ const magnifyingGlassPlus = (
 
 // eslint-disable-next-line react/display-name
 const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber, questionData }: PageProps) => {
+  const [answering, setAnswering] = useAtom(answeringAtom)
+  const setIncorrects = useUpdateAtom(incorrectsAtom)
   const router = useRouter()
-  const { first, last } = useFirstLastNumber(questionNumber)
-  const [currentNumber, setCurrentNumber] = useState<number>(first) // 現在解答中の問題番号
-  const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
+  const [correct, setCorrect] = useState<boolean>(true)
   const [disabled, setDisabled] = useState<boolean>(false)
-  const currentQuestion = useMemo(() => questionData.questionData[currentNumber - 1], [currentNumber, questionData])
-  const answerIndex = useMemo(
-    () => questionData.answerData[currentNumber - 1].map((answer) => answer - 1),
-    [currentNumber, questionData.answerData]
+  const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
+  const [thinking, setThinking] = useState<boolean>(true)
+  const currentQuestion = useMemo(
+    () => answering && questionData.questionData[answering.currentNumber - 1],
+    [answering, questionData.questionData]
   )
-  const { correct, history, thinking, checkAnswer, resetHistory, resetThinking } = useAnswer(answerIndex)
-  const { selectedAnswer, changeSelect, resetSelect } = useSelectedAnswer(answerIndex.length, thinking)
+  const answerIndex = useMemo(
+    () => answering && questionData.answerData[answering.currentNumber - 1].map((answer) => answer - 1),
+    [answering, questionData.answerData]
+  )
+  const { selectedAnswer, changeSelect, resetSelect } = useSelectedAnswer(answerIndex?.length || 0, thinking)
 
-  const handleNextQuestion = useCallback(() => {
+  const checkAnswer = useCallback(
+    (year: string, timeframe: 'am' | 'pm', questionNumber: number, selectedAnsswer: number[]) => {
+      const sortedAnswer = selectedAnsswer.sort()
+      const result = sortedAnswer.toString() === answerIndex?.toString()
+      setAnswering((prev) => {
+        if (!prev) return prev
+        if (result)
+          return {
+            ...prev,
+            correctCount: prev.correctCount + 1,
+            selectedAnswers: [...prev.selectedAnswers, sortedAnswer],
+          }
+        return { ...prev, selectedAnswers: [...prev.selectedAnswers, sortedAnswer] }
+      })
+      setCorrect(result)
+      setThinking(false)
+      // 不正解のとき
+      if (!result) {
+        setIncorrects((prev) =>
+          prev
+            ? [
+                // 間違えた問題がすでに保存されているときは、保存されているものを削除
+                ...prev.filter(
+                  (question: { year: string; timeframe: 'am' | 'pm'; questionNumber: number }) =>
+                    !(
+                      question.year === year &&
+                      question.timeframe === timeframe &&
+                      question.questionNumber === questionNumber
+                    )
+                ),
+                { year, timeframe, questionNumber, selectedAnswer },
+              ]
+            : []
+        )
+      }
+    },
+    [answerIndex, selectedAnswer, setAnswering, setIncorrects]
+  )
+
+  const handleNextQuestion = useCallback(async () => {
+    // 最後の問題を解答したとき
+    if (answering?.currentNumber === answering?.lastNumber) {
+      await router.push(
+        {
+          pathname: `/${year}/${timeframe}/${questionNumber}/result`,
+          // query: { selectedAnswers: history.selectedAnswers, correctCount: history.correctCount.toString() },
+        },
+        `/${year}/${timeframe}/${questionNumber}/result`
+      )
+    }
+
     setDisabled(true)
     try {
       scroll.scrollToTop({ duration: 0 })
-      setCurrentNumber((current) => current + 1)
-      resetThinking()
+      setAnswering((prev) => prev && { ...prev, currentNumber: prev.currentNumber + 1 })
+      setThinking(true)
       resetSelect()
     } finally {
       setDisabled(false)
     }
-  }, [resetSelect, resetThinking])
+  }, [answering, questionNumber, resetSelect, router, setAnswering, timeframe, year])
 
   const handleOpenDialog = useCallback(() => setOpenDialog(true), [])
 
   const handleCloseDialog = useCallback(() => setOpenDialog(false), [])
 
   useEffect(() => {
-    if (currentNumber === first) {
-      resetHistory()
-      resetThinking()
-      resetSelect()
+    if (!answering) {
+      router.push(`/${year}/${timeframe}`)
     }
-  }, [currentNumber, first, resetHistory, resetSelect, resetThinking])
+  }, [answering, router, timeframe, year])
 
-  useEffect(() => {
-    if (thinking && currentNumber - first !== history.selectedAnswers.length) {
-      setCurrentNumber(first)
-    }
-  }, [currentNumber, first, history.selectedAnswers.length, thinking])
-
-  useEffect(() => {
-    if (currentNumber > last || last - first + 1 === history.selectedAnswers.length) {
-      router.push(
-        {
-          pathname: `/${year}/${timeframe}/${questionNumber}/result`,
-          query: { selectedAnswers: history.selectedAnswers, correctCount: history.correctCount.toString() },
-        },
-        `/${year}/${timeframe}/${questionNumber}/result`
-      )
-    }
-  }, [currentNumber, last, history, history.selectedAnswers, questionNumber, router, first, timeframe, year])
+  if (!answering) {
+    return <LoadingScreen />
+  }
 
   return (
     <DefaultLayout title={`第${Number(year) - 1953}回${timeframeToJapanese(timeframe)}${questionNumber} | 臨検テスト`}>
@@ -119,7 +161,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
           <div className="mt-8 relative">
             <AnimatePresence>
               <motion.div
-                key={currentNumber}
+                key={answering?.currentNumber}
                 initial="left"
                 animate="center"
                 exit="right"
@@ -146,11 +188,11 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                 }}
                 className="bg-white"
               >
-                <SmallHeading>問題{currentNumber}</SmallHeading>
+                <SmallHeading>問題{answering?.currentNumber}</SmallHeading>
                 <div className="mt-4">
-                  <p>{currentQuestion.question}</p>
+                  <p>{currentQuestion?.question}</p>
 
-                  {currentQuestion.img && (
+                  {currentQuestion?.img && (
                     <button
                       type="button"
                       onClick={handleOpenDialog}
@@ -161,7 +203,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                         width={200}
                         height={200}
                         src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
-                        alt={`問題${currentNumber}の画像`}
+                        alt={`問題${answering?.currentNumber}の画像`}
                         className="w-auto"
                       />
                       <span className="absolute bottom-4 right-4">{magnifyingGlassPlus}</span>
@@ -171,8 +213,8 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                   <div className="mt-6 relative">
                     <div className="flex-1">
                       <CheckBoxListContainer
-                        answer={answerIndex}
-                        options={currentQuestion.options}
+                        answer={answerIndex || []}
+                        options={currentQuestion?.options || []}
                         selectedAnswer={selectedAnswer}
                         thinking={thinking}
                         handleChange={changeSelect}
@@ -192,7 +234,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                         disabled={disabled}
                         shape="rounded-full"
                         variant="contained"
-                        onClick={() => checkAnswer(year, timeframe, currentNumber, selectedAnswer)}
+                        onClick={() => checkAnswer(year, timeframe, answering?.currentNumber || 0, selectedAnswer)}
                       >
                         解答する
                       </PrimaryButton>
@@ -218,8 +260,8 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                 <Image
                   fill
                   className="object-contain object-center"
-                  src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
-                  alt={`問題${currentNumber}の画像`}
+                  src={`/images/${year}${timeframe}/${currentQuestion?.img}.jpg`}
+                  alt={`問題${answering?.currentNumber}の画像`}
                 />
               </ImageDialog>
             )}
