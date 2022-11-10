@@ -3,14 +3,15 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { memo, useEffect } from 'react'
 
+import { useAtomValue } from 'jotai'
 import CountUp from 'react-countup'
 
 import { questions } from 'assets/questions'
+import { answeringAtom } from 'atoms/answeringAtom'
 import { CircleProgress, Container, LinkButton, PageHeading } from 'components/atoms'
 import { LoadingScreen } from 'components/molecules'
 import { QuestionAccordionContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
-import { useFirstLastNumber } from 'hooks'
 import { getRangeArray, timeframeToJapanese } from 'utils'
 
 type PageProps = {
@@ -31,21 +32,16 @@ type PathsType = {
 // eslint-disable-next-line react/display-name
 const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber, questionData }: PageProps) => {
   const router = useRouter()
-  const { first, last } = useFirstLastNumber(questionNumber)
-  const selectedAnswers = router.query.selectedAnswers as string[] | undefined
-  const correctCount = router.query.correctCount ? Number(router.query.correctCount) : 0
-  const percent = selectedAnswers && correctCount ? correctCount / selectedAnswers.length : 0
+  const answering = useAtomValue(answeringAtom)
+  const percent = answering ? answering.correctCount / answering.selectedAnswers.length : 0
 
   useEffect(() => {
-    if (
-      router?.query &&
-      (typeof correctCount === 'undefined' || typeof selectedAnswers === 'undefined' || selectedAnswers.length === 0)
-    ) {
+    if (!answering) {
       router.push(`/${year}/${timeframe}/${questionNumber}`)
     }
-  }, [correctCount, questionNumber, router, selectedAnswers, timeframe, year])
+  }, [answering, questionNumber, router, timeframe, year])
 
-  if (!selectedAnswers) {
+  if (!answering) {
     return <LoadingScreen />
   }
 
@@ -74,7 +70,7 @@ const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber,
                   </p>
                   <p className="mt-4">
                     <span className="text-gray-400">
-                      {correctCount}問正解 / {selectedAnswers.length}問中
+                      {answering.correctCount}問正解 / {answering.selectedAnswers.length}問中
                     </span>
                   </p>
                 </div>
@@ -83,7 +79,7 @@ const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber,
           </div>
 
           <div className="mt-10 border border-primary-400 rounded overflow-hidden">
-            {getRangeArray(first, last).map((number, index) => {
+            {getRangeArray(answering.firstNumber, answering.lastNumber).map((number, index) => {
               return (
                 <div key={number} className={`${index !== 0 && 'border-t border-t-primary-400'}`}>
                   <QuestionAccordionContainer
@@ -92,7 +88,7 @@ const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber,
                     questionNumber={number}
                     timeframe={timeframe}
                     year={year}
-                    selectedAnswer={selectedAnswers[index]}
+                    selectedAnswer={answering.selectedAnswers[index]}
                   />
                 </div>
               )

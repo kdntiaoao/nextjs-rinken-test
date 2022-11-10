@@ -1,4 +1,2 @@
-export { useAnswer } from './useAnswer'
-export { useCheck } from './useCheck'
+export { useHasMounted } from './useHasMounted'
 export { useSelectedAnswer } from './useSelectedAnswer'
-export { useFirstLastNumber } from './useFirstLastNumber'
