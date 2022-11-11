@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { memo, MouseEvent, ReactNode } from 'react'
 
 import { AnimatePresence, motion } from 'framer-motion'
+
 import { Badge } from 'components/atoms'
 
 type Props = {
