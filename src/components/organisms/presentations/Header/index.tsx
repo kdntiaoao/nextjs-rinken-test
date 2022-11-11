@@ -100,7 +100,7 @@ export const Header = memo(({ menus, openMenu, handleToggleMenu, preventPropagat
                           >
                             <span className="flex-1 flex items-center gap-2">
                               {title}
-                              {badge && <Badge color='secondary'>{badge}</Badge>}
+                              {badge ? <Badge color='secondary'>{badge}</Badge> : null}
                             </span>
                             {chevronRight}
                           </a>

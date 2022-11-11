@@ -104,7 +104,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                 ),
                 { year, timeframe, questionNumber, selectedAnswer },
               ]
-            : []
+            : [{ year, timeframe, questionNumber, selectedAnswer }]
         )
       }
     },
