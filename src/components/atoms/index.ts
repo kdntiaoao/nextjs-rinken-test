@@ -1,3 +1,4 @@
+export { Badge } from './Badge'
 export { CircleProgress } from './CircleProgress'
 export { Container } from './Container'
 export { IconOutlinedButton } from './IconOutlinedButton'
