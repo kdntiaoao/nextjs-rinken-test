@@ -1,10 +1,11 @@
 import Link from 'next/link'
-import { memo, MouseEvent } from 'react'
+import { memo, MouseEvent, ReactNode } from 'react'
 
 import { AnimatePresence, motion } from 'framer-motion'
+import { Badge } from 'components/atoms'
 
 type Props = {
-  menus: { title: string; url: string }[]
+  menus: { title: string; url: string; badge?: ReactNode }[]
   openMenu: boolean
   handleToggleMenu: () => void
   // eslint-disable-next-line no-unused-vars
@@ -66,17 +67,15 @@ export const Header = memo(({ menus, openMenu, handleToggleMenu, preventPropagat
 
         <AnimatePresence>
           {openMenu && (
-            <div
-              className="fixed top-0 bottom-0 right-0 left-0 z-10 bg-black/40"
-              onClick={handleToggleMenu}
-            >
-              <motion.div
+            <div className="fixed top-0 bottom-0 right-0 left-0 z-10 bg-black/40" onClick={handleToggleMenu}>
+              <motion.dialog
                 key="menu"
+                open={openMenu}
                 initial={{ x: '100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ duration: 0.3 }}
-                className="bg-white w-4/5 max-w-xs h-full ml-auto cursor-auto"
+                className="bg-white w-4/5 max-w-xs h-full mr-0 ml-auto p-0 cursor-auto"
                 onClick={preventPropagation}
               >
                 <div className="p-4">
@@ -91,11 +90,17 @@ export const Header = memo(({ menus, openMenu, handleToggleMenu, preventPropagat
                 </div>
                 <nav>
                   <ul>
-                    {menus.map(({ title, url }, index) => (
+                    {menus.map(({ title, url, badge }, index) => (
                       <li key={title} className={`${index !== 0 && 'border-t'} border-t-primary-100 select-none`}>
                         <Link href={url} legacyBehavior>
-                          <a className="p-4 flex items-center gap-4 hover:bg-primary-400/10 active:bg-primary-400/20">
-                            <span className="flex-1">{title}</span>
+                          <a
+                            className="p-4 flex items-center gap-4 hover:bg-primary-400/10 active:bg-primary-400/20"
+                            onClick={handleToggleMenu}
+                          >
+                            <span className="flex-1 flex items-center gap-2">
+                              {title}
+                              {badge && <Badge color='secondary'>{badge}</Badge>}
+                            </span>
                             {chevronRight}
                           </a>
                         </Link>
@@ -103,7 +108,7 @@ export const Header = memo(({ menus, openMenu, handleToggleMenu, preventPropagat
                     ))}
                   </ul>
                 </nav>
-              </motion.div>
+              </motion.dialog>
             </div>
           )}
         </AnimatePresence>
