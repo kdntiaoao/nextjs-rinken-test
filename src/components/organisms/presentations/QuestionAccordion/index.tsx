@@ -41,7 +41,7 @@ const magnifyingGlassPlus = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="w-6 h-6"
+    className="h-6 w-6"
   >
     <path
       strokeLinecap="round"
@@ -58,7 +58,7 @@ const trash = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="w-6 h-6"
+    className="h-6 w-6"
   >
     <path
       strokeLinecap="round"
@@ -88,19 +88,19 @@ export const QuestionAccordion = memo(
     return (
       <div
         id={`accordion_${year}_${timeframe}_${questionNumber}`}
-        className="text-primary-900 rounded"
+        className="rounded bg-amber-50/30 dark:bg-slate-700/30"
         onClick={openAccordion ? undefined : handleOpenAccordion}
       >
-        <div className="px-3 py-4 min-h-[48px] bg-amber-50/30">
+        <div className="min-h-[48px] px-3 py-4">
           <SmallHeading>
             {handleDeleteQuestion && `第${Number(year) - 1953}回${timeframeToJapanese(timeframe)} `}問題{questionNumber}
           </SmallHeading>
           <div className="mt-4">
-            <div className="flex gap-2 justify-between items-start">
+            <div className="flex items-start justify-between gap-2">
               <p className={`flex-1 ${openAccordion ? '' : 'truncate'}`}>{question.question}</p>
               {handleDeleteQuestion && (
                 <button
-                  className="p-1 rounded-full hover:bg-primary-400/10 active:bg-primary-400/20 select-none"
+                  className="select-none rounded-full p-1 hover:bg-primary-400/10 active:bg-primary-400/20"
                   onClick={(event) => handleDeleteQuestion(event, year, timeframe, questionNumber)}
                   aria-label={`第${Number(year) - 1953}回${timeframeToJapanese(
                     timeframe
@@ -132,7 +132,7 @@ export const QuestionAccordion = memo(
                   <button
                     type="button"
                     onClick={handleOpenDialog}
-                    className="block mt-6 mx-auto w-fit relative text-black/40 hover:text-black cursor-zoom-in"
+                    className="relative mx-auto mt-6 block w-fit cursor-zoom-in text-black/40 hover:text-black"
                     aria-label="画像を拡大する"
                   >
                     <Image
@@ -150,8 +150,8 @@ export const QuestionAccordion = memo(
               {question.options.map((option, index) => (
                 <div
                   key={index.toString()}
-                  className={`flex items-center gap-2 px-3 py-2 min-h-[50px] ${
-                    answer.indexOf(index) >= 0 && 'bg-red-400/20'
+                  className={`flex min-h-[50px] items-center gap-2 px-3 py-2 ${
+                    answer.indexOf(index) >= 0 ? 'bg-red-400/20' : 'bg-white dark:bg-slate-800'
                   }`}
                 >
                   <input
@@ -160,7 +160,7 @@ export const QuestionAccordion = memo(
                     type="checkbox"
                     readOnly
                     value={index}
-                    className="accent-primary-600 pointer-events-none"
+                    className="pointer-events-none accent-primary-600"
                   />
                   <p>{option}</p>
                 </div>
@@ -181,7 +181,7 @@ export const QuestionAccordion = memo(
         )}
 
         <button
-          className="flex items-center justify-center w-full py-2 bg-amber-50/30"
+          className="flex w-full items-center justify-center py-2"
           onClick={openAccordion ? handleCloseAccordion : handleOpenAccordion}
           aria-expanded={openAccordion}
           aria-controls={`accordion_${year}_${timeframe}_${questionNumber}`}
@@ -193,7 +193,7 @@ export const QuestionAccordion = memo(
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className={`w-6 h-6 transition duration-300 delay-300 ${openAccordion && '-rotate-180'}`}
+            className={`h-6 w-6 transition delay-300 duration-300 ${openAccordion && '-rotate-180'}`}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
           </svg>

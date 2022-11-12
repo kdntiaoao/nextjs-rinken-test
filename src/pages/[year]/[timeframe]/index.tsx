@@ -27,7 +27,7 @@ const chevronRight = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="w-5 h-5"
+    className="h-5 w-5"
   >
     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
   </svg>
@@ -61,7 +61,7 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe }: PageProps)
           </div>
 
           <div className="mt-12">
-            <ul className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-8">
+            <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-8 md:grid-cols-4">
               {[...Array(10)].map((_, index) => (
                 <li key={index.toString()} className="break-keep">
                   <Link

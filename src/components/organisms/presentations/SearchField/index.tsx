@@ -17,7 +17,7 @@ const magnifyingGlass = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="w-5 h-5"
+    className="h-5 w-5"
   >
     <path
       strokeLinecap="round"
@@ -34,7 +34,7 @@ export const SearchField = memo(({ word, handleChange, onSubmit }: Props) => {
       <input
         type="search"
         value={word}
-        className="border-b-2 border-b-primary-900 px-2 sm:px-4 py-2 flex-1 outline-none rounded-none"
+        className="flex-1 rounded-none border-b-2 border-b-primary-900 bg-white px-2 py-2 outline-none dark:border-b-primary-600 dark:bg-slate-800 sm:px-4"
         onChange={handleChange}
       />
       <div>

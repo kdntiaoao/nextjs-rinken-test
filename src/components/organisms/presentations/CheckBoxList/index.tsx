@@ -13,7 +13,7 @@ type Props = {
 // eslint-disable-next-line react/display-name
 export const CheckBoxList = memo(({ answer, options, orders, selectedAnswer, thinking, handleChange }: Props) => {
   return (
-    <div className="flex flex-col border border-primary-400 text-primary-900 rounded overflow-hidden">
+    <div className="flex flex-col overflow-hidden rounded border border-primary-400">
       {options.map((option, index) => {
         const bgcolor = thinking
           ? selectedAnswer.indexOf(index) >= 0 && 'bg-primary-400/20'
@@ -23,8 +23,10 @@ export const CheckBoxList = memo(({ answer, options, orders, selectedAnswer, thi
             key={option}
             className={`flex items-center gap-2 ${
               orders[index] !== 'order-1' && 'border-t'
-            } border-t-primary-400 px-3 py-2 min-h-[48px] relative ${orders[index]} ${bgcolor || 'bg-white'} ${
-              thinking && selectedAnswer.indexOf(index) < 0 && 'hover:bg-primary-400/10'
+            } relative min-h-[48px] border-t-primary-400 px-3 py-2 ${orders[index]} ${
+              bgcolor || 'bg-white dark:bg-slate-800'
+            } ${
+              thinking && selectedAnswer.indexOf(index) < 0 && 'hover:bg-primary-400/10 dark:hover:bg-primary-400/10'
             } `}
           >
             <input

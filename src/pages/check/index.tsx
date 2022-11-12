@@ -35,7 +35,6 @@ const CheckPage: NextPage = memo(() => {
     },
     [setIncorrects]
   )
-  console.log(incorrects)
 
   if (!hasMounted) {
     return <LoadingScreen />
@@ -49,7 +48,7 @@ const CheckPage: NextPage = memo(() => {
 
           <div className="mt-12">
             {incorrects && incorrects.length > 0 ? (
-              <div className="border border-primary-400 rounded overflow-hidden">
+              <div className="overflow-hidden rounded border border-primary-400">
                 <AnimatePresence>
                   {incorrects &&
                     [...incorrects].reverse().map(({ year, timeframe, questionNumber, selectedAnswer }, index) => (
