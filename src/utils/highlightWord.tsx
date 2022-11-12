@@ -9,7 +9,7 @@ export const highlightWord = (text: string, word: string): ReactNode => {
         } else {
           return (
             <Fragment key={index.toString()}>
-              {<span className="bg-secondary-400/20">{word}</span>}
+              {<span className="bg-secondary-100">{word}</span>}
               {t}
             </Fragment>
           )
