@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import { ChangeEvent, Fragment, memo, useCallback, useState } from 'react'
+import { ChangeEvent, Fragment, memo, useCallback, useEffect, useState } from 'react'
 
 import { questions } from 'assets/questions'
 import { Container, PageHeading } from 'components/atoms'
@@ -13,7 +13,7 @@ type ResultQuestions = Record<keyof typeof questions, (Question & { answer: numb
 // eslint-disable-next-line react/display-name
 const SearchPage: NextPage = memo(() => {
   const [word, setWord] = useState<string>('')
-  const [resultQuestions, setResultQuestions] = useState<ResultQuestions>()
+  const [resultQuestions, setResultQuestions] = useState<ResultQuestions | null>()
 
   const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setWord(event.target.value)
@@ -42,6 +42,12 @@ const SearchPage: NextPage = memo(() => {
       results[questionKey] = matchQuestions
     }
     setResultQuestions(results)
+  }, [word])
+
+  useEffect(() => {
+    if (!word) {
+      setResultQuestions(null)
+    }
   }, [word])
 
   return (
