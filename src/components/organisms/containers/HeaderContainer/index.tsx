@@ -12,7 +12,7 @@ const preventPropagation = (event: MouseEvent<HTMLElement>) => event.stopPropaga
 
 // eslint-disable-next-line react/display-name
 export const HeaderContainer = memo(() => {
-  const { setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
   const [openMenu, setOpenMenu] = useState<boolean>(false)
   const incorrects = useAtomValue(incorrectsAtom)
   const setDarkMode = useUpdateAtom(darkModeAtom)
@@ -27,16 +27,15 @@ export const HeaderContainer = memo(() => {
   )
 
   const changeTheme = useCallback(() => {
-    setDarkMode((prev) => {
-      setTheme(!prev ? 'dark' : 'light')
-      return !prev
-    })
-  }, [setDarkMode, setTheme])
+    setDarkMode(resolvedTheme !== 'dark')
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+  }, [resolvedTheme, setDarkMode, setTheme])
 
   const handleToggleMenu = useCallback(() => setOpenMenu((prev) => !prev), [])
 
   return (
     <Header
+      darkMode={resolvedTheme === 'dark'}
       menus={menus}
       openMenu={openMenu}
       changeTheme={changeTheme}
