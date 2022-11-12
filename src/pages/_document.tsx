@@ -6,8 +6,7 @@ export default class MyDocument extends Document {
       <Html lang="ja">
         <Head>
           <link rel="shortcut icon" href="/favicon.ico" />
-          <meta name="theme-color" media="(prefers-color-scheme: light)" content="#82bd69" />
-          <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#82bd69" />
+          <meta name="theme-color" content="#82bd69" />
         </Head>
         <body>
           <Main />
