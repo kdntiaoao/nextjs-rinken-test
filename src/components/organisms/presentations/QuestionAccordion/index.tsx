@@ -86,7 +86,11 @@ export const QuestionAccordion = memo(
     handleDeleteQuestion,
   }: Props) => {
     return (
-      <div className="text-primary-900 rounded" onClick={openAccordion ? undefined : handleOpenAccordion}>
+      <div
+        id={`accordion_${year}_${timeframe}_${questionNumber}`}
+        className="text-primary-900 rounded"
+        onClick={openAccordion ? undefined : handleOpenAccordion}
+      >
         <div className="px-3 py-4 min-h-[48px] bg-amber-50/30">
           <SmallHeading>
             {handleDeleteQuestion && `第${Number(year) - 1953}回${timeframeToJapanese(timeframe)} `}問題{questionNumber}
@@ -98,6 +102,9 @@ export const QuestionAccordion = memo(
                 <button
                   className="p-1 rounded-full hover:bg-primary-400/10 active:bg-primary-400/20 select-none"
                   onClick={(event) => handleDeleteQuestion(event, year, timeframe, questionNumber)}
+                  aria-label={`第${Number(year) - 1953}回${timeframeToJapanese(
+                    timeframe
+                  )}問題${questionNumber}を削除する`}
                 >
                   {trash}
                 </button>
@@ -153,7 +160,7 @@ export const QuestionAccordion = memo(
                     type="checkbox"
                     readOnly
                     value={index}
-                    className="accent-primary-500 pointer-events-none"
+                    className="accent-primary-600 pointer-events-none"
                   />
                   <p>{option}</p>
                 </div>
@@ -176,6 +183,8 @@ export const QuestionAccordion = memo(
         <button
           className="flex items-center justify-center w-full py-2 bg-amber-50/30"
           onClick={openAccordion ? handleCloseAccordion : handleOpenAccordion}
+          aria-expanded={openAccordion}
+          aria-controls={`accordion_${year}_${timeframe}_${questionNumber}`}
           aria-label={openAccordion ? 'アコーディオンを閉じる' : 'アコーディオンを開く'}
         >
           <svg

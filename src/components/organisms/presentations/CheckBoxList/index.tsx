@@ -32,7 +32,7 @@ export const CheckBoxList = memo(({ answer, options, orders, selectedAnswer, thi
               name="selectedAnswer"
               type="checkbox"
               value={index}
-              className="accent-primary-500"
+              className="accent-primary-600"
               onChange={() => handleChange(index)}
             />
             <span className="flex-1">{option}</span>

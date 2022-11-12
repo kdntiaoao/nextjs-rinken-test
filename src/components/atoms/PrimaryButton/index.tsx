@@ -29,8 +29,8 @@ export const PrimaryButton = memo(
     const bgcolor = useMemo(() => {
       if (variant === 'contained') {
         return color === 'primary'
-          ? 'bg-primary-500 hover:bg-primary-600 active:bg-primary-700 text-white'
-          : 'bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700 text-white'
+          ? 'bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white'
+          : 'bg-secondary-600 hover:bg-secondary-700 active:bg-secondary-800 text-white'
       } else if (variant === 'outlined') {
         return color === 'primary'
           ? 'border border-primary-400 hover:bg-primary-400/10 active:bg-primary-400/20 text-primary-900'
