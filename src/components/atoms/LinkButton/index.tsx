@@ -12,7 +12,7 @@ const chevronRight = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="w-5 h-5 -mr-1"
+    className="-mr-1 h-5 w-5"
   >
     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
   </svg>
@@ -25,7 +25,7 @@ const chevronLeft = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="w-5 h-5 -ml-1"
+    className="-ml-1 h-5 w-5"
   >
     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
   </svg>
@@ -34,7 +34,7 @@ const chevronLeft = (
 // eslint-disable-next-line react/display-name
 export const LinkButton = memo(({ reverse = false, children }: Props) => {
   return (
-    <div className="flex w-fit items-center gap-1 text-primary-900 relative before:block before:absolute before:bottom-0 before:left-0 before:right-0 before:h-px before:scale-x-0 before:bg-primary-900 before:transition hover:before:scale-100">
+    <div className="relative flex w-fit items-center gap-1 before:absolute before:bottom-0 before:left-0 before:right-0 before:block before:h-px before:scale-x-0 before:bg-primary-900 before:transition hover:before:scale-100 dark:before:bg-white">
       {reverse && chevronLeft}
       {children}
       {!reverse && chevronRight}

@@ -29,29 +29,30 @@ export const PrimaryButton = memo(
     const bgcolor = useMemo(() => {
       if (variant === 'contained') {
         return color === 'primary'
-          ? 'bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white'
-          : 'bg-secondary-600 hover:bg-secondary-700 active:bg-secondary-800 text-white'
+          ? 'bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800'
+          : 'bg-secondary-600 text-white hover:bg-secondary-700 active:bg-secondary-800'
       } else if (variant === 'outlined') {
         return color === 'primary'
-          ? 'border border-primary-400 hover:bg-primary-400/10 active:bg-primary-400/20 text-primary-900'
-          : 'border border-secondary-400 hover:bg-primary-400/10 active:bg-primary-400/20 text-secondary-900'
+          ? 'border border-primary-400 text-primary-900 hover:bg-primary-400/10 active:bg-primary-400/20 dark:text-white'
+          : 'border border-secondary-400 text-secondary-900 hover:bg-primary-400/10 active:bg-primary-400/20 dark:text-white'
       } else {
         return color === 'primary'
-          ? 'hover:bg-primary-400/10 active:bg-primary-400/20 text-primary-900'
-          : 'hover:bg-secondary-400/10 active:bg-secondary-400/20 text-secondary-900'
+          ? 'text-primary-900 hover:bg-primary-400/10 active:bg-primary-400/20 dark:text-white'
+          : 'text-secondary-900 hover:bg-secondary-400/10 active:bg-secondary-400/20 dark:text-white'
       }
     }, [color, variant])
 
     return (
       <CustomTag
         type={type || (CustomTag === 'button' ? 'button' : undefined)}
-        className={`flex items-center justify-center gap-2 py-3 px-3 sm:px-8 relative text-center w-full select-none overflow-hidden ${
+        className={`relative flex w-full select-none items-center justify-center gap-2 overflow-hidden py-3 px-3 text-center sm:px-8 ${
           shape === 'square' ? '' : shape
         } ${bgcolor}`}
         disabled={disabled}
         aria-label={rest['aria-label']}
         onClick={onClick}
       >
+        <span className=""></span>
         <span className={`absolute top-1/2 -translate-y-1/2 ${shape === 'rounded-full' ? 'left-4' : 'left-2'}`}>
           {startIcon}
         </span>

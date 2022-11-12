@@ -60,7 +60,7 @@ const SearchPage: NextPage = memo(() => {
             <SearchFieldContainer word={word} handleChange={handleChange} onSearch={handleSearch} />
 
             {word && resultQuestions && (
-              <div className="mt-8 sm:mt-12 flex flex-col gap-4">
+              <div className="mt-8 flex flex-col gap-4 sm:mt-12">
                 {(
                   [
                     '2015am',
@@ -97,11 +97,11 @@ const SearchPage: NextPage = memo(() => {
                       {resultQuestions[y].length !== 0 && (
                         <div className="mt-6 sm:mt-10">
                           <div className="mb-4">
-                            <p className="text-primary-900 text-xl">
+                            <p className="text-xl">
                               第{Number(y.slice(0, 4)) - 1953}回 {timeframeToJapanese(y.slice(-2) as 'am' | 'pm')}
                             </p>
                           </div>
-                          <div className="border border-primary-400 rounded overflow-hidden">
+                          <div className="overflow-hidden rounded border border-primary-400">
                             {resultQuestions[y].map(({ num, question, img, options, answer }, index) => {
                               return (
                                 <div

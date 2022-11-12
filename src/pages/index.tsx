@@ -14,7 +14,7 @@ const chevronRight = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="w-5 h-5"
+    className="h-5 w-5"
   >
     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
   </svg>
@@ -29,15 +29,15 @@ const HomePage: NextPage = memo(() => {
           <PageHeading component="h2">問題一覧</PageHeading>
 
           <div className="mt-12">
-            <ul className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+            <ul className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-10">
               {years.map((year) => (
                 <li key={year}>
                   <MarkerHeading component="h3">
                     <span className="text-2xl">{year}</span>
-                    <span className="text-sm ml-1">年度</span>
+                    <span className="ml-1 text-sm">年度</span>
                   </MarkerHeading>
 
-                  <ul className="mt-4 border border-primary-400 rounded overflow-hidden">
+                  <ul className="mt-4 overflow-hidden rounded border border-primary-400">
                     <li className="break-keep">
                       <Link href={`/${year}/am`}>
                         <PrimaryButton shape="square" startIcon={chevronRight}>

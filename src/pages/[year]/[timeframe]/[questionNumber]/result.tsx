@@ -55,21 +55,21 @@ const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber,
             </LinkButton>
           </Link>
 
-          <div className="mt-4 relative">
+          <div className="relative mt-4">
             <PageHeading component="h1">結果</PageHeading>
           </div>
           <div className="mt-8">
-            <div className="w-80 h-80 max-w-full mx-auto">
+            <div className="mx-auto h-80 w-80 max-w-full">
               <CircleProgress percent={percent}>
                 <div className="text-center">
-                  <p className="text-primary-900 font-bold text-3xl">
-                    <span className="text-6xl mr-2">
+                  <p className="text-3xl font-bold">
+                    <span className="mr-2 text-6xl">
                       <CountUp start={0} end={Math.round(percent * 100)} duration={1} />
                     </span>
                     %
                   </p>
                   <p className="mt-4">
-                    <span className="text-gray-400">
+                    <span className="text-gray-500 dark:text-gray-400">
                       {answering.correctCount}問正解 / {answering.selectedAnswers.length}問中
                     </span>
                   </p>
@@ -78,7 +78,7 @@ const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber,
             </div>
           </div>
 
-          <div className="mt-10 border border-primary-400 rounded overflow-hidden">
+          <div className="mt-10 overflow-hidden rounded border border-primary-400">
             {getRangeArray(answering.firstNumber, answering.lastNumber).map((number, index) => {
               return (
                 <div key={number} className={`${index !== 0 && 'border-t border-t-primary-400'}`}>

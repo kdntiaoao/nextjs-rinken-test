@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply overflow-y-scroll;
+    @apply overflow-y-scroll text-primary-900 dark:bg-slate-800 dark:text-white;
   }
 
   a,

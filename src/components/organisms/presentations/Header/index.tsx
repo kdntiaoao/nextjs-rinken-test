@@ -16,7 +16,7 @@ type Props = {
 }
 
 const bars3 = (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
     <path
       fillRule="evenodd"
       d="M3 6.75A.75.75 0 013.75 6h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 6.75zM3 12a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 12zm0 5.25a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75a.75.75 0 01-.75-.75z"
@@ -32,7 +32,7 @@ const sun = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="w-6 h-6"
+    className="h-6 w-6"
   >
     <path
       strokeLinecap="round"
@@ -49,7 +49,7 @@ const moon = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="w-6 h-6"
+    className="h-6 w-6"
   >
     <path
       strokeLinecap="round"
@@ -60,7 +60,7 @@ const moon = (
 )
 
 const xMark = (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
     <path
       fillRule="evenodd"
       d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
@@ -76,7 +76,7 @@ const chevronRight = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="w-6 h-6"
+    className="h-6 w-6"
   >
     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
   </svg>
@@ -86,17 +86,17 @@ const chevronRight = (
 export const Header = memo(
   ({ darkMode, menus, openMenu, changeTheme, handleToggleMenu, preventPropagation }: Props) => {
     return (
-      <header className="py-4 text-primary-900 border-b border-primary-100">
-        <div className="px-4 flex items-center justify-between">
+      <header className="border-b border-primary-100 py-4 dark:border-slate-600">
+        <div className="flex items-center justify-between px-4">
           <div>
             <Link href="/">
-              <span className="text-xl font-bold flex items-center min-h-[48px]">臨検テスト</span>
+              <span className="flex min-h-[48px] items-center text-xl font-bold">臨検テスト</span>
             </Link>
           </div>
 
           <button
             type="button"
-            className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-primary-400/10 active:bg-primary-400/20 select-none"
+            className="flex h-12 w-12 select-none items-center justify-center rounded-full hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20"
             onClick={handleToggleMenu}
             aria-label="メニューを開く"
           >
@@ -113,21 +113,21 @@ export const Header = memo(
                   animate={{ x: 0 }}
                   exit={{ x: '100%' }}
                   transition={{ duration: 0.3 }}
-                  className="bg-white w-4/5 max-w-xs h-full mr-0 ml-auto p-0 cursor-auto"
+                  className="mr-0 ml-auto h-full w-4/5 max-w-xs cursor-auto bg-white p-0 dark:bg-slate-800"
                   onClick={preventPropagation}
                 >
-                  <div className="p-4 flex items-center justify-between">
+                  <div className="flex items-center justify-between p-4">
                     <button
-                      className="bg-yellow-200 dark:bg-violet-200 transition-all duration-300 rounded-full w-20 h-12 flex items-center p-2"
+                      className="flex h-12 w-20 items-center rounded-full bg-yellow-200 p-2 transition-all duration-300 dark:bg-violet-400"
                       onClick={changeTheme}
                     >
-                      <span className="w-8 h-8 bg-yellow-500 dark:bg-violet-600 rounded-full flex items-center justify-center transition-all duration-300 dark:translate-x-8 text-white">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-500 text-white transition-all duration-300 dark:translate-x-8 dark:bg-violet-600">
                         {darkMode ? moon : sun}
                       </span>
                     </button>
                     <button
                       type="button"
-                      className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-primary-400/10 active:bg-primary-400/20 select-none"
+                      className="flex h-12 w-12 select-none items-center justify-center rounded-full hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20"
                       onClick={handleToggleMenu}
                       aria-label="メニューを閉じる"
                     >
@@ -137,13 +137,18 @@ export const Header = memo(
                   <nav>
                     <ul>
                       {menus.map(({ title, url, badge }, index) => (
-                        <li key={title} className={`${index !== 0 && 'border-t'} border-t-primary-100 select-none`}>
+                        <li
+                          key={title}
+                          className={`${
+                            index !== 0 && 'border-t'
+                          } select-none border-t-primary-100 dark:border-t-slate-600`}
+                        >
                           <Link href={url} legacyBehavior>
                             <a
-                              className="p-4 flex items-center gap-4 hover:bg-primary-400/10 active:bg-primary-400/20"
+                              className="flex items-center gap-4 p-4 hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20"
                               onClick={handleToggleMenu}
                             >
-                              <span className="flex-1 flex items-center gap-2">
+                              <span className="flex flex-1 items-center gap-2">
                                 {title}
                                 {badge ? <Badge color="secondary">{badge}</Badge> : null}
                               </span>

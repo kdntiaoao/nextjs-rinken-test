@@ -27,7 +27,7 @@ export const DefaultLayout = memo(
           <HeaderContainer />
           <main className="flex-1 relative">{children}</main>
           <footer className="py-4 text-center select-none">
-            <small className="text-gray-500">&copy;臨検テスト</small>
+            <small className="text-gray-500 dark:text-slate-400">&copy;臨検テスト</small>
           </footer>
         </div>
       </>

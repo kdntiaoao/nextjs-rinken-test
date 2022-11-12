@@ -43,7 +43,7 @@ const magnifyingGlassPlus = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="w-6 h-6"
+    className="h-6 w-6"
   >
     <path
       strokeLinecap="round"
@@ -158,7 +158,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
             </LinkButton>
           </Link>
 
-          <div className="mt-8 relative">
+          <div className="relative mt-8">
             <AnimatePresence>
               <motion.div
                 key={answering?.currentNumber}
@@ -186,7 +186,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                     pointerEvents: 'none',
                   },
                 }}
-                className="bg-white"
+                className="bg-white dark:bg-slate-800"
               >
                 <SmallHeading>問題{answering?.currentNumber}</SmallHeading>
                 <div className="mt-4">
@@ -196,7 +196,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                     <button
                       type="button"
                       onClick={handleOpenDialog}
-                      className="block mt-6 mx-auto w-fit relative text-black/40 hover:text-black cursor-zoom-in"
+                      className="relative mx-auto mt-6 block w-fit cursor-zoom-in text-black/40 hover:text-black"
                     >
                       <Image
                         priority
@@ -210,7 +210,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                     </button>
                   )}
 
-                  <div className="mt-6 relative">
+                  <div className="relative mt-6">
                     <div className="flex-1">
                       <CheckBoxListContainer
                         answer={answerIndex || []}
