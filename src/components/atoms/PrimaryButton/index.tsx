@@ -52,7 +52,6 @@ export const PrimaryButton = memo(
         aria-label={rest['aria-label']}
         onClick={onClick}
       >
-        <span className=""></span>
         <span className={`absolute top-1/2 -translate-y-1/2 ${shape === 'rounded-full' ? 'left-4' : 'left-2'}`}>
           {startIcon}
         </span>

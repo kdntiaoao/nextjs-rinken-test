@@ -35,7 +35,7 @@ export const SearchField = memo(({ word, handleChange, onSubmit }: Props) => {
         autoFocus
         type="search"
         value={word}
-        className="flex-1 appearance-none rounded-none border-b-2 border-b-primary-900 bg-white px-2 py-2 outline-none dark:border-b-primary-600 dark:bg-slate-800 sm:px-4"
+        className="flex-1 rounded-none border-b-2 border-b-primary-900 bg-white px-2 py-2 outline-none dark:border-b-primary-600 dark:bg-slate-800 sm:px-4"
         onChange={handleChange}
       />
       <div>
