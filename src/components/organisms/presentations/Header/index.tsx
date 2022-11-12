@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Badge } from 'components/atoms'
 
 type Props = {
-  darkMode: boolean
   menus: { title: string; url: string; badge?: ReactNode }[]
   openMenu: boolean
   changeTheme: () => void
@@ -84,7 +83,7 @@ const chevronRight = (
 
 // eslint-disable-next-line react/display-name
 export const Header = memo(
-  ({ darkMode, menus, openMenu, changeTheme, handleToggleMenu, preventPropagation }: Props) => {
+  ({ menus, openMenu, changeTheme, handleToggleMenu, preventPropagation }: Props) => {
     return (
       <header className="border-b border-primary-100 py-4 dark:border-slate-600">
         <div className="flex items-center justify-between px-4">
@@ -122,7 +121,8 @@ export const Header = memo(
                       onClick={changeTheme}
                     >
                       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-500 text-white transition-all duration-300 dark:translate-x-8 dark:bg-violet-600">
-                        {darkMode ? moon : sun}
+                        <span className='dark:hidden'>{moon}</span>
+                        <span className='hidden dark:block'>{sun}</span>
                       </span>
                     </button>
                     <button

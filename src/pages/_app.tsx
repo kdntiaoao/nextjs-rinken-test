@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app'
+import { useMemo } from 'react'
 
 import { Provider, useAtomValue } from 'jotai'
 import { ThemeProvider } from 'next-themes'
@@ -12,15 +13,20 @@ const App = ({ Component, pageProps }: AppProps) => {
   const hasMounted = useHasMounted()
   const darkMode = useAtomValue(darkModeAtom)
 
+  const defaultTheme = useMemo(() => {
+    if (darkMode === null) {
+      return 'system'
+    }
+    return darkMode ? 'dark' : 'light'
+  }, [darkMode])
+
   if (!hasMounted) {
     return <LoadingScreen />
   }
 
-  console.log(darkMode)
-
   return (
     <Provider>
-      <ThemeProvider attribute="class" defaultTheme={'light'}>
+      <ThemeProvider attribute="class" defaultTheme={defaultTheme}>
         <Component {...pageProps} />
       </ThemeProvider>
     </Provider>

@@ -1,6 +1,7 @@
 import { memo, MouseEvent, useCallback, useMemo, useState } from 'react'
 
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
+import { useUpdateAtom } from 'jotai/utils'
 import { useTheme } from 'next-themes'
 
 import { darkModeAtom } from 'atoms/darkModeAtom'
@@ -11,10 +12,10 @@ const preventPropagation = (event: MouseEvent<HTMLElement>) => event.stopPropaga
 
 // eslint-disable-next-line react/display-name
 export const HeaderContainer = memo(() => {
-  const { theme, setTheme } = useTheme()
+  const { setTheme } = useTheme()
   const [openMenu, setOpenMenu] = useState<boolean>(false)
   const incorrects = useAtomValue(incorrectsAtom)
-  const [darkMode, setDarkMode] = useAtom(darkModeAtom)
+  const setDarkMode = useUpdateAtom(darkModeAtom)
 
   const menus = useMemo(
     () => [
@@ -26,7 +27,6 @@ export const HeaderContainer = memo(() => {
   )
 
   const changeTheme = useCallback(() => {
-    console.log('click')
     setDarkMode((prev) => {
       setTheme(!prev ? 'dark' : 'light')
       return !prev
@@ -35,11 +35,8 @@ export const HeaderContainer = memo(() => {
 
   const handleToggleMenu = useCallback(() => setOpenMenu((prev) => !prev), [])
 
-  console.log(theme)
-
   return (
     <Header
-      darkMode={darkMode}
       menus={menus}
       openMenu={openMenu}
       changeTheme={changeTheme}

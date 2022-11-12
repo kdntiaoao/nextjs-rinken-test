@@ -35,7 +35,6 @@ const CheckPage: NextPage = memo(() => {
     },
     [setIncorrects]
   )
-  console.log(incorrects)
 
   if (!hasMounted) {
     return <LoadingScreen />
