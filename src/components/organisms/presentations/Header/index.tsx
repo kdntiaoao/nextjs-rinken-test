@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Badge } from 'components/atoms'
 
 type Props = {
+  darkMode: boolean
   menus: { title: string; url: string; badge?: ReactNode }[]
   openMenu: boolean
   changeTheme: () => void
@@ -83,7 +84,7 @@ const chevronRight = (
 
 // eslint-disable-next-line react/display-name
 export const Header = memo(
-  ({ menus, openMenu, changeTheme, handleToggleMenu, preventPropagation }: Props) => {
+  ({ darkMode, menus, openMenu, changeTheme, handleToggleMenu, preventPropagation }: Props) => {
     return (
       <header className="border-b border-primary-100 py-4 dark:border-slate-600">
         <div className="flex items-center justify-between px-4">
@@ -112,17 +113,17 @@ export const Header = memo(
                   animate={{ x: 0 }}
                   exit={{ x: '100%' }}
                   transition={{ duration: 0.3 }}
-                  className="mr-0 ml-auto h-full w-4/5 max-w-xs cursor-auto bg-white p-0 dark:bg-slate-800"
+                  className="mr-0 ml-auto h-full w-4/5 max-w-xs cursor-auto bg-white p-0 dark:bg-slate-800 dark:text-white"
                   onClick={preventPropagation}
                 >
                   <div className="flex items-center justify-between p-4">
                     <button
                       className="flex h-12 w-20 items-center rounded-full bg-yellow-200 p-2 transition-all duration-300 dark:bg-violet-400"
                       onClick={changeTheme}
+                      aria-label={darkMode ? 'ライトモードに変更する' : 'ダークモードに変更する'}
                     >
                       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-500 text-white transition-all duration-300 dark:translate-x-8 dark:bg-violet-600">
-                        <span className='dark:hidden'>{moon}</span>
-                        <span className='hidden dark:block'>{sun}</span>
+                        {darkMode ? moon : sun}
                       </span>
                     </button>
                     <button
