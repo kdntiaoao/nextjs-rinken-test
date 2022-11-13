@@ -86,17 +86,23 @@ const chevronRight = (
 export const Header = memo(
   ({ darkMode, menus, openMenu, changeTheme, handleToggleMenu, preventPropagation }: Props) => {
     return (
-      <header className="border-b border-primary-100 py-4 dark:border-slate-600">
-        <div className="flex items-center justify-between px-4">
-          <div>
-            <Link href="/">
-              <span className="flex min-h-[48px] items-center text-xl font-bold">臨検テスト</span>
-            </Link>
-          </div>
+      <header className="">
+        <div className="z-10 flex h-20 items-center justify-between border-b border-primary-100 bg-white px-4 dark:border-slate-600 dark:bg-slate-800 xl:fixed xl:top-0 xl:left-0 xl:right-0">
+          <Link href="/">
+            <span className="flex min-h-[48px] items-center text-xl font-bold">臨検テスト</span>
+          </Link>
+
+          <button
+            className="hidden rounded-full p-3 hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20 xl:flex xl:items-center xl:justify-center"
+            onClick={changeTheme}
+            aria-label={darkMode ? 'ライトモードに変更する' : 'ダークモードに変更する'}
+          >
+            {darkMode ? moon : sun}
+          </button>
 
           <button
             type="button"
-            className="flex h-12 w-12 select-none items-center justify-center rounded-full hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20"
+            className="flex h-12 w-12 select-none items-center justify-center rounded-full hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20 xl:hidden"
             onClick={handleToggleMenu}
             aria-label="メニューを開く"
           >
@@ -105,7 +111,10 @@ export const Header = memo(
 
           <AnimatePresence>
             {openMenu && (
-              <div className="fixed top-0 bottom-0 right-0 left-0 z-10 bg-black/40" onClick={handleToggleMenu}>
+              <div
+                className="fixed top-0 bottom-0 right-0 left-0 z-10 bg-black/40 xl:hidden"
+                onClick={handleToggleMenu}
+              >
                 <motion.dialog
                   key="menu"
                   open={openMenu}
@@ -116,7 +125,7 @@ export const Header = memo(
                   className="mr-0 ml-auto h-full w-4/5 max-w-xs cursor-auto bg-white p-0 dark:bg-slate-800 dark:text-white"
                   onClick={preventPropagation}
                 >
-                  <div className="flex items-center justify-between p-4">
+                  <div className="flex h-20 items-center justify-between px-4">
                     <button
                       className="flex h-12 w-20 items-center rounded-full bg-yellow-200 p-2 transition-all duration-300 dark:bg-violet-400"
                       onClick={changeTheme}
@@ -164,6 +173,29 @@ export const Header = memo(
               </div>
             )}
           </AnimatePresence>
+
+          <div className="fixed left-0 top-20 bottom-0 z-10 hidden w-80 border-r border-primary-100 bg-white dark:border-slate-600 dark:bg-slate-800 xl:block">
+            <nav>
+              <ul>
+                {menus.map(({ title, url, badge }, index) => (
+                  <li
+                    key={title}
+                    className={`${index !== 0 && 'border-t'} select-none border-t-primary-100 dark:border-t-slate-600`}
+                  >
+                    <Link href={url} legacyBehavior>
+                      <a className="flex items-center gap-4 p-4 hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20">
+                        <span className="flex flex-1 items-center gap-2">
+                          {title}
+                          {badge ? <Badge color="secondary">{badge}</Badge> : null}
+                        </span>
+                        {chevronRight}
+                      </a>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
         </div>
       </header>
     )
