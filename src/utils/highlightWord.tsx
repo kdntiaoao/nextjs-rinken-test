@@ -1,5 +1,11 @@
 import { Fragment, ReactNode } from 'react'
 
+/**
+ * 対象の文字列のみをハイライトする関数
+ * @param text ハイライトしたい文字列の入ったテキスト
+ * @param word ハイライトする対象文字列
+ * @returns ハイライトしたテキスト
+ */
 export const highlightWord = (text: string, word: string): ReactNode => {
   return (
     <>

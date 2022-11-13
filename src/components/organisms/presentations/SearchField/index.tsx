@@ -32,7 +32,6 @@ export const SearchField = memo(({ word, handleChange, onSubmit }: Props) => {
   return (
     <form className="flex flex-wrap gap-2 sm:gap-4" onSubmit={onSubmit}>
       <input
-        autoFocus
         enterKeyHint="search"
         type="search"
         value={word}

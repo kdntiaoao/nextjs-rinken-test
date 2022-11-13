@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app'
-import { useMemo } from 'react'
+import { useRouter } from 'next/router'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Provider, useAtomValue } from 'jotai'
 import { ThemeProvider } from 'next-themes'
@@ -12,6 +13,8 @@ import { useHasMounted } from 'hooks'
 const App = ({ Component, pageProps }: AppProps) => {
   const hasMounted = useHasMounted()
   const darkMode = useAtomValue(darkModeAtom)
+  const router = useRouter()
+  const [pageLoading, setPageLoading] = useState<boolean>(false)
 
   const defaultTheme = useMemo(() => {
     if (darkMode === null) {
@@ -19,6 +22,15 @@ const App = ({ Component, pageProps }: AppProps) => {
     }
     return darkMode ? 'dark' : 'light'
   }, [darkMode])
+
+  const handleStart = useCallback(() => setPageLoading(true), [])
+  const handleComplete = useCallback(() => setPageLoading(false), [])
+
+  useEffect(() => {
+    router.events.on('routeChangeStart', handleStart)
+    router.events.on('routeChangeComplete', handleComplete)
+    router.events.on('routeChangeError', handleComplete)
+  }, [handleComplete, handleStart, router.events])
 
   if (!hasMounted) {
     return <LoadingScreen />
@@ -28,6 +40,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     <Provider>
       <ThemeProvider attribute="class" defaultTheme={defaultTheme}>
         <Component {...pageProps} />
+        {pageLoading && <LoadingScreen />}
       </ThemeProvider>
     </Provider>
   )
