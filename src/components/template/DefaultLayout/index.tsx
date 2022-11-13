@@ -25,7 +25,7 @@ export const DefaultLayout = memo(
 
         <div className="flex min-h-screen flex-col">
           <HeaderContainer />
-          <div className="flex flex-1 flex-col overflow-x-hidden xl:pl-80">
+          <div className="flex flex-1 flex-col overflow-x-hidden xl:pl-80 xl:pt-20">
             <main className="relative flex-1">{children}</main>
             <footer className="select-none py-4 text-center">
               <small className="text-gray-500 dark:text-slate-400">&copy;臨検テスト</small>
