@@ -86,17 +86,24 @@ const chevronRight = (
 export const Header = memo(
   ({ darkMode, menus, openMenu, changeTheme, handleToggleMenu, preventPropagation }: Props) => {
     return (
-      <header className="border-b border-primary-100 py-4 dark:border-slate-600">
-        <div className="flex items-center justify-between px-4">
-          <div>
+      <header className="border-b border-primary-100 py-4 dark:border-slate-600 xl:fixed xl:top-0 xl:bottom-0 xl:left-0 xl:w-80 xl:overflow-y-auto xl:border-b-0 xl:border-r">
+        <div className="flex items-center justify-between px-4 xl:block xl:px-0">
+          <div className="flex items-center justify-between border-primary-100 pb-4 dark:border-slate-600 xl:border-b xl:px-4">
             <Link href="/">
               <span className="flex min-h-[48px] items-center text-xl font-bold">臨検テスト</span>
             </Link>
+            <button
+              className="hidden rounded-full p-3 hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20 xl:flex xl:items-center xl:justify-center"
+              onClick={changeTheme}
+              aria-label={darkMode ? 'ライトモードに変更する' : 'ダークモードに変更する'}
+            >
+              {darkMode ? moon : sun}
+            </button>
           </div>
 
           <button
             type="button"
-            className="flex h-12 w-12 select-none items-center justify-center rounded-full hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20"
+            className="flex h-12 w-12 select-none items-center justify-center rounded-full hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20 xl:hidden"
             onClick={handleToggleMenu}
             aria-label="メニューを開く"
           >
@@ -164,6 +171,29 @@ export const Header = memo(
               </div>
             )}
           </AnimatePresence>
+
+          <div className="hidden xl:block">
+            <nav>
+              <ul>
+                {menus.map(({ title, url, badge }, index) => (
+                  <li
+                    key={title}
+                    className={`${index !== 0 && 'border-t'} select-none border-t-primary-100 dark:border-t-slate-600`}
+                  >
+                    <Link href={url} legacyBehavior>
+                      <a className="flex items-center gap-4 p-4 hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20">
+                        <span className="flex flex-1 items-center gap-2">
+                          {title}
+                          {badge ? <Badge color="secondary">{badge}</Badge> : null}
+                        </span>
+                        {chevronRight}
+                      </a>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
         </div>
       </header>
     )

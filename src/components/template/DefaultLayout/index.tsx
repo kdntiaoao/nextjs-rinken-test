@@ -23,12 +23,14 @@ export const DefaultLayout = memo(
           <meta name="description" content={description} />
         </Head>
 
-        <div className="min-h-screen flex flex-col">
+        <div className="flex min-h-screen flex-col">
           <HeaderContainer />
-          <main className="flex-1 relative">{children}</main>
-          <footer className="py-4 text-center select-none">
-            <small className="text-gray-500 dark:text-slate-400">&copy;臨検テスト</small>
-          </footer>
+          <div className="flex flex-1 flex-col overflow-x-hidden xl:pl-80">
+            <main className="relative flex-1">{children}</main>
+            <footer className="select-none py-4 text-center">
+              <small className="text-gray-500 dark:text-slate-400">&copy;臨検テスト</small>
+            </footer>
+          </div>
         </div>
       </>
     )
