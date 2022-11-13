@@ -89,9 +89,8 @@ export const QuestionAccordion = memo(
       <div
         id={`accordion_${year}_${timeframe}_${questionNumber}`}
         className="rounded bg-amber-50/30 dark:bg-slate-700/30"
-        onClick={openAccordion ? undefined : handleOpenAccordion}
       >
-        <div className="min-h-[48px] px-3 py-4">
+        <div className="min-h-[48px] px-3 py-4" onClick={openAccordion ? handleCloseAccordion : handleOpenAccordion}>
           <SmallHeading>
             {handleDeleteQuestion && `第${Number(year) - 1953}回${timeframeToJapanese(timeframe)} `}問題{questionNumber}
           </SmallHeading>
