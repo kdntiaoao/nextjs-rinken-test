@@ -5,7 +5,6 @@ import { useRouter } from 'next/router'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { MagnifyingGlassPlusIcon } from '@heroicons/react/24/outline'
-import { motion, AnimatePresence } from 'framer-motion'
 import { useAtom } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import * as Scroll from 'react-scroll'
@@ -14,7 +13,7 @@ import { questions } from 'assets/questions'
 import { answeringAtom } from 'atoms/answeringAtom'
 import { incorrectsAtom } from 'atoms/incorrectsAtom'
 import { Container, LinkButton, PrimaryButton, SmallHeading } from 'components/atoms'
-import { ImageDialog, LoadingScreen, ResultIcon } from 'components/molecules'
+import { AnimateQuestion, ImageDialog, LoadingScreen, ResultIcon } from 'components/molecules'
 import { CheckBoxListContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 import { useSelectedAnswer } from 'hooks'
@@ -143,103 +142,64 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
           </Link>
 
           <div className="relative mt-8">
-            <AnimatePresence>
-              <motion.div
-                key={answering?.currentNumber}
-                initial="left"
-                animate="center"
-                exit="right"
-                transition={{ duration: 0.8 }}
-                variants={{
-                  left: {
-                    opacity: 0,
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    pointerEvents: 'none',
-                  },
-                  center: { opacity: 1, x: 0, position: 'relative', transitionEnd: { pointerEvents: 'auto' } },
-                  right: {
-                    x: '-100vw',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    zIndex: 1,
-                    pointerEvents: 'none',
-                  },
-                }}
-                className="bg-white dark:bg-slate-800"
-              >
-                <SmallHeading>問題{answering?.currentNumber}</SmallHeading>
-                <div className="mt-4">
-                  <p>{currentQuestion?.question}</p>
+            <AnimateQuestion animateKey={answering?.currentNumber.toString()}>
+              <SmallHeading>問題{answering?.currentNumber}</SmallHeading>
+              <div className="mt-4">
+                <p>{currentQuestion?.question}</p>
 
-                  {currentQuestion?.img && (
-                    <button
-                      type="button"
-                      onClick={handleOpenDialog}
-                      className="relative mx-auto mt-6 block w-fit cursor-zoom-in text-black/40 hover:text-black"
-                    >
-                      <Image
-                        priority
-                        width={200}
-                        height={200}
-                        src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
-                        alt={`問題${answering?.currentNumber}の画像`}
-                        className="w-auto"
-                      />
-                      <span className="absolute bottom-4 right-4">
-                        {<MagnifyingGlassPlusIcon className="h-6 w-6" />}
-                      </span>
-                    </button>
-                  )}
+                {currentQuestion?.img && (
+                  <button
+                    type="button"
+                    onClick={handleOpenDialog}
+                    className="relative mx-auto mt-6 block w-fit cursor-zoom-in text-black/40 hover:text-black"
+                  >
+                    <Image
+                      priority
+                      width={200}
+                      height={200}
+                      src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
+                      alt={`問題${answering?.currentNumber}の画像`}
+                      className="w-auto"
+                    />
+                    <span className="absolute bottom-4 right-4">{<MagnifyingGlassPlusIcon className="h-6 w-6" />}</span>
+                  </button>
+                )}
 
-                  <div className="relative mt-6">
-                    <div className="flex-1">
-                      <CheckBoxListContainer
-                        answer={answerIndex || []}
-                        options={currentQuestion?.options || []}
-                        selectedAnswer={selectedAnswer}
-                        thinking={thinking}
-                        handleChange={changeSelect}
-                      />
+                <div className="relative mt-6">
+                  <div className="flex-1">
+                    <CheckBoxListContainer
+                      answer={answerIndex || []}
+                      options={currentQuestion?.options || []}
+                      selectedAnswer={selectedAnswer}
+                      thinking={thinking}
+                      handleChange={changeSelect}
+                    />
+                  </div>
+                  {!thinking && (
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                      <ResultIcon correct={correct} />
                     </div>
-                    {!thinking && (
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                        <ResultIcon correct={correct} />
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="mt-10">
-                    {thinking ? (
-                      <PrimaryButton
-                        component="button"
-                        disabled={disabled}
-                        shape="rounded-full"
-                        variant="contained"
-                        onClick={() => checkAnswer(year, timeframe, answering?.currentNumber || 0, selectedAnswer)}
-                      >
-                        解答する
-                      </PrimaryButton>
-                    ) : (
-                      <PrimaryButton
-                        color="secondary"
-                        component="button"
-                        disabled={disabled}
-                        shape="rounded-full"
-                        variant="contained"
-                        onClick={handleNextQuestion}
-                      >
-                        次の問題へ
-                      </PrimaryButton>
-                    )}
-                  </div>
+                  )}
                 </div>
-              </motion.div>
-            </AnimatePresence>
+
+                <div className="mt-10">
+                  <PrimaryButton
+                    color={thinking ? 'primary' : 'secondary'}
+                    component="button"
+                    disabled={disabled}
+                    shape="rounded-full"
+                    variant="contained"
+                    onClick={() =>
+                      thinking
+                        ? checkAnswer(year, timeframe, answering?.currentNumber || 0, selectedAnswer)
+                        : handleNextQuestion()
+                    }
+                  >
+                    {thinking ? '解答する' : '次の問題へ'}
+                  </PrimaryButton>
+                </div>
+              </div>
+            </AnimateQuestion>
 
             {openDialog && (
               <ImageDialog onClose={handleCloseDialog}>
