@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
+import { MagnifyingGlassPlusIcon } from '@heroicons/react/24/outline'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAtom } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
@@ -35,23 +36,6 @@ type PathsType = {
 }
 
 const scroll = Scroll.animateScroll
-
-const magnifyingGlassPlus = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className="h-6 w-6"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6"
-    />
-  </svg>
-)
 
 // eslint-disable-next-line react/display-name
 const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber, questionData }: PageProps) => {
@@ -206,7 +190,9 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                         alt={`問題${answering?.currentNumber}の画像`}
                         className="w-auto"
                       />
-                      <span className="absolute bottom-4 right-4">{magnifyingGlassPlus}</span>
+                      <span className="absolute bottom-4 right-4">
+                        {<MagnifyingGlassPlusIcon className="h-6 w-6" />}
+                      </span>
                     </button>
                   )}
 

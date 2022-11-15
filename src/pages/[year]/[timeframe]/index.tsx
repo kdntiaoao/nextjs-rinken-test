@@ -2,6 +2,7 @@ import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, NextPage } from 
 import Link from 'next/link'
 import { memo, useCallback, useMemo } from 'react'
 
+import { ChevronRightIcon } from '@heroicons/react/24/outline'
 import { useUpdateAtom } from 'jotai/utils'
 
 import { answeringAtom } from 'atoms/answeringAtom'
@@ -19,19 +20,6 @@ type PathsType = {
     timeframe: 'am' | 'pm'
   }
 }
-
-const chevronRight = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className="h-5 w-5"
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-  </svg>
-)
 
 // eslint-disable-next-line react/display-name
 const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe }: PageProps) => {
@@ -68,7 +56,7 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe }: PageProps)
                     href={`/${year}/${timeframe}/${index * 10 + 1}-${index * 10 + 10}`}
                     onClick={() => handleClick(index * 10 + 1, index * 10 + 10)}
                   >
-                    <PrimaryButton variant="outlined" startIcon={chevronRight}>
+                    <PrimaryButton variant="outlined" startIcon={<ChevronRightIcon className="h-5 w-5" />}>
                       {index * 10 + 1}〜{index * 10 + 10}
                     </PrimaryButton>
                   </Link>
@@ -76,7 +64,7 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe }: PageProps)
               ))}
               <li className="break-keep">
                 <Link href={`/${year}/${timeframe}/1-100`} onClick={() => handleClick(1, 100)}>
-                  <PrimaryButton variant="outlined" startIcon={chevronRight}>
+                  <PrimaryButton variant="outlined" startIcon={<ChevronRightIcon className="h-5 w-5" />}>
                     1〜100
                   </PrimaryButton>
                 </Link>
