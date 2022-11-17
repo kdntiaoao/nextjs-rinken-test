@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { memo, useEffect } from 'react'
 
 import { useAtomValue } from 'jotai'
+import party from 'party-js'
 import CountUp from 'react-countup'
 
 import { questions } from 'assets/questions'
@@ -40,6 +41,17 @@ const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber,
       router.push(`/${year}/${timeframe}/${questionNumber}`)
     }
   }, [answering, questionNumber, router, timeframe, year])
+
+  useEffect(() => {
+    if (answering && percent === 1) {
+      setTimeout(() => {
+        party.confetti(party.Rect.fromScreen(), {
+          count: 200,
+        })
+      }, 1000)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (!answering) {
     return <LoadingScreen />
