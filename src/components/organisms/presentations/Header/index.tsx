@@ -27,7 +27,7 @@ export const Header = memo(
           </Link>
 
           <button
-            className="hidden rounded-full p-3 hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20 xl:flex xl:items-center xl:justify-center"
+            className="hidden rounded-full p-3 active:bg-primary-400/20 dark:active:bg-slate-400/20 md:hover:bg-primary-400/10 md:dark:hover:bg-slate-400/10 xl:flex xl:items-center xl:justify-center"
             onClick={changeTheme}
             aria-label={darkMode ? 'ライトモードに変更する' : 'ダークモードに変更する'}
           >
@@ -36,7 +36,7 @@ export const Header = memo(
 
           <button
             type="button"
-            className="flex h-12 w-12 select-none items-center justify-center rounded-full hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20 xl:hidden"
+            className="flex h-12 w-12 select-none items-center justify-center rounded-full md:hover:bg-primary-400/10 active:bg-primary-400/20 md:dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20 xl:hidden"
             onClick={handleToggleMenu}
             aria-label="メニューを開く"
           >
@@ -71,7 +71,7 @@ export const Header = memo(
                     </button>
                     <button
                       type="button"
-                      className="flex h-12 w-12 select-none items-center justify-center rounded-full hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20"
+                      className="flex h-12 w-12 select-none items-center justify-center rounded-full md:hover:bg-primary-400/10 active:bg-primary-400/20 md:dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20"
                       onClick={handleToggleMenu}
                       aria-label="メニューを閉じる"
                     >
@@ -89,7 +89,7 @@ export const Header = memo(
                         >
                           <Link href={url} legacyBehavior>
                             <a
-                              className="flex items-center gap-4 p-4 hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20"
+                              className="flex items-center gap-4 p-4 md:hover:bg-primary-400/10 active:bg-primary-400/20 md:dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20"
                               onClick={handleToggleMenu}
                             >
                               <span className="flex flex-1 items-center gap-2">
@@ -117,7 +117,7 @@ export const Header = memo(
                     className={`${index !== 0 && 'border-t'} select-none border-t-primary-100 dark:border-t-slate-600`}
                   >
                     <Link href={url} legacyBehavior>
-                      <a className="flex items-center gap-4 p-4 hover:bg-primary-400/10 active:bg-primary-400/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20">
+                      <a className="flex items-center gap-4 p-4 md:hover:bg-primary-400/10 active:bg-primary-400/20 md:dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20">
                         <span className="flex flex-1 items-center gap-2">
                           {title}
                           {badge ? <Badge color="secondary">{badge}</Badge> : null}

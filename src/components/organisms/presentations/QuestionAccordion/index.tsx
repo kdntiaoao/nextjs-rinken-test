@@ -66,7 +66,7 @@ export const QuestionAccordion = memo(
               <p className={`flex-1 ${openAccordion ? '' : 'truncate'}`}>{question.question}</p>
               {handleDeleteQuestion && (
                 <button
-                  className="select-none rounded-full p-1 hover:bg-primary-400/10 active:bg-primary-400/20"
+                  className="select-none rounded-full p-1 md:hover:bg-primary-400/10 active:bg-primary-400/20"
                   onClick={(event) => handleDeleteQuestion(event, year, timeframe, questionNumber)}
                   aria-label={`第${Number(year) - 1953}回${timeframeToJapanese(
                     timeframe
@@ -98,7 +98,7 @@ export const QuestionAccordion = memo(
                   <button
                     type="button"
                     onClick={handleOpenDialog}
-                    className="relative mx-auto mt-6 block w-fit cursor-zoom-in text-black/40 hover:text-black"
+                    className="relative mx-auto mt-6 block w-fit cursor-zoom-in text-black/40 md:hover:text-black"
                     aria-label="画像を拡大する"
                   >
                     <Image
