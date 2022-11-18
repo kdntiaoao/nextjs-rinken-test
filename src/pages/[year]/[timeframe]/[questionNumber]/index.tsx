@@ -151,7 +151,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
                   <button
                     type="button"
                     onClick={handleOpenDialog}
-                    className="relative mx-auto mt-6 block w-fit cursor-zoom-in text-black/40 hover:text-black"
+                    className="relative mx-auto mt-6 block w-fit cursor-zoom-in text-black/40 md:hover:text-black"
                   >
                     <Image
                       priority
