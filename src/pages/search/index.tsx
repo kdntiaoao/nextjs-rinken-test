@@ -1,9 +1,10 @@
 import { NextPage } from 'next'
-import { ChangeEvent, Fragment, memo, useCallback, useEffect, useState } from 'react'
+import { Fragment, memo, useCallback, useEffect, useState } from 'react'
 
 import { questions } from 'assets/questions'
 import { Container, PageHeading } from 'components/atoms'
-import { QuestionAccordionContainer, SearchFieldContainer } from 'components/organisms'
+import { SearchField } from 'components/molecules'
+import { QuestionAccordionContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 import { Question } from 'types/question'
 import { highlightWord, timeframeToJapanese } from 'utils'
@@ -15,11 +16,8 @@ const SearchPage: NextPage = memo(() => {
   const [word, setWord] = useState<string>('')
   const [resultQuestions, setResultQuestions] = useState<ResultQuestions | null>()
 
-  const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setWord(event.target.value)
-  }, [])
-
-  const handleSearch = useCallback(() => {
+  const handleSearch = useCallback(({ inputText }: { inputText: string }) => {
+    let sumCount = 0
     const results: ResultQuestions = {
       '2015am': [],
       '2015pm': [],
@@ -37,12 +35,22 @@ const SearchPage: NextPage = memo(() => {
     for (const UntypedquestionKey in questions) {
       const questionKey = UntypedquestionKey as keyof typeof questions
       const matchQuestions = questions[questionKey].questionData
-        .filter((q) => q.question.indexOf(word) >= 0 || q.options.join(' ').indexOf(word) >= 0)
+        .filter((q) => {
+          // 大文字小文字を区別しない
+          const regex = new RegExp(inputText, 'i')
+          // 問題文または質問文にキーワードが入っているか
+          return regex.test(q.question) || regex.test(q.options.join(' '))
+        })
         .map((q) => ({ ...q, answer: questions[questionKey].answerData[q.num - 1] }))
+      console.log(matchQuestions.length)
+      sumCount += matchQuestions.length
+      console.log(sumCount)
       results[questionKey] = matchQuestions
+      if (sumCount > 40) break
     }
     setResultQuestions(results)
-  }, [word])
+    setWord(inputText)
+  }, [])
 
   useEffect(() => {
     if (!word) {
@@ -57,7 +65,7 @@ const SearchPage: NextPage = memo(() => {
           <PageHeading component="h1">検索</PageHeading>
 
           <div className="mt-8 sm:mt-12">
-            <SearchFieldContainer word={word} handleChange={handleChange} onSearch={handleSearch} />
+            <SearchField onSubmit={handleSearch} />
 
             {word && resultQuestions && (
               <div className="mt-8 flex flex-col gap-4 sm:mt-12">

@@ -7,15 +7,18 @@ import { Fragment, ReactNode } from 'react'
  * @returns ハイライトしたテキスト
  */
 export const highlightWord = (text: string, word: string): ReactNode => {
+  const regex = new RegExp(word, 'i')
+  const found = text.match(regex)
+
   return (
     <>
-      {text.split(word).map((t, index) => {
+      {text.split(regex).map((t, index) => {
         if (index === 0) {
           return <Fragment key={index.toString()}>{t}</Fragment>
         } else {
           return (
             <Fragment key={index.toString()}>
-              {<span className="bg-secondary-100 dark:bg-secondary-600">{word}</span>}
+              {<span className="bg-secondary-100 dark:bg-secondary-600">{found?.splice(0, 1)}</span>}
               {t}
             </Fragment>
           )
