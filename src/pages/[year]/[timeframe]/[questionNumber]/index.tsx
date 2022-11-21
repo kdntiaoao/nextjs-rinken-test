@@ -101,13 +101,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
   const handleNextQuestion = useCallback(async () => {
     // 最後の問題を解答したとき
     if (answering?.currentNumber === answering?.lastNumber) {
-      await router.push(
-        {
-          pathname: `/${year}/${timeframe}/${questionNumber}/result`,
-          // query: { selectedAnswers: history.selectedAnswers, correctCount: history.correctCount.toString() },
-        },
-        `/${year}/${timeframe}/${questionNumber}/result`
-      )
+      await router.push(`/${year}/${timeframe}/${questionNumber}/result`)
     }
 
     setDisabled(true)
@@ -127,11 +121,24 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
 
   useEffect(() => {
     if (!answering) {
+      return
+    }
+    // 最後の問題を解答したとき
+    if (answering.currentNumber === answering.lastNumber) {
+      router.push(`/${year}/${timeframe}/${questionNumber}/result`)
+    }
+    // 現在の問題番号と解答数が合わないとき
+    if (answering.currentNumber !== answering.selectedAnswers.length + 1) {
+      setAnswering((prev) => prev && { ...prev, currentNumber: answering.selectedAnswers.length + 1 })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (!answering) {
       router.push(`/${year}/${timeframe}`)
     }
   }, [answering, router, timeframe, year])
-
-  console.log(answering)
 
   if (!answering) {
     return <LoadingScreen />
