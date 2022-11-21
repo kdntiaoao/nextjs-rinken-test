@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import { Fragment, memo, useCallback, useEffect, useState } from 'react'
+import { Fragment, memo, useCallback, useEffect, useRef, useState } from 'react'
 
 import { questions } from 'assets/questions'
 import { Container, PageHeading } from 'components/atoms'
@@ -13,11 +13,13 @@ type ResultQuestions = Record<keyof typeof questions, (Question & { answer: numb
 
 // eslint-disable-next-line react/display-name
 const SearchPage: NextPage = memo(() => {
+  const [hasRemainingResults, setHasRemainingResults] = useState<boolean>(true) // 検索結果が残っているか
   const [loading, setLoading] = useState<boolean>(false)
   const [searchResultNumber, setSearchResultNumber] = useState<number>(0)
   const [showNumber, setShowNumber] = useState<number>(40)
   const [resultQuestions, setResultQuestions] = useState<ResultQuestions | null>()
   const [word, setWord] = useState<string>('')
+  const timerRef = useRef<ReturnType<typeof setTimeout> | 0>(0)
 
   const handleSearch = useCallback(({ inputText }: { inputText: string }) => {
     let sumNumber = 0
@@ -49,6 +51,7 @@ const SearchPage: NextPage = memo(() => {
       sumNumber += matchQuestions.length
       if (sumNumber > 40) break
     }
+    sumNumber < 40 && setHasRemainingResults(false)
     setResultQuestions(results)
     setSearchResultNumber(
       Object.values(results)
@@ -60,14 +63,15 @@ const SearchPage: NextPage = memo(() => {
 
   const handleScroll = useCallback(() => {
     // 最下部までスクロールしたとき
-    if (window.pageYOffset >= document.body.scrollHeight - window.innerHeight) {
+    if (hasRemainingResults && window.pageYOffset >= document.body.scrollHeight - window.innerHeight) {
       setLoading(true)
-      setTimeout(() => {
+      clearTimeout(timerRef.current)
+      timerRef.current = setTimeout(() => {
         setShowNumber((prev) => prev + 40)
         setLoading(false)
       }, 300)
     }
-  }, [])
+  }, [hasRemainingResults])
 
   useEffect(() => {
     if (!word) {
@@ -114,6 +118,7 @@ const SearchPage: NextPage = memo(() => {
         sumNumber += matchQuestions.length
         if (sumNumber > showNumber) break
       }
+      sumNumber < showNumber && setHasRemainingResults(false)
       setResultQuestions(results)
       setSearchResultNumber(
         Object.values(results)
