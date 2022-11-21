@@ -13,6 +13,7 @@ type ResultQuestions = Record<keyof typeof questions, (Question & { answer: numb
 
 // eslint-disable-next-line react/display-name
 const SearchPage: NextPage = memo(() => {
+  const [hasRemainingResults, setHasRemainingResults] = useState<boolean>(true) // 検索結果が残っているか
   const [loading, setLoading] = useState<boolean>(false)
   const [searchResultNumber, setSearchResultNumber] = useState<number>(0)
   const [showNumber, setShowNumber] = useState<number>(40)
@@ -49,6 +50,7 @@ const SearchPage: NextPage = memo(() => {
       sumNumber += matchQuestions.length
       if (sumNumber > 40) break
     }
+    sumNumber < 40 && setHasRemainingResults(false)
     setResultQuestions(results)
     setSearchResultNumber(
       Object.values(results)
@@ -60,14 +62,14 @@ const SearchPage: NextPage = memo(() => {
 
   const handleScroll = useCallback(() => {
     // 最下部までスクロールしたとき
-    if (window.pageYOffset >= document.body.scrollHeight - window.innerHeight) {
+    if (hasRemainingResults && window.pageYOffset >= document.body.scrollHeight - window.innerHeight) {
       setLoading(true)
       setTimeout(() => {
         setShowNumber((prev) => prev + 40)
         setLoading(false)
       }, 300)
     }
-  }, [])
+  }, [hasRemainingResults])
 
   useEffect(() => {
     if (!word) {
@@ -114,6 +116,7 @@ const SearchPage: NextPage = memo(() => {
         sumNumber += matchQuestions.length
         if (sumNumber > showNumber) break
       }
+      sumNumber < showNumber && setHasRemainingResults(false)
       setResultQuestions(results)
       setSearchResultNumber(
         Object.values(results)
