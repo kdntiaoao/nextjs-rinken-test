@@ -1,9 +1,10 @@
 import { NextPage } from 'next'
-import { ChangeEvent, Fragment, memo, useCallback, useEffect, useState } from 'react'
+import { Fragment, memo, useCallback, useEffect, useState } from 'react'
 
 import { questions } from 'assets/questions'
 import { Container, PageHeading } from 'components/atoms'
-import { QuestionAccordionContainer, SearchFieldContainer } from 'components/organisms'
+import { LoadingScreen, SearchField } from 'components/molecules'
+import { QuestionAccordionContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 import { Question } from 'types/question'
 import { highlightWord, timeframeToJapanese } from 'utils'
@@ -12,37 +13,61 @@ type ResultQuestions = Record<keyof typeof questions, (Question & { answer: numb
 
 // eslint-disable-next-line react/display-name
 const SearchPage: NextPage = memo(() => {
-  const [word, setWord] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
+  const [searchResultNumber, setSearchResultNumber] = useState<number>(0)
+  const [showNumber, setShowNumber] = useState<number>(40)
   const [resultQuestions, setResultQuestions] = useState<ResultQuestions | null>()
+  const [word, setWord] = useState<string>('')
 
-  const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setWord(event.target.value)
-  }, [])
-
-  const handleSearch = useCallback(() => {
+  const handleSearch = useCallback(({ inputText }: { inputText: string }) => {
+    let sumNumber = 0
     const results: ResultQuestions = {
-      '2015am': [],
-      '2015pm': [],
-      '2016am': [],
-      '2016pm': [],
-      '2017am': [],
-      '2017pm': [],
-      '2018am': [],
-      '2018pm': [],
-      '2019am': [],
-      '2019pm': [],
       '2020am': [],
       '2020pm': [],
+      '2019am': [],
+      '2019pm': [],
+      '2018am': [],
+      '2018pm': [],
+      '2017am': [],
+      '2017pm': [],
+      '2016am': [],
+      '2016pm': [],
+      '2015am': [],
+      '2015pm': [],
     }
-    for (const UntypedquestionKey in questions) {
+    for (const UntypedquestionKey in results) {
       const questionKey = UntypedquestionKey as keyof typeof questions
       const matchQuestions = questions[questionKey].questionData
-        .filter((q) => q.question.indexOf(word) >= 0 || q.options.join(' ').indexOf(word) >= 0)
+        .filter((q) => {
+          // 大文字小文字を区別しない
+          const regex = new RegExp(inputText, 'i')
+          // 問題文または質問文にキーワードが入っているか
+          return regex.test(q.question) || regex.test(q.options.join(' '))
+        })
         .map((q) => ({ ...q, answer: questions[questionKey].answerData[q.num - 1] }))
-      results[questionKey] = matchQuestions
+      results[questionKey] = matchQuestions.slice(0, 40 - sumNumber)
+      sumNumber += matchQuestions.length
+      if (sumNumber > 40) break
     }
     setResultQuestions(results)
-  }, [word])
+    setSearchResultNumber(
+      Object.values(results)
+        .map((result) => result.length)
+        .reduce((accumulator, currentValue) => accumulator + currentValue)
+    )
+    setWord(inputText)
+  }, [])
+
+  const handleScroll = useCallback(() => {
+    // 最下部までスクロールしたとき
+    if (window.pageYOffset === document.body.scrollHeight - window.innerHeight) {
+      setLoading(true)
+      setTimeout(() => {
+        setShowNumber((prev) => prev + 40)
+        setLoading(false)
+      }, 300)
+    }
+  }, [])
 
   useEffect(() => {
     if (!word) {
@@ -50,47 +75,81 @@ const SearchPage: NextPage = memo(() => {
     }
   }, [word])
 
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [handleScroll])
+
+  useEffect(() => {
+    if (word) {
+      let sumNumber = 0
+      const results: ResultQuestions = {
+        '2020am': [],
+        '2020pm': [],
+        '2019am': [],
+        '2019pm': [],
+        '2018am': [],
+        '2018pm': [],
+        '2017am': [],
+        '2017pm': [],
+        '2016am': [],
+        '2016pm': [],
+        '2015am': [],
+        '2015pm': [],
+      }
+      for (const UntypedquestionKey in results) {
+        const questionKey = UntypedquestionKey as keyof typeof questions
+        const matchQuestions = questions[questionKey].questionData
+          .filter((q) => {
+            // 大文字小文字を区別しない
+            const regex = new RegExp(word, 'i')
+            // 問題文または質問文にキーワードが入っているか
+            return regex.test(q.question) || regex.test(q.options.join(' '))
+          })
+          .map((q) => ({ ...q, answer: questions[questionKey].answerData[q.num - 1] }))
+        results[questionKey] = matchQuestions.slice(0, showNumber - sumNumber)
+        sumNumber += matchQuestions.length
+        if (sumNumber > showNumber) break
+      }
+      setResultQuestions(results)
+      setSearchResultNumber(
+        Object.values(results)
+          .map((result) => result.length)
+          .reduce((accumulator, currentValue) => accumulator + currentValue)
+      )
+    }
+  }, [showNumber, word])
+
   return (
     <DefaultLayout title="検索 | 臨検テスト">
+      <LoadingScreen loading={loading} />
       <Container>
         <div className="py-10">
           <PageHeading component="h1">検索</PageHeading>
 
           <div className="mt-8 sm:mt-12">
-            <SearchFieldContainer word={word} handleChange={handleChange} onSearch={handleSearch} />
+            <SearchField onSubmit={handleSearch} />
 
             {word && resultQuestions && (
               <div className="mt-8 flex flex-col gap-4 sm:mt-12">
-                {(
-                  [
-                    '2015am',
-                    '2015pm',
-                    '2016am',
-                    '2016pm',
-                    '2017am',
-                    '2017pm',
-                    '2018am',
-                    '2018pm',
-                    '2019am',
-                    '2019pm',
-                    '2020am',
-                    '2020pm',
-                  ] as const
-                ).reduce((prev, current) => prev + resultQuestions[current].length, 0) > 0 ? (
+                {searchResultNumber ? (
                   (
                     [
-                      '2015am',
-                      '2015pm',
-                      '2016am',
-                      '2016pm',
-                      '2017am',
-                      '2017pm',
-                      '2018am',
-                      '2018pm',
-                      '2019am',
-                      '2019pm',
                       '2020am',
                       '2020pm',
+                      '2019am',
+                      '2019pm',
+                      '2018am',
+                      '2018pm',
+                      '2017am',
+                      '2017pm',
+                      '2016am',
+                      '2016pm',
+                      '2015am',
+                      '2015pm',
                     ] as const
                   ).map((y) => (
                     <Fragment key={y}>
