@@ -60,13 +60,17 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
       const sortedAnswer = selectedAnsswer.sort()
       const result = sortedAnswer.toString() === answerIndex?.toString()
       setAnswering((prev) => {
-        if (!prev) return prev
-        if (result)
+        if (!prev) {
+          return prev
+        }
+        // 正解のとき
+        if (result) {
           return {
             ...prev,
             correctCount: prev.correctCount + 1,
             selectedAnswers: [...prev.selectedAnswers, sortedAnswer],
           }
+        }
         return { ...prev, selectedAnswers: [...prev.selectedAnswers, sortedAnswer] }
       })
       setCorrect(result)
@@ -126,6 +130,8 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
       router.push(`/${year}/${timeframe}`)
     }
   }, [answering, router, timeframe, year])
+
+  console.log(answering)
 
   if (!answering) {
     return <LoadingScreen />
