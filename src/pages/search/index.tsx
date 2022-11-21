@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import { Fragment, memo, useCallback, useEffect, useState } from 'react'
+import { Fragment, memo, useCallback, useEffect, useRef, useState } from 'react'
 
 import { questions } from 'assets/questions'
 import { Container, PageHeading } from 'components/atoms'
@@ -19,6 +19,7 @@ const SearchPage: NextPage = memo(() => {
   const [showNumber, setShowNumber] = useState<number>(40)
   const [resultQuestions, setResultQuestions] = useState<ResultQuestions | null>()
   const [word, setWord] = useState<string>('')
+  const timerRef = useRef<ReturnType<typeof setTimeout> | 0>(0)
 
   const handleSearch = useCallback(({ inputText }: { inputText: string }) => {
     let sumNumber = 0
@@ -64,7 +65,8 @@ const SearchPage: NextPage = memo(() => {
     // 最下部までスクロールしたとき
     if (hasRemainingResults && window.pageYOffset >= document.body.scrollHeight - window.innerHeight) {
       setLoading(true)
-      setTimeout(() => {
+      clearTimeout(timerRef.current)
+      timerRef.current = setTimeout(() => {
         setShowNumber((prev) => prev + 40)
         setLoading(false)
       }, 300)
