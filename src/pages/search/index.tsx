@@ -60,7 +60,7 @@ const SearchPage: NextPage = memo(() => {
 
   const handleScroll = useCallback(() => {
     // 最下部までスクロールしたとき
-    if (window.pageYOffset === document.body.scrollHeight - window.innerHeight) {
+    if (window.pageYOffset >= document.body.scrollHeight - window.innerHeight) {
       setLoading(true)
       setTimeout(() => {
         setShowNumber((prev) => prev + 40)
