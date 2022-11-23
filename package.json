@@ -10,10 +10,12 @@
     "format": "next lint --fix --dir src",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "format:prettier": "prettier -w src/**/*.tsx"
+    "format:prettier": "prettier -w src/**/*.tsx",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.13",
+    "@next/bundle-analyzer": "^13.0.4",
     "framer-motion": "^7.6.2",
     "jotai": "^1.9.1",
     "next": "13.0.0",
