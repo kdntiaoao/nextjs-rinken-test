@@ -43,10 +43,10 @@ const ResultPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber,
   }, [answering, questionNumber, router, timeframe, year])
 
   useEffect(() => {
-    if (answering && percent === 1) {
+    if (answering && percent >= 0.6) {
       setTimeout(() => {
         party.confetti(party.Rect.fromScreen(), {
-          count: 200,
+          count: 150 * (percent ** 2),
         })
       }, 1000)
     }
