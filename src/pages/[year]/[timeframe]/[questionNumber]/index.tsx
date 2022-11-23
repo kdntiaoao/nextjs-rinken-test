@@ -129,7 +129,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
     }
     // 現在の問題番号と解答数が合わないとき
     if (answering.currentNumber !== answering.selectedAnswers.length + 1) {
-      setAnswering((prev) => prev && { ...prev, currentNumber: answering.selectedAnswers.length + 1 })
+      setAnswering((prev) => prev && { ...prev, currentNumber: prev.firstNumber + answering.selectedAnswers.length })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
