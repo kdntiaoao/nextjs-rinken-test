@@ -22,22 +22,23 @@ import { timeframeToJapanese } from 'utils'
 type PageProps = {
   year: string
   timeframe: 'am' | 'pm'
-  questionNumber: string
-  questionData: typeof questions[keyof typeof questions]
+  questionNumberSection: string
+  questionData: typeof questions[keyof typeof questions]['questionData']
+  answerData: number[][]
 }
 
 type PathsType = {
   params: {
     year: string
     timeframe: 'am' | 'pm'
-    questionNumber: string
+    questionNumberSection: string
   }
 }
 
 const scroll = Scroll.animateScroll
 
 // eslint-disable-next-line react/display-name
-const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumber, questionData }: PageProps) => {
+const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questionNumberSection, questionData, answerData }: PageProps) => {
   const [answering, setAnswering] = useAtom(answeringAtom)
   const setIncorrects = useUpdateAtom(incorrectsAtom)
   const router = useRouter()
@@ -46,12 +47,12 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
   const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
   const [thinking, setThinking] = useState<boolean>(true)
   const currentQuestion = useMemo(
-    () => answering && questionData.questionData[answering.currentNumber - 1],
-    [answering, questionData.questionData]
+    () => answering && questionData[answering.currentNumber - answering.firstNumber],
+    [answering, questionData]
   )
   const answerIndex = useMemo(
-    () => answering && questionData.answerData[answering.currentNumber - 1].map((answer) => answer - 1),
-    [answering, questionData.answerData]
+    () => answering && answerData[answering.currentNumber - answering.firstNumber].map((answer) => answer - 1),
+    [answerData, answering]
   )
   const { selectedAnswer, changeSelect, resetSelect } = useSelectedAnswer(answerIndex?.length || 0, thinking)
 
@@ -101,7 +102,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
   const handleNextQuestion = useCallback(async () => {
     // 最後の問題を解答したとき
     if (answering?.currentNumber === answering?.lastNumber) {
-      await router.push(`/${year}/${timeframe}/${questionNumber}/result`)
+      await router.push(`/${year}/${timeframe}/${questionNumberSection}/result`)
     }
 
     setDisabled(true)
@@ -113,7 +114,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
     } finally {
       setDisabled(false)
     }
-  }, [answering, questionNumber, resetSelect, router, setAnswering, timeframe, year])
+  }, [answering, questionNumberSection, resetSelect, router, setAnswering, timeframe, year])
 
   const handleOpenDialog = useCallback(() => setOpenDialog(true), [])
 
@@ -125,7 +126,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
     }
     // 最後の問題を解答したとき
     if (answering.currentNumber === answering.lastNumber) {
-      router.push(`/${year}/${timeframe}/${questionNumber}/result`)
+      router.push(`/${year}/${timeframe}/${questionNumberSection}/result`)
     }
     // 現在の問題番号と解答数が合わないとき
     if (answering.currentNumber !== answering.selectedAnswers.length + 1) {
@@ -145,7 +146,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
   }
 
   return (
-    <DefaultLayout title={`第${Number(year) - 1953}回${timeframeToJapanese(timeframe)}${questionNumber} | 臨検テスト`}>
+    <DefaultLayout title={`第${Number(year) - 1953}回${timeframeToJapanese(timeframe)}${questionNumberSection} | 臨検テスト`}>
       <Container>
         <div className="py-10">
           <Link href={`/${year}/${timeframe}`}>
@@ -234,7 +235,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(({ year, timeframe, questio
 export const getStaticPaths: GetStaticPaths = async () => {
   const years = ['2020', '2019', '2018', '2017', '2016', '2015']
   const timeframes: ['am', 'pm'] = ['am', 'pm']
-  const questionNumbers = [
+  const questionNumberSections = [
     '1-10',
     '11-20',
     '21-30',
@@ -250,8 +251,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths: PathsType[] = []
   for (const year of years) {
     for (const timeframe of timeframes) {
-      for (const questionNumber of questionNumbers) {
-        paths.push({ params: { year, timeframe, questionNumber } })
+      for (const questionNumberSection of questionNumberSections) {
+        paths.push({ params: { year, timeframe, questionNumberSection } })
       }
     }
   }
@@ -264,10 +265,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsContext) => {
   const year = params?.year as '2020' | '2019' | '2018' | '2017' | '2016' | '2015' | undefined
   const timeframe = params?.timeframe as 'am' | 'pm' | undefined
-  const questionNumber = params?.questionNumber
-  const questionData = year && timeframe && questions[`${year}${timeframe}`]
+  const questionNumberSection = params?.questionNumberSection
+  const firstNumber = Number(params?.questionNumberSection?.toString().split('-')[0])
+  const lastNumber = Number(params?.questionNumberSection?.toString().split('-')[1])
+  const questionData = year && timeframe && questions[`${year}${timeframe}`].questionData.slice(firstNumber - 1, lastNumber)
+  const answerData = year && timeframe && questions[`${year}${timeframe}`].answerData.slice(firstNumber - 1, lastNumber)
   return {
-    props: { year, timeframe, questionNumber, questionData },
+    props: { year, timeframe, questionNumberSection, questionData, answerData },
   }
 }
 
