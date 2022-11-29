@@ -4,6 +4,7 @@ type Props = ComponentPropsWithoutRef<'button'> & {
   color?: 'primary' | 'secondary'
   component?: 'span' | 'button'
   shape?: 'square' | 'rounded' | 'rounded-full'
+  size?: 'sm' | 'base'
   variant?: 'contained' | 'outlined' | 'text'
   startIcon?: ReactNode
   endIcon?: ReactNode
@@ -15,9 +16,10 @@ type Props = ComponentPropsWithoutRef<'button'> & {
 export const PrimaryButton = memo(
   ({
     color = 'primary',
-    component: CustomTag = 'span',
+    component: CustomTag = 'button',
     disabled,
     shape = 'rounded',
+    size = 'base',
     type,
     variant = 'text',
     startIcon,
@@ -42,10 +44,18 @@ export const PrimaryButton = memo(
       }
     }, [color, variant])
 
+    const paddingY = useMemo(() => {
+      if (size === 'sm') {
+        return 'py-2'
+      } else if (size === 'base') {
+        return 'py-3'
+      }
+    }, [size])
+
     return (
       <CustomTag
         type={type || (CustomTag === 'button' ? 'button' : undefined)}
-        className={`relative flex w-full select-none items-center justify-center gap-2 overflow-hidden py-3 px-3 text-center sm:px-8 ${
+        className={`relative flex w-full select-none items-center justify-center gap-2 overflow-hidden ${paddingY} px-3 text-center sm:px-8 ${
           shape === 'square' ? '' : shape
         } ${bgcolor}`}
         disabled={disabled}

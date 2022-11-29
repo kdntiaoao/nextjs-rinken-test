@@ -8,7 +8,7 @@ import { Badge } from 'components/atoms'
 
 type Props = {
   darkMode: boolean
-  menus: { title: string; url: string; badge?: ReactNode }[]
+  menus: { title: string; url: string; badge?: ReactNode, onClick?: () => void }[]
   openMenu: boolean
   changeTheme: () => void
   handleToggleMenu: () => void
@@ -80,7 +80,7 @@ export const Header = memo(
                   </div>
                   <nav>
                     <ul>
-                      {menus.map(({ title, url, badge }, index) => (
+                      {menus.map(({ title, url, badge, onClick }, index) => (
                         <li
                           key={title}
                           className={`${
@@ -90,7 +90,7 @@ export const Header = memo(
                           <Link href={url} legacyBehavior>
                             <a
                               className="flex items-center gap-4 p-4 md:hover:bg-primary-400/10 active:bg-primary-400/20 md:dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20"
-                              onClick={handleToggleMenu}
+                              onClick={onClick || handleToggleMenu}
                             >
                               <span className="flex flex-1 items-center gap-2">
                                 {title}
