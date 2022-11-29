@@ -5,14 +5,14 @@ import { db } from '../../firebase/client'
 
 const fetchHistory = async (uid: string | undefined) => {
   if (!uid) {
-    return null
+    return
   }
 
   const docSnap = await getDoc(doc(db, 'history', uid))
   if (docSnap.exists()) {
     return docSnap.data()
   } else {
-    return null
+    return {}
   }
 }
 

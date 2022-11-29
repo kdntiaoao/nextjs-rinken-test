@@ -41,10 +41,11 @@ const HistoryPage: NextPage = memo(() => {
         datasets: [],
       }
     }
-    const sortedHistory = Object.entries(history).sort((a, b) => Number(a[0]) - Number(b[0])).slice(-5)
+    const sortedHistory = Object.entries(history)
+      .sort((a, b) => Number(a[0]) - Number(b[0]))
+      .slice(-5)
     // eslint-disable-next-line no-unused-vars
     const labels = sortedHistory.map(([_, val]) => {
-      console.log(_.slice(-7), 'percent: ', val.percent)
       const year = val.id.split('_')[0]
       const timeframe = val.id.split('_')[1]
       const questionNumberSection = val.id.split('_')[2]
@@ -83,7 +84,7 @@ const HistoryPage: NextPage = memo(() => {
         <div className="py-10">
           <PageHeading component="h1">履歴</PageHeading>
           <div className="mt-20 overflow-x-auto">
-            <Line options={options} data={data} />
+            {history && Object.keys(history).length > 0 ? <Line options={options} data={data} /> : <p>データがありません</p>}
           </div>
         </div>
       </Container>

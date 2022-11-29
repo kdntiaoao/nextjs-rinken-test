@@ -118,7 +118,6 @@ const QuestionNumberPage: NextPage<PageProps> = memo(
               percent,
             },
           }
-          console.log(timestamp, data)
           await setDoc(doc(db, 'history', authUser.uid), data, { merge: true })
         }
         await router.push(`/${year}/${timeframe}/${questionNumberSection}/result`)
