@@ -45,15 +45,19 @@ const HistoryPage: NextPage = memo(() => {
       .sort((a, b) => Number(a[0]) - Number(b[0]))
       .slice(-5)
     // eslint-disable-next-line no-unused-vars
-    const labels = sortedHistory.map(([_, val]) => {
+    const labels = sortedHistory.map(([_, untypedVal]) => {
+      const val = untypedVal as { id: string; percent: number }
       const year = val.id.split('_')[0]
-      const timeframe = val.id.split('_')[1]
+      const timeframe = val.id.split('_')[1] as 'am' | 'pm'
       const questionNumberSection = val.id.split('_')[2]
       return [`第${Number(year) - 1953}回${timeframeToJapanese(timeframe)}`, `${questionNumberSection}`]
     })
 
     // eslint-disable-next-line no-unused-vars
-    const data = sortedHistory.map(([_, val]) => val.percent * 100)
+    const data = sortedHistory.map(([_, untypedVal]) => {
+      const val = untypedVal as { id: string; percent: number }
+      return val.percent * 100
+    })
 
     return {
       labels,
@@ -84,7 +88,11 @@ const HistoryPage: NextPage = memo(() => {
         <div className="py-10">
           <PageHeading component="h1">履歴</PageHeading>
           <div className="mt-20 overflow-x-auto">
-            {history && Object.keys(history).length > 0 ? <Line options={options} data={data} /> : <p>データがありません</p>}
+            {history && Object.keys(history).length > 0 ? (
+              <Line options={options} data={data} />
+            ) : (
+              <p>データがありません</p>
+            )}
           </div>
         </div>
       </Container>
