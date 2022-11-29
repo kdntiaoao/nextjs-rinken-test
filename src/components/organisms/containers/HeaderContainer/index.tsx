@@ -41,15 +41,14 @@ export const HeaderContainer = memo(() => {
       { title: '検索', url: '/search' },
     ]
     if (authUser?.uid) {
-      array.push({ title: 'ログアウト', url: '/login', onClick: handleLogout })
+      array.push({ title: '履歴', url: '/history' }, { title: 'ログアウト', url: '/login', onClick: handleLogout })
     } else {
       array.push({ title: 'ログイン', url: '/login' })
     }
     return array
   }, [authUser?.uid, handleLogout, incorrects?.length])
 
-  useEffect(() => {
-  }, [authUser])
+  useEffect(() => {}, [authUser])
 
   return (
     <Header

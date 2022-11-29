@@ -111,13 +111,13 @@ export const Header = memo(
           <div className="fixed left-0 top-20 bottom-0 z-10 hidden w-80 border-r border-primary-100 bg-white dark:border-slate-600 dark:bg-slate-800 xl:block">
             <nav>
               <ul>
-                {menus.map(({ title, url, badge }, index) => (
+                {menus.map(({ title, url, badge, onClick }, index) => (
                   <li
                     key={title}
                     className={`${index !== 0 && 'border-t'} select-none border-t-primary-100 dark:border-t-slate-600`}
                   >
                     <Link href={url} legacyBehavior>
-                      <a className="flex items-center gap-4 p-4 md:hover:bg-primary-400/10 active:bg-primary-400/20 md:dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20">
+                      <a className="flex items-center gap-4 p-4 md:hover:bg-primary-400/10 active:bg-primary-400/20 md:dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20" onClick={onClick}>
                         <span className="flex flex-1 items-center gap-2">
                           {title}
                           {badge ? <Badge color="secondary">{badge}</Badge> : null}
