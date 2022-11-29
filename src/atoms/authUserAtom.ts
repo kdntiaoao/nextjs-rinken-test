@@ -10,14 +10,10 @@ authUserAtom.onMount = (setAtom) => {
   const unsubscribe = onAuthStateChanged(auth, (user) => {
     if (user) {
       setAtom({ uid: user.uid })
-      console.log('user:', user.uid)
-    } else {
-      console.log('no user')
     }
   })
 
   return () => {
-    console.log('clean up')
     unsubscribe()
   }
 }

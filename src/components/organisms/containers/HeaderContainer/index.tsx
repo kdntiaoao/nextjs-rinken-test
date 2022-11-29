@@ -23,7 +23,6 @@ export const HeaderContainer = memo(() => {
   const setDarkMode = useUpdateAtom(darkModeAtom)
 
   const handleLogout = useCallback(async () => {
-    console.log('logout')
     await signOut(auth)
     setAuthUser(null)
   }, [setAuthUser])
@@ -41,7 +40,6 @@ export const HeaderContainer = memo(() => {
       { title: '見直し', url: '/check', badge: incorrects?.length },
       { title: '検索', url: '/search' },
     ]
-    console.log('header container auth: ', authUser?.uid)
     if (authUser?.uid) {
       array.push({ title: 'ログアウト', url: '/login', onClick: handleLogout })
     } else {
@@ -51,7 +49,6 @@ export const HeaderContainer = memo(() => {
   }, [authUser?.uid, handleLogout, incorrects?.length])
 
   useEffect(() => {
-    console.log('uid: ', authUser?.uid)
   }, [authUser])
 
   return (

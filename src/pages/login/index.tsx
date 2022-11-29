@@ -27,9 +27,7 @@ const LoginPage: NextPage = memo(() => {
     async ({ email, password }: Inputs) => {
       setLoading(true)
       try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password)
-        const user = userCredential.user
-        console.log(user)
+        await signInWithEmailAndPassword(auth, email, password)
         await router.push('/')
       } catch (error) {
         setErrors({
