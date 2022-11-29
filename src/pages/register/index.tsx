@@ -26,9 +26,7 @@ const RegisterPage: NextPage = memo(() => {
   const onSubmit = useCallback(async ({ email, password }: Inputs) => {
     setLoading(true)
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-      const user = userCredential.user
-      console.log(user)
+      await createUserWithEmailAndPassword(auth, email, password)
       await router.push('/')
     } catch (error) {
       setErrors({
