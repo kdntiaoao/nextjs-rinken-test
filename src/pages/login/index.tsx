@@ -48,7 +48,7 @@ const LoginPage: NextPage = memo(() => {
   }, [router])
 
   return (
-    <DefaultLayout title="臨検テスト">
+    <DefaultLayout title="ログイン | 臨検テスト">
       <LoadingScreen loading={loading} />
       <Container>
         <div className="py-10">
