@@ -18,6 +18,7 @@
     "@hookform/resolvers": "^2.9.10",
     "@next/bundle-analyzer": "^13.0.4",
     "chart.js": "^4.0.1",
+    "date-fns": "^2.29.3",
     "firebase": "^9.14.0",
     "framer-motion": "^7.6.2",
     "jotai": "^1.9.1",

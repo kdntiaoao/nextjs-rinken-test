@@ -61,12 +61,12 @@ export const Header = memo(
                 >
                   <div className="flex h-20 items-center justify-between px-4">
                     <button
-                      className="flex h-12 w-20 items-center rounded-full bg-yellow-200 p-2 transition-all duration-300 dark:bg-violet-400"
+                      className="flex h-12 w-20 items-center rounded-full bg-yellow-200 p-1 transition-all duration-300 dark:bg-violet-400"
                       onClick={changeTheme}
                       aria-label={darkMode ? 'ライトモードに変更する' : 'ダークモードに変更する'}
                     >
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-500 text-white transition-all duration-300 dark:translate-x-8 dark:bg-violet-600">
-                        {darkMode ? <MoonIcon className="h-6 w-6" /> : <SunIcon className="h-6 w-6" />}
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-500 text-white transition-all duration-300 dark:translate-x-8 dark:bg-violet-600">
+                        {darkMode ? <MoonIcon className="h-7 w-7" /> : <SunIcon className="h-7 w-7" />}
                       </span>
                     </button>
                     <button
@@ -94,7 +94,7 @@ export const Header = memo(
                             >
                               <span className="flex flex-1 items-center gap-2">
                                 {title}
-                                {badge ? <Badge color="secondary">{badge}</Badge> : null}
+                                {badge ? <Badge color="warning">{badge}</Badge> : null}
                               </span>
                               {<ChevronRightIcon className="h-6 w-6" />}
                             </a>
@@ -120,7 +120,7 @@ export const Header = memo(
                       <a className="flex items-center gap-4 p-4 md:hover:bg-primary-400/10 active:bg-primary-400/20 md:dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20" onClick={onClick}>
                         <span className="flex flex-1 items-center gap-2">
                           {title}
-                          {badge ? <Badge color="secondary">{badge}</Badge> : null}
+                          {badge ? <Badge color="warning">{badge}</Badge> : null}
                         </span>
                         {<ChevronRightIcon className="h-6 w-6" />}
                       </a>
