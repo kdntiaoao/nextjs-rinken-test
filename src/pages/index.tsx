@@ -29,16 +29,15 @@ const HomePage: NextPage = memo(() => {
                   <ul className="mt-4 overflow-hidden rounded border border-primary-400">
                     <li className="break-keep">
                       <Link href={`/${year}/am`}>
-                        <PrimaryButton shape="square" startIcon={<ChevronRightIcon className="h-5 w-5" />}>
+                        <PrimaryButton shape="square" endIcon={<ChevronRightIcon className="h-5 w-5" />}>
                           第{year - 1953}回 午前
                         </PrimaryButton>
                       </Link>
                     </li>
                     <li className="break-keep border-t border-t-primary-400">
                       <Link href={`/${year}/pm`}>
-                        <PrimaryButton shape="square" startIcon={<ChevronRightIcon className="h-5 w-5" />}>
-                          第{year - 1953}回<wbr />
-                          午後
+                        <PrimaryButton shape="square" endIcon={<ChevronRightIcon className="h-5 w-5" />}>
+                          第{year - 1953}回 午後
                         </PrimaryButton>
                       </Link>
                     </li>

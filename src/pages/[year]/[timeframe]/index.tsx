@@ -56,7 +56,7 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe }: PageProps)
                     href={`/${year}/${timeframe}/${index * 10 + 1}-${index * 10 + 10}`}
                     onClick={() => handleClick(index * 10 + 1, index * 10 + 10)}
                   >
-                    <PrimaryButton variant="outlined" startIcon={<ChevronRightIcon className="h-5 w-5" />}>
+                    <PrimaryButton variant="outlined" endIcon={<ChevronRightIcon className="h-5 w-5" />}>
                       {index * 10 + 1}〜{index * 10 + 10}
                     </PrimaryButton>
                   </Link>
@@ -64,7 +64,7 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe }: PageProps)
               ))}
               <li className="break-keep">
                 <Link href={`/${year}/${timeframe}/1-100`} onClick={() => handleClick(1, 100)}>
-                  <PrimaryButton variant="outlined" startIcon={<ChevronRightIcon className="h-5 w-5" />}>
+                  <PrimaryButton variant="outlined" endIcon={<ChevronRightIcon className="h-5 w-5" />}>
                     1〜100
                   </PrimaryButton>
                 </Link>
