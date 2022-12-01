@@ -85,7 +85,6 @@ const HistoryPage: NextPage = memo(() => {
       .sort((a, b) => Number(a[0]) - Number(b[0]))
       .map((d) => {
         const copyAry = [...d]
-        console.log(copyAry)
         const year = copyAry[1].id.split('_')[0]
         const timeframe = copyAry[1].id.split('_')[1] as 'am' | 'pm'
         const questionNumberSection = copyAry[1].id.split('_')[2]
