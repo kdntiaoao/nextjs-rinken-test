@@ -1,14 +1,15 @@
 import Link from 'next/link'
 import { memo, MouseEvent, ReactNode } from 'react'
 
-import { Bars3Icon, ChevronRightIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, ChevronRightIcon,  XMarkIcon } from '@heroicons/react/24/outline'
 import { AnimatePresence, motion } from 'framer-motion'
 
 import { Badge } from 'components/atoms'
+import { DarkModeButton } from 'components/molecules'
 
 type Props = {
   darkMode: boolean
-  menus: { title: string; url: string; badge?: ReactNode, onClick?: () => void }[]
+  menus: { title: string; url: string; badge?: ReactNode; onClick?: () => void }[]
   openMenu: boolean
   changeTheme: () => void
   handleToggleMenu: () => void
@@ -26,23 +27,20 @@ export const Header = memo(
             <span className="flex min-h-[48px] items-center text-xl font-bold">臨検テスト</span>
           </Link>
 
-          <button
-            className="hidden rounded-full p-3 active:bg-primary-400/20 dark:active:bg-slate-400/20 md:hover:bg-primary-400/10 md:dark:hover:bg-slate-400/10 xl:flex xl:items-center xl:justify-center"
-            onClick={changeTheme}
-            aria-label={darkMode ? 'ライトモードに変更する' : 'ダークモードに変更する'}
-          >
-            {darkMode ? <MoonIcon className="h-6 w-6" /> : <SunIcon className="h-6 w-6" />}
-          </button>
+          <div className="hidden xl:block">
+            <DarkModeButton darkMode={darkMode} onClick={changeTheme} />
+          </div>
 
           <button
             type="button"
-            className="flex h-12 w-12 select-none items-center justify-center rounded-full md:hover:bg-primary-400/10 active:bg-primary-400/20 md:dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20 xl:hidden"
+            className="flex h-12 w-12 select-none items-center justify-center rounded-full active:bg-primary-400/20 dark:active:bg-slate-400/20 md:hover:bg-primary-400/10 md:dark:hover:bg-slate-400/10 xl:hidden"
             onClick={handleToggleMenu}
             aria-label="メニューを開く"
           >
             {<Bars3Icon className="h-7 w-7" />}
           </button>
 
+          {/* メニュー */}
           <AnimatePresence>
             {openMenu && (
               <div
@@ -60,18 +58,10 @@ export const Header = memo(
                   onClick={preventPropagation}
                 >
                   <div className="flex h-20 items-center justify-between px-4">
-                    <button
-                      className="flex h-12 w-20 items-center rounded-full bg-yellow-200 p-1 transition-all duration-300 dark:bg-violet-400"
-                      onClick={changeTheme}
-                      aria-label={darkMode ? 'ライトモードに変更する' : 'ダークモードに変更する'}
-                    >
-                      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-500 text-white transition-all duration-300 dark:translate-x-8 dark:bg-violet-600">
-                        {darkMode ? <MoonIcon className="h-7 w-7" /> : <SunIcon className="h-7 w-7" />}
-                      </span>
-                    </button>
+                    <DarkModeButton darkMode={darkMode} onClick={changeTheme} />
                     <button
                       type="button"
-                      className="flex h-12 w-12 select-none items-center justify-center rounded-full md:hover:bg-primary-400/10 active:bg-primary-400/20 md:dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20"
+                      className="flex h-12 w-12 select-none items-center justify-center rounded-full active:bg-primary-400/20 dark:active:bg-slate-400/20 md:hover:bg-primary-400/10 md:dark:hover:bg-slate-400/10"
                       onClick={handleToggleMenu}
                       aria-label="メニューを閉じる"
                     >
@@ -89,7 +79,7 @@ export const Header = memo(
                         >
                           <Link href={url} legacyBehavior>
                             <a
-                              className="flex items-center gap-4 p-4 md:hover:bg-primary-400/10 active:bg-primary-400/20 md:dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20"
+                              className="flex items-center gap-4 p-4 active:bg-primary-400/20 dark:active:bg-slate-400/20 md:hover:bg-primary-400/10 md:dark:hover:bg-slate-400/10"
                               onClick={onClick || handleToggleMenu}
                             >
                               <span className="flex flex-1 items-center gap-2">
@@ -117,7 +107,10 @@ export const Header = memo(
                     className={`${index !== 0 && 'border-t'} select-none border-t-primary-100 dark:border-t-slate-600`}
                   >
                     <Link href={url} legacyBehavior>
-                      <a className="flex items-center gap-4 p-4 md:hover:bg-primary-400/10 active:bg-primary-400/20 md:dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20" onClick={onClick}>
+                      <a
+                        className="flex items-center gap-4 p-4 active:bg-primary-400/20 dark:active:bg-slate-400/20 md:hover:bg-primary-400/10 md:dark:hover:bg-slate-400/10"
+                        onClick={onClick}
+                      >
                         <span className="flex flex-1 items-center gap-2">
                           {title}
                           {badge ? <Badge color="warning">{badge}</Badge> : null}
