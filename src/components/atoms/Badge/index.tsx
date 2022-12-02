@@ -18,7 +18,7 @@ export const Badge = memo(({ color = 'primary', children }: Props) => {
   }, [color])
   return (
     <span
-      className={`flex h-6 w-6 items-center justify-center rounded-full text-sm text-white dark:text-slate-800 ${classColor}`}
+      className={`flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full p-0.5 text-xs text-white dark:text-slate-800 ${classColor}`}
     >
       {children}
     </span>
