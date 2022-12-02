@@ -1,4 +1,4 @@
-import { memo, MouseEvent, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, MouseEvent, ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { signOut } from 'firebase/auth'
 import { useAtom, useAtomValue } from 'jotai'
@@ -47,8 +47,6 @@ export const HeaderContainer = memo(() => {
     }
     return array
   }, [authUser?.uid, handleLogout, incorrects?.length])
-
-  useEffect(() => {}, [authUser])
 
   return (
     <Header

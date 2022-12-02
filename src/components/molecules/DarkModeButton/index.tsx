@@ -1,6 +1,8 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useMemo, useRef, useState } from 'react'
 
 import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'
+
+import { useDidUpdateEffect } from 'hooks'
 
 type Props = {
   darkMode: boolean
@@ -22,7 +24,7 @@ export const DarkModeButton = memo(({ darkMode, onClick }: Props) => {
     [grayscale]
   )
 
-  useEffect(() => {
+  useDidUpdateEffect(() => {
     setGrayscale(false)
     clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => {
@@ -37,9 +39,11 @@ export const DarkModeButton = memo(({ darkMode, onClick }: Props) => {
       onClick={onClick}
       aria-label={darkMode ? 'ライトモードに変更する' : 'ダークモードに変更する'}
     >
-      <span className={`flex h-8 w-14 items-center rounded-full p-1 transition-all duration-300 ${containerColor}`}>
+      <span
+        className={`flex h-8 w-14 items-center rounded-full p-1 transition-all delay-[0] duration-300 ${containerColor}`}
+      >
         <span
-          className={`flex h-6 w-6 items-center justify-center rounded-full transition-all duration-300 dark:translate-x-6 ${iconColor}`}
+          className={`flex h-6 w-6 items-center justify-center rounded-full transition-all delay-[0] duration-300 dark:translate-x-6 ${iconColor}`}
         >
           {darkMode ? (
             <MoonIcon className="h-5 w-5" strokeWidth={2} />
