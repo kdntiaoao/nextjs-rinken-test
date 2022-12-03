@@ -1,4 +1,5 @@
 export { Badge } from './Badge'
+export { Box } from './Box'
 export { CircleProgress } from './CircleProgress'
 export { Container } from './Container'
 export { HeaderCloseButton } from './HeaderCloseButton'

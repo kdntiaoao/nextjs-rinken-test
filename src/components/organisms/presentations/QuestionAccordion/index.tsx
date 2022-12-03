@@ -1,14 +1,12 @@
 import Image from 'next/image'
 import { memo, MouseEvent, ReactNode } from 'react'
 
-import { ChevronDownIcon, MagnifyingGlassPlusIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { ChevronDownIcon, MagnifyingGlassPlusIcon } from '@heroicons/react/24/outline'
 import { AnimatePresence, motion } from 'framer-motion'
 
-import { SmallHeading } from 'components/atoms'
-import { ImageDialog } from 'components/molecules'
+import { ImageDialog, QuestionAccordionHeading } from 'components/molecules'
 import { Question } from 'types/question'
 import { Overwrite } from 'types/utils'
-import { timeframeToJapanese } from 'utils'
 
 type Props = {
   answer: number[]
@@ -57,27 +55,15 @@ export const QuestionAccordion = memo(
         id={`accordion_${year}_${timeframe}_${questionNumber}`}
         className="rounded bg-amber-50/30 dark:bg-slate-700/30"
       >
-        <div className="min-h-[48px] px-3 py-4" onClick={openAccordion ? handleCloseAccordion : handleOpenAccordion}>
-          <SmallHeading>
-            {handleDeleteQuestion && `第${Number(year) - 1953}回${timeframeToJapanese(timeframe)} `}問題{questionNumber}
-          </SmallHeading>
-          <div className="mt-4">
-            <div className="flex items-start justify-between gap-2">
-              <p className={`flex-1 ${openAccordion ? '' : 'truncate'}`}>{question.question}</p>
-              {handleDeleteQuestion && (
-                <button
-                  className="select-none rounded-full p-1 md:hover:bg-primary-400/10 active:bg-primary-400/20"
-                  onClick={(event) => handleDeleteQuestion(event, year, timeframe, questionNumber)}
-                  aria-label={`第${Number(year) - 1953}回${timeframeToJapanese(
-                    timeframe
-                  )}問題${questionNumber}を削除する`}
-                >
-                  {<TrashIcon className="h-6 w-6" />}
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
+        <QuestionAccordionHeading
+          openAccordion={openAccordion}
+          question={question.question}
+          questionNumber={questionNumber}
+          timeframe={timeframe}
+          year={year}
+          onClick={openAccordion ? handleCloseAccordion : handleOpenAccordion}
+          onDelete={handleDeleteQuestion}
+        />
 
         <AnimatePresence initial={false}>
           {openAccordion && (
