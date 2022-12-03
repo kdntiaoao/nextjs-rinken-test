@@ -63,7 +63,7 @@ const LoginPage: NextPage = memo(() => {
             </li>
           </ul>
           <div className="mt-10 md:mt-16">
-            <UserForm errors={errors} isResister onSubmit={onSubmit} />
+            <UserForm errors={errors} isResister={false} onSubmit={onSubmit} />
           </div>
         </div>
       </Container>

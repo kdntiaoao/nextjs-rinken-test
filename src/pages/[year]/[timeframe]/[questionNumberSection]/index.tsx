@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { MagnifyingGlassPlusIcon } from '@heroicons/react/24/outline'
 import { doc, setDoc } from 'firebase/firestore'
 import { useAtom, useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
@@ -16,8 +15,8 @@ import { questions } from 'assets/questions'
 import { answeringAtom } from 'atoms/answeringAtom'
 import { authUserAtom } from 'atoms/authUserAtom'
 import { incorrectsAtom } from 'atoms/incorrectsAtom'
-import { Container, LinkButton, PrimaryButton, SmallHeading } from 'components/atoms'
-import { AnimateQuestion, ImageDialog, LoadingScreen, ResultIcon } from 'components/molecules'
+import { Container, LinkButton, PrimaryButton } from 'components/atoms'
+import { AnimateQuestion, ImageDialog, LoadingScreen, QuestionStatement, ResultIcon } from 'components/molecules'
 import { CheckBoxListContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 import { useSelectedAnswer } from 'hooks'
@@ -62,48 +61,46 @@ const QuestionNumberPage: NextPage<PageProps> = memo(
     )
     const { selectedAnswer, changeSelect, resetSelect } = useSelectedAnswer(answerIndex?.length || 0, thinking)
 
-    const checkAnswer = useCallback(
-      (year: string, timeframe: 'am' | 'pm', questionNumber: number, selectedAnsswer: number[]) => {
-        const sortedAnswer = selectedAnsswer.sort()
-        const result = sortedAnswer.toString() === answerIndex?.toString()
-        setAnswering((prev) => {
-          if (!prev) {
-            return prev
-          }
-          // 正解のとき
-          if (result) {
-            return {
-              ...prev,
-              correctCount: prev.correctCount + 1,
-              selectedAnswers: [...prev.selectedAnswers, sortedAnswer],
-            }
-          }
-          return { ...prev, selectedAnswers: [...prev.selectedAnswers, sortedAnswer] }
-        })
-        setCorrect(result)
-        setThinking(false)
-        // 不正解のとき
-        if (!result) {
-          setIncorrects((prev) =>
-            prev
-              ? [
-                  // 間違えた問題がすでに保存されているときは、保存されているものを削除
-                  ...prev.filter(
-                    (question: { year: string; timeframe: 'am' | 'pm'; questionNumber: number }) =>
-                      !(
-                        question.year === year &&
-                        question.timeframe === timeframe &&
-                        question.questionNumber === questionNumber
-                      )
-                  ),
-                  { year, timeframe, questionNumber, selectedAnswer },
-                ]
-              : [{ year, timeframe, questionNumber, selectedAnswer }]
-          )
+    const checkAnswer = useCallback(() => {
+      const questionNumber = answering?.currentNumber || 0
+      const sortedAnswer = selectedAnswer.sort()
+      const result = sortedAnswer.toString() === answerIndex?.toString()
+      setAnswering((prev) => {
+        if (!prev) {
+          return prev
         }
-      },
-      [answerIndex, selectedAnswer, setAnswering, setIncorrects]
-    )
+        // 正解のとき
+        if (result) {
+          return {
+            ...prev,
+            correctCount: prev.correctCount + 1,
+            selectedAnswers: [...prev.selectedAnswers, sortedAnswer],
+          }
+        }
+        return { ...prev, selectedAnswers: [...prev.selectedAnswers, sortedAnswer] }
+      })
+      setCorrect(result)
+      setThinking(false)
+      // 不正解のとき
+      if (!result) {
+        setIncorrects((prev) =>
+          prev
+            ? [
+                // 間違えた問題がすでに保存されているときは、保存されているものを削除
+                ...prev.filter(
+                  (question: { year: string; timeframe: 'am' | 'pm'; questionNumber: number }) =>
+                    !(
+                      question.year === year &&
+                      question.timeframe === timeframe &&
+                      question.questionNumber === questionNumber
+                    )
+                ),
+                { year, timeframe, questionNumber, selectedAnswer },
+              ]
+            : [{ year, timeframe, questionNumber, selectedAnswer }]
+        )
+      }
+    }, [answerIndex, answering?.currentNumber, selectedAnswer, setAnswering, setIncorrects, timeframe, year])
 
     const handleNextQuestion = useCallback(async () => {
       // 最後の問題を解答したとき
@@ -177,63 +174,43 @@ const QuestionNumberPage: NextPage<PageProps> = memo(
 
             <div className="relative mt-8">
               <AnimateQuestion animateKey={answering?.currentNumber.toString()}>
-                <SmallHeading>問題{answering?.currentNumber}</SmallHeading>
-                <div className="mt-4">
-                  <p>{currentQuestion?.question}</p>
+                <QuestionStatement
+                  currentNumber={answering.currentNumber}
+                  imgUrl={currentQuestion?.img}
+                  question={currentQuestion ? currentQuestion?.question : ''}
+                  timeframe={timeframe}
+                  year={year}
+                  onOpenDialog={handleOpenDialog}
+                />
 
-                  {currentQuestion?.img && (
-                    <button
-                      type="button"
-                      onClick={handleOpenDialog}
-                      className="relative mx-auto mt-6 block w-fit cursor-zoom-in text-black/40 md:hover:text-black"
-                    >
-                      <Image
-                        priority
-                        width={200}
-                        height={200}
-                        src={`/images/${year}${timeframe}/${currentQuestion.img}.jpg`}
-                        alt={`問題${answering?.currentNumber}の画像`}
-                        className="w-auto"
-                      />
-                      <span className="absolute bottom-4 right-4">
-                        {<MagnifyingGlassPlusIcon className="h-6 w-6" />}
-                      </span>
-                    </button>
-                  )}
-
-                  <div className="relative mt-6">
-                    <div className="flex-1">
-                      <CheckBoxListContainer
-                        answer={answerIndex || []}
-                        options={currentQuestion?.options || []}
-                        selectedAnswer={selectedAnswer}
-                        thinking={thinking}
-                        handleChange={changeSelect}
-                      />
+                <div className="relative mt-6">
+                  <div className="flex-1">
+                    <CheckBoxListContainer
+                      answer={answerIndex || []}
+                      options={currentQuestion?.options || []}
+                      selectedAnswer={selectedAnswer}
+                      thinking={thinking}
+                      handleChange={changeSelect}
+                    />
+                  </div>
+                  {!thinking && (
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                      <ResultIcon correct={correct} />
                     </div>
-                    {!thinking && (
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                        <ResultIcon correct={correct} />
-                      </div>
-                    )}
-                  </div>
+                  )}
+                </div>
 
-                  <div className="mt-10">
-                    <PrimaryButton
-                      color={thinking ? 'primary' : 'secondary'}
-                      component="button"
-                      disabled={disabled}
-                      shape="rounded-full"
-                      variant="contained"
-                      onClick={() =>
-                        thinking
-                          ? checkAnswer(year, timeframe, answering?.currentNumber || 0, selectedAnswer)
-                          : handleNextQuestion()
-                      }
-                    >
-                      {thinking ? '解答する' : '次の問題へ'}
-                    </PrimaryButton>
-                  </div>
+                <div className="mt-10">
+                  <PrimaryButton
+                    color={thinking ? 'primary' : 'secondary'}
+                    component="button"
+                    disabled={disabled}
+                    shape="rounded-full"
+                    variant="contained"
+                    onClick={() => (thinking ? checkAnswer() : handleNextQuestion())}
+                  >
+                    {thinking ? '解答する' : '次の問題へ'}
+                  </PrimaryButton>
                 </div>
               </AnimateQuestion>
 
