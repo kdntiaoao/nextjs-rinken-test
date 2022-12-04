@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { memo, MouseEvent, ReactNode } from 'react'
 
-import { ChevronDownIcon, MagnifyingGlassPlusIcon } from '@heroicons/react/24/outline'
+import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { AnimatePresence, motion } from 'framer-motion'
 
 import { ImageDialog, QuestionAccordionHeading } from 'components/molecules'
@@ -84,18 +84,18 @@ export const QuestionAccordion = memo(
                   <button
                     type="button"
                     onClick={handleOpenDialog}
-                    className="relative mx-auto mt-6 block w-fit cursor-zoom-in text-black/40 md:hover:text-black"
+                    className="relative mx-auto block w-fit max-w-full cursor-zoom-in"
                     aria-label="画像を拡大する"
                   >
-                    <Image
-                      priority
-                      width={200}
-                      height={200}
-                      src={`/images/${year}${timeframe}/${question.img}.jpg`}
-                      alt={`問題${questionNumber}の画像`}
-                      className="w-auto"
-                    />
-                    <span className="absolute bottom-4 right-4">{<MagnifyingGlassPlusIcon className="h-6 w-6" />}</span>
+                    <div className="h-52 w-80">
+                      <Image
+                        priority
+                        fill
+                        src={`/images/${year}${timeframe}/${question.img}.jpg`}
+                        alt={`問題${questionNumber}の画像`}
+                        className="object-contain"
+                      />
+                    </div>
                   </button>
                 </div>
               )}
