@@ -15,11 +15,11 @@ export const SearchField = memo(({ onSubmit }: Props) => {
   const { register, handleSubmit } = useForm<{ inputText: string }>()
 
   return (
-    <form className="flex flex-wrap gap-2 sm:gap-4" onSubmit={handleSubmit(onSubmit)}>
+    <form className="flex flex-wrap justify-center gap-2 sm:gap-4" onSubmit={handleSubmit(onSubmit)}>
       <input
         enterKeyHint="search"
         type="search"
-        className="flex-1 appearance-none rounded-none border-b-2 border-b-primary-600 bg-white px-2 py-2 outline-none dark:bg-slate-800 sm:px-4"
+        className="max-w-2xl flex-1 appearance-none rounded-none border-b-2 border-b-primary-600 bg-white px-2 py-2 outline-none dark:bg-slate-800 sm:px-4"
         {...register('inputText')}
       />
       <div>

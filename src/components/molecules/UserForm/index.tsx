@@ -42,7 +42,7 @@ export const UserForm = memo(({ errors: extraErrors, isResister, onSubmit }: Pro
           {...register('email')}
           id="email"
           type="email"
-          className="block h-12 w-full rounded border border-primary-600 px-4"
+          className="block h-12 w-full rounded border border-primary-600 bg-white px-4 dark:bg-slate-800"
         />
         <p className="absolute bottom-0 text-sm text-red-600">{extraErrors?.email.message || errors.email?.message}</p>
       </div>
@@ -55,7 +55,7 @@ export const UserForm = memo(({ errors: extraErrors, isResister, onSubmit }: Pro
           autoComplete="on"
           id="password"
           type="password"
-          className="block h-12 w-full rounded border border-primary-600 px-4"
+          className="block h-12 w-full rounded border border-primary-600 bg-white px-4 dark:bg-slate-800"
         />
         <p className="absolute bottom-0 text-sm text-red-600">
           {extraErrors?.password.message || errors.password?.message}
