@@ -1,8 +1,6 @@
 import Image from 'next/image'
 import { memo } from 'react'
 
-import { MagnifyingGlassPlusIcon } from '@heroicons/react/24/outline'
-
 import { SmallHeading } from 'components/atoms'
 
 type Props = {
@@ -27,17 +25,17 @@ export const QuestionStatement = memo(({ currentNumber, imgUrl, question, timefr
         <button
           type="button"
           onClick={onOpenDialog}
-          className="relative mx-auto mt-6 block w-fit cursor-zoom-in text-black/40 md:hover:text-black"
+          className="relative mx-auto mt-6 block w-fit max-w-full cursor-zoom-in overflow-x-hidden"
         >
-          <Image
-            priority
-            width={200}
-            height={200}
-            src={`/images/${year}${timeframe}/${imgUrl}.jpg`}
-            alt={`問題${currentNumber}の画像`}
-            className="w-auto"
-          />
-          <span className="absolute bottom-4 right-4">{<MagnifyingGlassPlusIcon className="h-6 w-6" />}</span>
+          <div className="h-52 w-80">
+            <Image
+              priority
+              fill
+              src={`/images/${year}${timeframe}/${imgUrl}.jpg`}
+              alt={`問題${currentNumber}の画像`}
+              className="object-contain"
+            />
+          </div>
         </button>
       )}
     </>
