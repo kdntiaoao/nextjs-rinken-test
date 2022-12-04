@@ -8,6 +8,7 @@ import { useAtomValue } from 'jotai'
 import { Bar } from 'react-chartjs-2'
 
 import { authUserAtom } from 'atoms/authUserAtom'
+import { darkModeAtom } from 'atoms/darkModeAtom'
 import { Container, PageHeading } from 'components/atoms'
 import { LoadingScreen } from 'components/molecules'
 import { DefaultLayout } from 'components/template/DefaultLayout'
@@ -16,27 +17,34 @@ import { timeframeToJapanese } from 'utils'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement)
 
-const options = {
-  responsive: true,
-  scales: {
-    x: {
-      grid: { display: false },
-    },
-    y: {
-      suggestedMin: 0,
-      suggestedMax: 100,
-      ticks: {
-        stepSize: 20,
-      },
-    },
-  },
-}
-
 // eslint-disable-next-line react/display-name
 const HistoryPage: NextPage = memo(() => {
   const router = useRouter()
   const authUser = useAtomValue(authUserAtom)
   const { history, loading } = useHistory(authUser?.uid)
+  const darkMode = useAtomValue(darkModeAtom)
+
+  const options = useMemo(
+    () => ({
+      responsive: true,
+      scales: {
+        x: {
+          border: { color: darkMode ? '#475569' : '#e5e7eb' },
+          grid: { display: false },
+        },
+        y: {
+          border: { color: darkMode ? '#475569' : '#e5e7eb' },
+          grid: { color: darkMode ? '#475569' : '#e5e7eb' },
+          suggestedMin: 0,
+          suggestedMax: 100,
+          ticks: {
+            stepSize: 20,
+          },
+        },
+      },
+    }),
+    [darkMode]
+  )
 
   const data = useMemo(() => {
     if (!history) {
@@ -45,17 +53,9 @@ const HistoryPage: NextPage = memo(() => {
         datasets: [],
       }
     }
-    const sortedHistory = Object.entries(history)
-      .sort((a, b) => Number(a[0]) - Number(b[0]))
-      .slice(-5)
+    const sortedHistory = Object.entries(history).sort((a, b) => Number(a[0]) - Number(b[0]))
     // eslint-disable-next-line no-unused-vars
-    const labels = sortedHistory.map(([_, untypedVal]) => {
-      const val = untypedVal as { id: string; percent: number }
-      const year = val.id.split('_')[0]
-      const timeframe = val.id.split('_')[1] as 'am' | 'pm'
-      const questionNumberSection = val.id.split('_')[2]
-      return [`第${Number(year) - 1953}回${timeframeToJapanese(timeframe)}`, `${questionNumberSection}`]
-    })
+    const labels = sortedHistory.map((_) => '')
 
     // eslint-disable-next-line no-unused-vars
     const data = sortedHistory.map(([_, untypedVal]) => {
@@ -71,7 +71,7 @@ const HistoryPage: NextPage = memo(() => {
           data,
           borderColor: 'rgb(76, 132, 53)',
           backgroundColor: 'rgba(76, 132, 53, 0.5)',
-          barThickness: 40,
+          maxBarThickness: 40,
         },
       ],
     }

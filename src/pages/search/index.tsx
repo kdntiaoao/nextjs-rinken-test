@@ -1,6 +1,8 @@
 import { NextPage } from 'next'
 import { Fragment, memo, useCallback, useEffect, useRef, useState } from 'react'
 
+import InfiniteScroll from 'react-infinite-scroller'
+
 import { questions } from 'assets/questions'
 import { Container, PageHeading } from 'components/atoms'
 import { LoadingScreen, SearchField } from 'components/molecules'
@@ -13,7 +15,7 @@ type ResultQuestions = Record<keyof typeof questions, (Question & { answer: numb
 
 // eslint-disable-next-line react/display-name
 const SearchPage: NextPage = memo(() => {
-  const [hasRemainingResults, setHasRemainingResults] = useState<boolean>(true) // 検索結果が残っているか
+  const [hasMore, setHasMore] = useState<boolean>(true) // 検索結果が残っているか
   const [loading, setLoading] = useState<boolean>(false)
   const [searchResultNumber, setSearchResultNumber] = useState<number>(0)
   const [showNumber, setShowNumber] = useState<number>(40)
@@ -51,7 +53,7 @@ const SearchPage: NextPage = memo(() => {
       sumNumber += matchQuestions.length
       if (sumNumber > 40) break
     }
-    sumNumber < 40 && setHasRemainingResults(false)
+    sumNumber < 40 && setHasMore(false)
     setResultQuestions(results)
     setSearchResultNumber(
       Object.values(results)
@@ -61,31 +63,20 @@ const SearchPage: NextPage = memo(() => {
     setWord(inputText)
   }, [])
 
-  const handleScroll = useCallback(() => {
-    // 最下部までスクロールしたとき
-    if (hasRemainingResults && window.pageYOffset >= document.body.scrollHeight - window.innerHeight) {
-      setLoading(true)
-      clearTimeout(timerRef.current)
-      timerRef.current = setTimeout(() => {
-        setShowNumber((prev) => prev + 40)
-        setLoading(false)
-      }, 300)
-    }
-  }, [hasRemainingResults])
+  const loadMore = useCallback(() => {
+    setLoading(true)
+    clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => {
+      setShowNumber((prev) => prev + 40)
+      setLoading(false)
+    }, 300)
+  }, [])
 
   useEffect(() => {
     if (!word) {
       setResultQuestions(null)
     }
   }, [word])
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll)
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [handleScroll])
 
   useEffect(() => {
     if (word) {
@@ -118,7 +109,7 @@ const SearchPage: NextPage = memo(() => {
         sumNumber += matchQuestions.length
         if (sumNumber > showNumber) break
       }
-      sumNumber < showNumber && setHasRemainingResults(false)
+      sumNumber < showNumber && setHasMore(false)
       setResultQuestions(results)
       setSearchResultNumber(
         Object.values(results)
@@ -141,58 +132,60 @@ const SearchPage: NextPage = memo(() => {
             {word && resultQuestions && (
               <div className="mt-8 flex flex-col gap-4 sm:mt-12">
                 {searchResultNumber ? (
-                  (
-                    [
-                      '2020am',
-                      '2020pm',
-                      '2019am',
-                      '2019pm',
-                      '2018am',
-                      '2018pm',
-                      '2017am',
-                      '2017pm',
-                      '2016am',
-                      '2016pm',
-                      '2015am',
-                      '2015pm',
-                    ] as const
-                  ).map((y) => (
-                    <Fragment key={y}>
-                      {resultQuestions[y].length !== 0 && (
-                        <div className="mt-6 sm:mt-10">
-                          <div className="mb-4">
-                            <p className="text-xl">
-                              第{Number(y.slice(0, 4)) - 1953}回 {timeframeToJapanese(y.slice(-2) as 'am' | 'pm')}
-                            </p>
+                  <InfiniteScroll loadMore={loadMore} hasMore={hasMore}>
+                    {(
+                      [
+                        '2020am',
+                        '2020pm',
+                        '2019am',
+                        '2019pm',
+                        '2018am',
+                        '2018pm',
+                        '2017am',
+                        '2017pm',
+                        '2016am',
+                        '2016pm',
+                        '2015am',
+                        '2015pm',
+                      ] as const
+                    ).map((y) => (
+                      <Fragment key={y}>
+                        {resultQuestions[y].length !== 0 && (
+                          <div className="mt-6 sm:mt-10">
+                            <div className="mb-4">
+                              <p className="text-xl">
+                                第{Number(y.slice(0, 4)) - 1953}回 {timeframeToJapanese(y.slice(-2) as 'am' | 'pm')}
+                              </p>
+                            </div>
+                            <div className="overflow-hidden rounded border border-primary-400">
+                              {resultQuestions[y].map(({ num, question, img, options, answer }, index) => {
+                                return (
+                                  <div
+                                    key={`${y}-${num}`}
+                                    className={`${index !== 0 && 'border-t border-t-primary-400'}`}
+                                  >
+                                    <QuestionAccordionContainer
+                                      answer={answer.map((answer) => answer - 1)}
+                                      question={{
+                                        num,
+                                        question: highlightWord(question, word),
+                                        img,
+                                        options: options.map((option) => highlightWord(option, word)),
+                                      }}
+                                      questionNumber={num}
+                                      timeframe={y.slice(-2) as 'am' | 'pm'}
+                                      year={y.slice(0, 4)}
+                                      selectedAnswer={[]}
+                                    />
+                                  </div>
+                                )
+                              })}
+                            </div>
                           </div>
-                          <div className="overflow-hidden rounded border border-primary-400">
-                            {resultQuestions[y].map(({ num, question, img, options, answer }, index) => {
-                              return (
-                                <div
-                                  key={`${y}-${num}`}
-                                  className={`${index !== 0 && 'border-t border-t-primary-400'}`}
-                                >
-                                  <QuestionAccordionContainer
-                                    answer={answer.map((answer) => answer - 1)}
-                                    question={{
-                                      num,
-                                      question: highlightWord(question, word),
-                                      img,
-                                      options: options.map((option) => highlightWord(option, word)),
-                                    }}
-                                    questionNumber={num}
-                                    timeframe={y.slice(-2) as 'am' | 'pm'}
-                                    year={y.slice(0, 4)}
-                                    selectedAnswer={[]}
-                                  />
-                                </div>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </Fragment>
-                  ))
+                        )}
+                      </Fragment>
+                    ))}
+                  </InfiniteScroll>
                 ) : (
                   <p>
                     検索結果は0件です。

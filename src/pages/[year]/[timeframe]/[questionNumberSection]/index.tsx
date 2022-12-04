@@ -209,7 +209,11 @@ const QuestionNumberPage: NextPage<PageProps> = memo(
                     variant="contained"
                     onClick={() => (thinking ? checkAnswer() : handleNextQuestion())}
                   >
-                    {thinking ? '解答する' : '次の問題へ'}
+                    {thinking
+                      ? '解答する'
+                      : answering?.currentNumber === answering?.lastNumber
+                      ? '結果発表'
+                      : '次の問題へ'}
                   </PrimaryButton>
                 </div>
               </AnimateQuestion>
