@@ -82,7 +82,7 @@ const HistoryPage: NextPage = memo(() => {
       return []
     }
     const sortedHistory = Object.entries(history)
-      .sort((a, b) => Number(a[0]) - Number(b[0]))
+      .sort((a, b) => Number(b[0]) - Number(a[0]))
       .map((d) => {
         const copyAry = [...d]
         const year = copyAry[1].id.split('_')[0]
