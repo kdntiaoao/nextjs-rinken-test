@@ -139,6 +139,8 @@ const SearchPage: NextPage = memo(() => {
                   <InfiniteScroll loadMore={loadMore} hasMore={hasMore}>
                     {(
                       [
+                        '2021am',
+                        '2021pm',
                         '2020am',
                         '2020pm',
                         '2019am',

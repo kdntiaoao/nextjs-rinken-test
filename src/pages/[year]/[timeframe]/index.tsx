@@ -78,7 +78,7 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe }: PageProps)
 })
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const years = ['2020', '2019', '2018', '2017', '2016', '2015']
+  const years = ['2021', '2020', '2019', '2018', '2017', '2016', '2015']
   const timeframes: ['am', 'pm'] = ['am', 'pm']
   const paths = years.reduce<PathsType[]>(
     (previousArray, currentYears) => [

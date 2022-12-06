@@ -7,7 +7,7 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline'
 import { Container, PageHeading, MarkerHeading, PrimaryButton } from 'components/atoms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 
-const years = [2020, 2019, 2018, 2017, 2016, 2015]
+const years = [2021, 2020, 2019, 2018, 2017, 2016, 2015]
 
 // eslint-disable-next-line react/display-name
 const HomePage: NextPage = memo(() => {

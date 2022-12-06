@@ -237,7 +237,7 @@ const QuestionNumberPage: NextPage<PageProps> = memo(
 )
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const years = ['2020', '2019', '2018', '2017', '2016', '2015']
+  const years = ['2021', '2020', '2019', '2018', '2017', '2016', '2015']
   const timeframes: ['am', 'pm'] = ['am', 'pm']
   const questionNumberSections = [
     '1-10',
@@ -267,7 +267,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsContext) => {
-  const year = params?.year as '2020' | '2019' | '2018' | '2017' | '2016' | '2015' | undefined
+  const year = params?.year as '2021' | '2020' | '2019' | '2018' | '2017' | '2016' | '2015' | undefined
   const timeframe = params?.timeframe as 'am' | 'pm' | undefined
   const questionNumberSection = params?.questionNumberSection
   const firstNumber = Number(params?.questionNumberSection?.toString().split('-')[0])
