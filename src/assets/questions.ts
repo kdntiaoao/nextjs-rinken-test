@@ -11455,7 +11455,7 @@ export const questions = {
       {
         num: 14,
         question: 'サルコイドーシスの診断に最も有用なのはどれか。',
-        options: ['アンギオテンシン変換酵素*ACE-', 'CRP', 'IL-6', 'KL-6', 'SP-D'],
+        options: ['アンギオテンシン変換酵素(ACE)', 'CRP', 'IL-6', 'KL-6', 'SP-D'],
         img: '',
       },
       {

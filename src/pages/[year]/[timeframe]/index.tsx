@@ -5,12 +5,13 @@ import { memo, useCallback, useMemo } from 'react'
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
 import { useUpdateAtom } from 'jotai/utils'
 
+import { questions } from 'assets/questions'
 import { answeringAtom } from 'atoms/answeringAtom'
 import { Container, LinkButton, PageHeading, PrimaryButton } from 'components/atoms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 
 type PageProps = {
-  year: string
+  year: '2021' | '2020' | '2019' | '2018' | '2017' | '2016' | '2015'
   timeframe: 'am' | 'pm'
 }
 
@@ -70,6 +71,22 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe }: PageProps)
                 </Link>
               </li>
             </ul>
+          </div>
+
+          <div className="mt-12">
+            <dl className="flex items-start justify-center">
+              <dt className="break-keep">出典：</dt>
+              <dd>
+                <a
+                  className="text-blue-400 underline"
+                  href={questions[`${year}${timeframe}`].link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  第{Number(year) - 1953}回 臨床検査技師国家試験問題および正答について | 厚生労働省
+                </a>
+              </dd>
+            </dl>
           </div>
         </div>
       </Container>
