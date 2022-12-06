@@ -25,9 +25,9 @@ export const QuestionStatement = memo(({ currentNumber, imgUrl, question, timefr
         <button
           type="button"
           onClick={onOpenDialog}
-          className="relative mx-auto mt-6 block w-fit max-w-full cursor-zoom-in overflow-x-hidden"
+          className="mx-auto mt-6 block w-fit max-w-full cursor-zoom-in overflow-x-hidden"
         >
-          <div className="h-52 w-80">
+          <div className="relative h-52 w-screen max-w-full">
             <Image
               priority
               fill

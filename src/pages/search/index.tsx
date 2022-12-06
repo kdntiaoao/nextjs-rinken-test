@@ -26,6 +26,8 @@ const SearchPage: NextPage = memo(() => {
   const handleSearch = useCallback(({ inputText }: { inputText: string }) => {
     let sumNumber = 0
     const results: ResultQuestions = {
+      '2021am': [],
+      '2021pm': [],
       '2020am': [],
       '2020pm': [],
       '2019am': [],
@@ -82,6 +84,8 @@ const SearchPage: NextPage = memo(() => {
     if (word) {
       let sumNumber = 0
       const results: ResultQuestions = {
+        '2021am': [],
+        '2021pm': [],
         '2020am': [],
         '2020pm': [],
         '2019am': [],
@@ -135,6 +139,8 @@ const SearchPage: NextPage = memo(() => {
                   <InfiniteScroll loadMore={loadMore} hasMore={hasMore}>
                     {(
                       [
+                        '2021am',
+                        '2021pm',
                         '2020am',
                         '2020pm',
                         '2019am',

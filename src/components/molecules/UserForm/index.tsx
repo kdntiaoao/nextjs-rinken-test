@@ -30,7 +30,13 @@ export const UserForm = memo(({ errors: extraErrors, isResister, onSubmit }: Pro
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>({ resolver: zodResolver(schema) })
+  } = useForm<Inputs>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
 
   return (
     <form className="mx-auto max-w-3xl" onSubmit={handleSubmit(onSubmit)}>

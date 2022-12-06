@@ -9,7 +9,7 @@ export const authUserAtom = atom<AuthUserType | null | undefined>(undefined)
 authUserAtom.onMount = (setAtom) => {
   const unsubscribe = onAuthStateChanged(auth, (user) => {
     if (user) {
-      setAtom({ uid: user.uid })
+      setAtom({ email: user.email, uid: user.uid })
     } else {
       setAtom(null)
     }

@@ -50,6 +50,7 @@ export const HeaderContainer = memo(() => {
 
   return (
     <Header
+      authUser={authUser}
       darkMode={resolvedTheme === 'dark'}
       menus={menus}
       openMenu={openMenu}
