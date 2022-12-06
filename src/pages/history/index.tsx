@@ -109,7 +109,7 @@ const HistoryPage: NextPage = memo(() => {
   return (
     <DefaultLayout title="履歴 | 臨検テスト">
       <Container>
-        <div className="py-16">
+        <div className="py-10">
           <PageHeading component="h1">履歴</PageHeading>
           <div className="mt-16 overflow-x-auto">
             {history && Object.keys(history).length > 0 ? (

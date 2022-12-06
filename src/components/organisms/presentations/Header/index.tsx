@@ -2,10 +2,12 @@ import { memo, MouseEvent, ReactNode } from 'react'
 
 import { AnimatePresence, motion } from 'framer-motion'
 
-import { HeaderCloseButton, HeaderMenuButton, HeaderTitle } from 'components/atoms'
+import { HeaderCloseButton, HeaderMenuButton, HeaderTitle, HeaderUserButton } from 'components/atoms'
 import { DarkModeButton, HeaderNav } from 'components/molecules'
+import { AuthUserType } from 'types/AuthUserType'
 
 type Props = {
+  authUser: AuthUserType | null | undefined
   darkMode: boolean
   menus: { title: string; url: string; badge?: ReactNode; onClick?: () => void }[]
   openMenu: boolean
@@ -17,17 +19,19 @@ type Props = {
 
 // eslint-disable-next-line react/display-name
 export const Header = memo(
-  ({ darkMode, menus, openMenu, changeTheme, handleToggleMenu, preventPropagation }: Props) => {
+  ({ authUser, darkMode, menus, openMenu, changeTheme, handleToggleMenu, preventPropagation }: Props) => {
     return (
       <header>
         <div className="z-10 flex h-20 items-center justify-between border-b border-primary-100 bg-white px-4 dark:border-slate-600 dark:bg-slate-800 xl:fixed xl:top-0 xl:left-0 xl:right-0">
           <HeaderTitle>臨検テスト</HeaderTitle>
 
-          <div className="hidden xl:block">
-            <DarkModeButton darkMode={darkMode} onClick={changeTheme} />
+          <div className="flex items-center gap-2">
+            <div className="hidden xl:block">
+              <DarkModeButton darkMode={darkMode} onClick={changeTheme} />
+            </div>
+            {authUser && <HeaderUserButton />}
+            <HeaderMenuButton onOpen={handleToggleMenu} />
           </div>
-
-          <HeaderMenuButton onOpen={handleToggleMenu} />
 
           {/* メニュー */}
           <AnimatePresence>
