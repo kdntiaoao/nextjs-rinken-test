@@ -2,29 +2,32 @@ import React from 'react'
 
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 
-import { PageHeading } from '.'
+import { Badge } from '.'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Atoms/PageHeading',
-  component: PageHeading,
+  title: 'Atoms/Badge',
+  component: Badge,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-    component: {
+    color: {
       control: 'select',
-      options: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+      options: ['primary', 'secondary', 'warning'],
     },
     children: {
       control: 'text',
     },
   },
-} as ComponentMeta<typeof PageHeading>
+} as ComponentMeta<typeof Badge>
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof PageHeading> = (args) => <PageHeading {...args} />
+const Template: ComponentStory<typeof Badge> = (args) => (
+  <div className="flex">
+    <Badge {...args} />
+  </div>
+)
 
 export const Normal = Template.bind({})
 Normal.args = {
-  component: 'h1',
-  children: 'PageHeading',
+  children: '1',
 }
