@@ -2,29 +2,25 @@ import React from 'react'
 
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 
-import { PageHeading } from '.'
+import { HeaderCloseButton } from '.'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Atoms/PageHeading',
-  component: PageHeading,
+  title: 'Atoms/HeaderCloseButton',
+  component: HeaderCloseButton,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-    component: {
-      control: 'select',
-      options: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-    },
-    children: {
-      control: 'text',
+    onClose: {
+      action: 'closed',
+      description: 'onCloseイベントハンドラ',
+      table: {
+        type: { summary: 'function' },
+      },
     },
   },
-} as ComponentMeta<typeof PageHeading>
+} as ComponentMeta<typeof HeaderCloseButton>
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof PageHeading> = (args) => <PageHeading {...args} />
+const Template: ComponentStory<typeof HeaderCloseButton> = (args) => <HeaderCloseButton {...args} />
 
 export const Normal = Template.bind({})
-Normal.args = {
-  component: 'h1',
-  children: 'PageHeading',
-}

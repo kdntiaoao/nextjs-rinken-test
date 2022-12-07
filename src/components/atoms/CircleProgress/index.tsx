@@ -14,8 +14,8 @@ type Props = {
 // eslint-disable-next-line react/display-name
 export const CircleProgress = memo(({ percent = 1, strokeWidth = 1, children }: Props) => {
   return (
-    <div className='relative'>
-      <svg className="w-full h-full" viewBox={`0 0 24 24`}>
+    <div className="relative">
+      <svg className="h-full w-full" viewBox={`0 0 24 24`}>
         <circle
           className="text-gray-300"
           strokeWidth={strokeWidth}
@@ -28,7 +28,7 @@ export const CircleProgress = memo(({ percent = 1, strokeWidth = 1, children }: 
         <AnimatePresence>
           <motion.circle
             key="parsent"
-            className="text-primary-600 origin-center -rotate-90"
+            className="origin-center -rotate-90 text-primary-600"
             initial={{ strokeDasharray: 2 * Math.PI * 10, strokeDashoffset: 2 * Math.PI * 10 }}
             animate={{
               strokeWidth,
