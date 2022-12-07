@@ -23,12 +23,12 @@ const shimmer = (w: string | number, h: string | number, darkMode?: boolean) => 
 >
   <defs>
     <linearGradient id="g">
-      <stop stop-color="${darkMode ? '#334155' : '#f9fafb'}" offset="20%" />
-      <stop stop-color="${darkMode ? '#475569' : '#f3f4f6'}" offset="50%" />
-      <stop stop-color="${darkMode ? '#334155' : '#f9fafb'}" offset="70%" />
+      <stop stop-color="${darkMode ? '#475569' : '#f3f4f6'}" offset="20%" />
+      <stop stop-color="${darkMode ? '#94a3b8' : '#d1d5db'}" offset="50%" />
+      <stop stop-color="${darkMode ? '#475569' : '#f3f4f6'}" offset="70%" />
     </linearGradient>
   </defs>
-  <rect width="${w}" height="${h}" fill="${darkMode ? '#334155' : '#f9fafb'}" />
+  <rect width="${w}" height="${h}" fill="${darkMode ? '#475569' : '#f3f4f6'}" />
   <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
   <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite" />
 </svg>`
