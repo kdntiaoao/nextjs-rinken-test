@@ -17,7 +17,7 @@ import { authUserAtom } from 'atoms/authUserAtom'
 import { incorrectsAtom } from 'atoms/incorrectsAtom'
 import { Container, LinkButton, PrimaryButton } from 'components/atoms'
 import { AnimateQuestion, ImageDialog, LoadingScreen, QuestionStatement, ResultIcon } from 'components/molecules'
-import { CheckBoxListContainer } from 'components/organisms'
+import { CheckBoxListContainer, QuestionImageContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 import { useSelectedAnswer } from 'hooks'
 import { timeframeToJapanese } from 'utils'
@@ -43,10 +43,10 @@ const scroll = Scroll.animateScroll
 // eslint-disable-next-line react/display-name
 const QuestionNumberPage: NextPage<PageProps> = memo(
   ({ year, timeframe, questionNumberSection, questionData, answerData }: PageProps) => {
-    const [answering, setAnswering] = useAtom(answeringAtom)
-    const setIncorrects = useUpdateAtom(incorrectsAtom)
-    const authUser = useAtomValue(authUserAtom)
     const router = useRouter()
+    const authUser = useAtomValue(authUserAtom)
+    const setIncorrects = useUpdateAtom(incorrectsAtom)
+    const [answering, setAnswering] = useAtom(answeringAtom)
     const [correct, setCorrect] = useState<boolean>(true)
     const [disabled, setDisabled] = useState<boolean>(false)
     const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
@@ -176,12 +176,18 @@ const QuestionNumberPage: NextPage<PageProps> = memo(
               <AnimateQuestion animateKey={answering?.currentNumber.toString()}>
                 <QuestionStatement
                   currentNumber={answering.currentNumber}
-                  imgUrl={currentQuestion?.img}
                   question={currentQuestion ? currentQuestion?.question : ''}
-                  timeframe={timeframe}
-                  year={year}
-                  onOpenDialog={handleOpenDialog}
                 />
+
+                {currentQuestion?.img && (
+                  <QuestionImageContainer
+                    currentNumber={answering.currentNumber}
+                    imgUrl={currentQuestion.img}
+                    timeframe={timeframe}
+                    year={year}
+                    onOpenDialog={handleOpenDialog}
+                  />
+                )}
 
                 <div className="relative mt-6">
                   <div className="flex-1">
