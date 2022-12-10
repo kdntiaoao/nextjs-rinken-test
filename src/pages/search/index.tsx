@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import { Fragment, memo, useCallback, useEffect, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 
 import InfiniteScroll from 'react-infinite-scroller'
 
@@ -14,7 +14,7 @@ import { highlightWord, timeframeToJapanese } from 'utils'
 type ResultQuestions = Record<keyof typeof questions, (Question & { answer: number[] })[]>
 
 // eslint-disable-next-line react/display-name
-const SearchPage: NextPage = memo(() => {
+const SearchPage: NextPage = () => {
   const [hasMore, setHasMore] = useState<boolean>(true) // 検索結果が残っているか
   const [loading, setLoading] = useState<boolean>(false)
   const [searchResultNumber, setSearchResultNumber] = useState<number>(0)
@@ -206,6 +206,6 @@ const SearchPage: NextPage = memo(() => {
       </Container>
     </DefaultLayout>
   )
-})
+}
 
 export default SearchPage

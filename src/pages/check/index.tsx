@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import { memo, MouseEvent, useCallback } from 'react'
+import { MouseEvent, useCallback } from 'react'
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAtom } from 'jotai'
@@ -13,7 +13,7 @@ import { DefaultLayout } from 'components/template/DefaultLayout'
 import { useHasMounted } from 'hooks'
 
 // eslint-disable-next-line react/display-name
-const CheckPage: NextPage = memo(() => {
+const CheckPage: NextPage = () => {
   const hasMounted = useHasMounted()
   const [incorrects, setIncorrects] = useAtom(incorrectsAtom)
 
@@ -84,6 +84,6 @@ const CheckPage: NextPage = memo(() => {
       </Container>
     </DefaultLayout>
   )
-})
+}
 
 export default CheckPage

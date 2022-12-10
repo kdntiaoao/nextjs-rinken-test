@@ -1,7 +1,7 @@
 import { NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { memo, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { signInWithEmailAndPassword } from 'firebase/auth'
 
@@ -17,7 +17,7 @@ type Inputs = {
 }
 
 // eslint-disable-next-line react/display-name
-const LoginPage: NextPage = memo(() => {
+const LoginPage: NextPage = () => {
   const router = useRouter()
   const [loading, setLoading] = useState<boolean>(false)
   // eslint-disable-next-line no-unused-vars
@@ -71,6 +71,6 @@ const LoginPage: NextPage = memo(() => {
       </Container>
     </DefaultLayout>
   )
-})
+}
 
 export default LoginPage

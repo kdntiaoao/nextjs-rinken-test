@@ -1,6 +1,5 @@
 import { NextPage } from 'next'
 import Link from 'next/link'
-import { memo } from 'react'
 
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
 
@@ -8,7 +7,7 @@ import { Container, PrimaryButton } from 'components/atoms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 
 // eslint-disable-next-line react/display-name
-const NotFoundPage: NextPage = memo(() => {
+const NotFoundPage: NextPage = () => {
   return (
     <DefaultLayout title="臨検テスト">
       <Container className="absolute inset-0 flex items-center justify-center">
@@ -31,6 +30,6 @@ const NotFoundPage: NextPage = memo(() => {
       </Container>
     </DefaultLayout>
   )
-})
+}
 
 export default NotFoundPage

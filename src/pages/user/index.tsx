@@ -1,6 +1,6 @@
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { memo, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { useAtomValue } from 'jotai'
 
@@ -10,7 +10,7 @@ import { LoadingScreen } from 'components/molecules'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 
 // eslint-disable-next-line react/display-name
-const UserPage: NextPage = memo(() => {
+const UserPage: NextPage = () => {
   const router = useRouter()
   const authUser = useAtomValue(authUserAtom)
 
@@ -46,6 +46,6 @@ const UserPage: NextPage = memo(() => {
       </Container>
     </DefaultLayout>
   )
-})
+}
 
 export default UserPage
