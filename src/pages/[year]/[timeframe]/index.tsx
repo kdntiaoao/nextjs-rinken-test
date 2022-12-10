@@ -2,7 +2,7 @@ import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, NextPage } from 
 import Link from 'next/link'
 import { useCallback, useMemo } from 'react'
 
-import { ChevronRightIcon } from '@heroicons/react/24/outline'
+import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { useUpdateAtom } from 'jotai/utils'
 
 import { questions } from 'assets/questions'
@@ -78,12 +78,13 @@ const TimeframePage: NextPage<PageProps> = ({ year, timeframe }: PageProps) => {
               <dt className="break-keep">出典：</dt>
               <dd>
                 <a
-                  className="text-blue-400 underline"
+                  className="text-blue-400 underline [@media(any-hover:hover){&:hover}]:opacity-80"
                   href={questions[`${year}${timeframe}`].link}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   第{Number(year) - 1953}回 臨床検査技師国家試験問題および正答について | 厚生労働省
+                  <ArrowTopRightOnSquareIcon className="ml-1 inline-block h-5 w-5" />
                 </a>
               </dd>
             </dl>

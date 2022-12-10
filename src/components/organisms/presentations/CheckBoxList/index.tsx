@@ -28,7 +28,7 @@ export const CheckBoxList = memo(({ answer, options, orders, selectedAnswer, thi
             } ${
               thinking &&
               selectedAnswer.indexOf(index) < 0 &&
-              'md:hover:bg-primary-400/10 md:dark:hover:bg-primary-400/10'
+              '[@media(any-hover:hover){&:hover}]:bg-primary-400/10 dark:[@media(any-hover:hover){&:hover}]:bg-primary-400/10'
             } `}
           >
             <input

@@ -38,7 +38,7 @@ export const QuestionAccordionHeading = memo(
             <p className={`flex-1 ${openAccordion ? '' : 'truncate'}`}>{question}</p>
             {onDelete && (
               <button
-                className="select-none rounded-full p-1 active:bg-primary-400/20 md:hover:bg-primary-400/10"
+                className="select-none rounded-full p-1 active:bg-primary-400/20 [@media(any-hover:hover){&:hover}]:bg-primary-400/10"
                 onClick={(event) => onDelete(event, year, timeframe, questionNumber)}
                 aria-label={`第${Number(year) - 1953}回${timeframeToJapanese(
                   timeframe
