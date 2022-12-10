@@ -1,3 +1,4 @@
+export { AlertDialog } from './AlertDialog'
 export { AnimateQuestion } from './AnimateQuestion'
 export { DarkModeButton } from './DarkModeButton'
 export { HeaderNav } from './HeaderNav'

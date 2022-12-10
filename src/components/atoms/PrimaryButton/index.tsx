@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef, memo, ReactNode, useMemo } from 'react'
 
 type Props = ComponentPropsWithoutRef<'button'> & {
-  color?: 'primary' | 'secondary'
+  color?: 'primary' | 'secondary' | 'error'
   component?: 'span' | 'button'
   shape?: 'square' | 'rounded' | 'rounded-full'
   size?: 'sm' | 'base'
@@ -30,17 +30,29 @@ export const PrimaryButton = memo(
   }: Props) => {
     const bgcolor = useMemo(() => {
       if (variant === 'contained') {
-        return color === 'primary'
-          ? 'bg-primary-600 text-white [@media(any-hover:hover){&:hover}]:bg-primary-700 active:bg-primary-800'
-          : 'bg-secondary-600 text-white [@media(any-hover:hover){&:hover}]:bg-secondary-700 active:bg-secondary-800'
+        if (color === 'primary') {
+          return 'bg-primary-600 text-white [@media(any-hover:hover){&:hover}]:bg-primary-700 active:bg-primary-800'
+        } else if (color === 'secondary') {
+          return 'bg-secondary-600 text-white [@media(any-hover:hover){&:hover}]:bg-secondary-700 active:bg-secondary-800'
+        } else if (color === 'error') {
+          return 'bg-red-600 text-white [@media(any-hover:hover){&:hover}]:bg-red-700 active:bg-red-800'
+        }
       } else if (variant === 'outlined') {
-        return color === 'primary'
-          ? 'border border-primary-400 text-primary-900 [@media(any-hover:hover){&:hover}]:bg-primary-400/10 active:bg-primary-400/20 dark:text-white'
-          : 'border border-secondary-400 text-secondary-900 [@media(any-hover:hover){&:hover}]:bg-primary-400/10 active:bg-primary-400/20 dark:text-white'
-      } else {
-        return color === 'primary'
-          ? 'text-primary-900 [@media(any-hover:hover){&:hover}]:bg-primary-400/10 active:bg-primary-400/20 dark:text-white'
-          : 'text-secondary-900 [@media(any-hover:hover){&:hover}]:bg-secondary-400/10 active:bg-secondary-400/20 dark:text-white'
+        if (color === 'primary') {
+          return 'border border-primary-400 text-primary-900 [@media(any-hover:hover){&:hover}]:bg-primary-400/10 active:bg-primary-400/20 dark:text-white'
+        } else if (color === 'secondary') {
+          return 'border border-secondary-400 text-secondary-900 [@media(any-hover:hover){&:hover}]:bg-secondary-400/10 active:bg-secondary-400/20 dark:text-white'
+        } else if (color === 'error') {
+          return 'border border-red-400 text-red-900 [@media(any-hover:hover){&:hover}]:bg-red-400/10 active:bg-red-400/20 dark:text-white'
+        }
+      } else if (variant === 'text') {
+        if (color === 'primary') {
+          return 'text-primary-900 [@media(any-hover:hover){&:hover}]:bg-primary-400/10 active:bg-primary-400/20 dark:text-white'
+        } else if (color === 'secondary') {
+          return 'text-secondary-900 [@media(any-hover:hover){&:hover}]:bg-secondary-400/10 active:bg-secondary-400/20 dark:text-white'
+        } else if (color === 'error') {
+          return 'text-red-900 [@media(any-hover:hover){&:hover}]:bg-red-400/10 active:bg-red-400/20 dark:text-white'
+        }
       }
     }, [color, variant])
 
