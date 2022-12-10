@@ -2,7 +2,7 @@ import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, NextPage } from 
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { doc, setDoc } from 'firebase/firestore'
 import { useAtom, useAtomValue } from 'jotai'
@@ -40,207 +40,210 @@ type PathsType = {
 
 const scroll = Scroll.animateScroll
 
-// eslint-disable-next-line react/display-name
-const QuestionNumberPage: NextPage<PageProps> = memo(
-  ({ year, timeframe, questionNumberSection, questionData, answerData }: PageProps) => {
-    const router = useRouter()
-    const authUser = useAtomValue(authUserAtom)
-    const setIncorrects = useUpdateAtom(incorrectsAtom)
-    const [answering, setAnswering] = useAtom(answeringAtom)
-    const [correct, setCorrect] = useState<boolean>(true)
-    const [disabled, setDisabled] = useState<boolean>(false)
-    const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
-    const [thinking, setThinking] = useState<boolean>(true)
-    const currentQuestion = useMemo(
-      () => answering && questionData[answering.currentNumber - answering.firstNumber],
-      [answering, questionData]
-    )
-    const answerIndex = useMemo(
-      () => answering && answerData[answering.currentNumber - answering.firstNumber].map((answer) => answer - 1),
-      [answerData, answering]
-    )
-    const { selectedAnswer, changeSelect, resetSelect } = useSelectedAnswer(answerIndex?.length || 0, thinking)
+const QuestionNumberPage: NextPage<PageProps> = ({
+  year,
+  timeframe,
+  questionNumberSection,
+  questionData,
+  answerData,
+}: PageProps) => {
+  const router = useRouter()
+  const authUser = useAtomValue(authUserAtom)
+  const setIncorrects = useUpdateAtom(incorrectsAtom)
+  const [answering, setAnswering] = useAtom(answeringAtom)
+  const [correct, setCorrect] = useState<boolean>(true)
+  const [disabled, setDisabled] = useState<boolean>(false)
+  const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
+  const [thinking, setThinking] = useState<boolean>(true)
+  const currentQuestion = useMemo(
+    () => answering && questionData[answering.currentNumber - answering.firstNumber],
+    [answering, questionData]
+  )
+  const answerIndex = useMemo(
+    () => answering && answerData[answering.currentNumber - answering.firstNumber].map((answer) => answer - 1),
+    [answerData, answering]
+  )
+  const { selectedAnswer, changeSelect, resetSelect } = useSelectedAnswer(answerIndex?.length || 0, thinking)
 
-    const checkAnswer = useCallback(() => {
-      const questionNumber = answering?.currentNumber || 0
-      const sortedAnswer = selectedAnswer.sort()
-      const result = sortedAnswer.toString() === answerIndex?.toString()
-      setAnswering((prev) => {
-        if (!prev) {
-          return prev
+  const checkAnswer = useCallback(() => {
+    const questionNumber = answering?.currentNumber || 0
+    const sortedAnswer = selectedAnswer.sort()
+    const result = sortedAnswer.toString() === answerIndex?.toString()
+    setAnswering((prev) => {
+      if (!prev) {
+        return prev
+      }
+      // 正解のとき
+      if (result) {
+        return {
+          ...prev,
+          correctCount: prev.correctCount + 1,
+          selectedAnswers: [...prev.selectedAnswers, sortedAnswer],
         }
-        // 正解のとき
-        if (result) {
-          return {
-            ...prev,
-            correctCount: prev.correctCount + 1,
-            selectedAnswers: [...prev.selectedAnswers, sortedAnswer],
-          }
+      }
+      return { ...prev, selectedAnswers: [...prev.selectedAnswers, sortedAnswer] }
+    })
+    setCorrect(result)
+    setThinking(false)
+    // 不正解のとき
+    if (!result) {
+      setIncorrects((prev) =>
+        prev
+          ? [
+              // 間違えた問題がすでに保存されているときは、保存されているものを削除
+              ...prev.filter(
+                (question: { year: string; timeframe: 'am' | 'pm'; questionNumber: number }) =>
+                  !(
+                    question.year === year &&
+                    question.timeframe === timeframe &&
+                    question.questionNumber === questionNumber
+                  )
+              ),
+              { year, timeframe, questionNumber, selectedAnswer },
+            ]
+          : [{ year, timeframe, questionNumber, selectedAnswer }]
+      )
+    }
+  }, [answerIndex, answering?.currentNumber, selectedAnswer, setAnswering, setIncorrects, timeframe, year])
+
+  const handleNextQuestion = useCallback(async () => {
+    // 最後の問題を解答したとき
+    if (answering?.currentNumber === answering?.lastNumber) {
+      if (answering && authUser?.uid) {
+        // firestoreに結果を保存
+        const percent = answering.correctCount / answering.selectedAnswers.length
+        const timestamp = Date.now()
+        const data = {
+          [timestamp]: {
+            id: `${year}_${timeframe}_${questionNumberSection}`,
+            percent,
+          },
         }
-        return { ...prev, selectedAnswers: [...prev.selectedAnswers, sortedAnswer] }
-      })
-      setCorrect(result)
-      setThinking(false)
-      // 不正解のとき
-      if (!result) {
-        setIncorrects((prev) =>
-          prev
-            ? [
-                // 間違えた問題がすでに保存されているときは、保存されているものを削除
-                ...prev.filter(
-                  (question: { year: string; timeframe: 'am' | 'pm'; questionNumber: number }) =>
-                    !(
-                      question.year === year &&
-                      question.timeframe === timeframe &&
-                      question.questionNumber === questionNumber
-                    )
-                ),
-                { year, timeframe, questionNumber, selectedAnswer },
-              ]
-            : [{ year, timeframe, questionNumber, selectedAnswer }]
-        )
+        await setDoc(doc(db, 'history', authUser.uid), data, { merge: true })
       }
-    }, [answerIndex, answering?.currentNumber, selectedAnswer, setAnswering, setIncorrects, timeframe, year])
-
-    const handleNextQuestion = useCallback(async () => {
-      // 最後の問題を解答したとき
-      if (answering?.currentNumber === answering?.lastNumber) {
-        if (answering && authUser?.uid) {
-          // firestoreに結果を保存
-          const percent = answering.correctCount / answering.selectedAnswers.length
-          const timestamp = Date.now()
-          const data = {
-            [timestamp]: {
-              id: `${year}_${timeframe}_${questionNumberSection}`,
-              percent,
-            },
-          }
-          await setDoc(doc(db, 'history', authUser.uid), data, { merge: true })
-        }
-        await router.push(`/${year}/${timeframe}/${questionNumberSection}/result`)
-      }
-
-      setDisabled(true)
-      try {
-        scroll.scrollToTop({ duration: 0 })
-        setAnswering((prev) => prev && { ...prev, currentNumber: prev.currentNumber + 1 })
-        setThinking(true)
-        resetSelect()
-      } finally {
-        setDisabled(false)
-      }
-    }, [answering, authUser?.uid, questionNumberSection, resetSelect, router, setAnswering, timeframe, year])
-
-    const handleOpenDialog = useCallback(() => setOpenDialog(true), [])
-
-    const handleCloseDialog = useCallback(() => setOpenDialog(false), [])
-
-    useEffect(() => {
-      if (!answering) {
-        return
-      }
-      // 最後の問題を解答したとき
-      if (answering.currentNumber === answering.lastNumber) {
-        router.push(`/${year}/${timeframe}/${questionNumberSection}/result`)
-      }
-      // 現在の問題番号と解答数が合わないとき
-      if (answering.currentNumber !== answering.selectedAnswers.length + 1) {
-        setAnswering((prev) => prev && { ...prev, currentNumber: prev.firstNumber + answering.selectedAnswers.length })
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    useEffect(() => {
-      if (!answering) {
-        router.push(`/${year}/${timeframe}`)
-      }
-    }, [answering, router, timeframe, year])
-
-    if (!answering) {
-      return <LoadingScreen />
+      await router.push(`/${year}/${timeframe}/${questionNumberSection}/result`)
     }
 
-    return (
-      <DefaultLayout
-        title={`第${Number(year) - 1953}回${timeframeToJapanese(timeframe)}${questionNumberSection} | 臨検テスト`}
-      >
-        <Container>
-          <div className="py-10">
-            <Link href={`/${year}/${timeframe}`}>
-              <LinkButton reverse>
-                第{Number(year) - 1953}回{timeframeToJapanese(timeframe)}
-              </LinkButton>
-            </Link>
+    setDisabled(true)
+    try {
+      scroll.scrollToTop({ duration: 0 })
+      setAnswering((prev) => prev && { ...prev, currentNumber: prev.currentNumber + 1 })
+      setThinking(true)
+      resetSelect()
+    } finally {
+      setDisabled(false)
+    }
+  }, [answering, authUser?.uid, questionNumberSection, resetSelect, router, setAnswering, timeframe, year])
 
-            <div className="relative mt-8">
-              <AnimateQuestion animateKey={answering?.currentNumber.toString()}>
-                <QuestionStatement
-                  currentNumber={answering.currentNumber}
-                  question={currentQuestion ? currentQuestion?.question : ''}
-                />
+  const handleOpenDialog = useCallback(() => setOpenDialog(true), [])
 
-                {currentQuestion?.img && (
-                  <QuestionImageContainer
-                    currentNumber={answering.currentNumber}
-                    imgUrl={currentQuestion.img}
-                    timeframe={timeframe}
-                    year={year}
-                    onOpenDialog={handleOpenDialog}
-                  />
-                )}
+  const handleCloseDialog = useCallback(() => setOpenDialog(false), [])
 
-                <div className="relative mt-6">
-                  <div className="flex-1">
-                    <CheckBoxListContainer
-                      answer={answerIndex || []}
-                      options={currentQuestion?.options || []}
-                      selectedAnswer={selectedAnswer}
-                      thinking={thinking}
-                      handleChange={changeSelect}
-                    />
-                  </div>
-                  {!thinking && (
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                      <ResultIcon correct={correct} />
-                    </div>
-                  )}
-                </div>
+  useEffect(() => {
+    if (!answering) {
+      return
+    }
+    // 最後の問題を解答したとき
+    if (answering.currentNumber === answering.lastNumber) {
+      router.push(`/${year}/${timeframe}/${questionNumberSection}/result`)
+    }
+    // 現在の問題番号と解答数が合わないとき
+    if (answering.currentNumber !== answering.selectedAnswers.length + 1) {
+      setAnswering((prev) => prev && { ...prev, currentNumber: prev.firstNumber + answering.selectedAnswers.length })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-                <div className="mt-10">
-                  <PrimaryButton
-                    color={thinking ? 'primary' : 'secondary'}
-                    component="button"
-                    disabled={disabled}
-                    shape="rounded-full"
-                    variant="contained"
-                    onClick={() => (thinking ? checkAnswer() : handleNextQuestion())}
-                  >
-                    {thinking
-                      ? '解答する'
-                      : answering?.currentNumber === answering?.lastNumber
-                      ? '結果発表'
-                      : '次の問題へ'}
-                  </PrimaryButton>
-                </div>
-              </AnimateQuestion>
+  useEffect(() => {
+    if (!answering) {
+      router.push(`/${year}/${timeframe}`)
+    }
+  }, [answering, router, timeframe, year])
 
-              {openDialog && (
-                <ImageDialog onClose={handleCloseDialog}>
-                  <Image
-                    fill
-                    className="object-contain object-center"
-                    src={`/images/${year}${timeframe}/${currentQuestion?.img}.jpg`}
-                    alt={`問題${answering?.currentNumber}の画像`}
-                  />
-                </ImageDialog>
-              )}
-            </div>
-          </div>
-        </Container>
-      </DefaultLayout>
-    )
+  if (!answering) {
+    return <LoadingScreen />
   }
-)
+
+  return (
+    <DefaultLayout
+      title={`第${Number(year) - 1953}回${timeframeToJapanese(timeframe)}${questionNumberSection} | 臨検テスト`}
+    >
+      <Container>
+        <div className="py-10">
+          <Link href={`/${year}/${timeframe}`}>
+            <LinkButton reverse>
+              第{Number(year) - 1953}回{timeframeToJapanese(timeframe)}
+            </LinkButton>
+          </Link>
+
+          <div className="relative mt-8">
+            <AnimateQuestion animateKey={answering?.currentNumber.toString()}>
+              <QuestionStatement
+                currentNumber={answering.currentNumber}
+                question={currentQuestion ? currentQuestion?.question : ''}
+              />
+
+              {currentQuestion?.img && (
+                <QuestionImageContainer
+                  currentNumber={answering.currentNumber}
+                  imgUrl={currentQuestion.img}
+                  timeframe={timeframe}
+                  year={year}
+                  onOpenDialog={handleOpenDialog}
+                />
+              )}
+
+              <div className="relative mt-6">
+                <div className="flex-1">
+                  <CheckBoxListContainer
+                    answer={answerIndex || []}
+                    options={currentQuestion?.options || []}
+                    selectedAnswer={selectedAnswer}
+                    thinking={thinking}
+                    handleChange={changeSelect}
+                  />
+                </div>
+                {!thinking && (
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <ResultIcon correct={correct} />
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-10">
+                <PrimaryButton
+                  color={thinking ? 'primary' : 'secondary'}
+                  component="button"
+                  disabled={disabled}
+                  shape="rounded-full"
+                  variant="contained"
+                  onClick={() => (thinking ? checkAnswer() : handleNextQuestion())}
+                >
+                  {thinking
+                    ? '解答する'
+                    : answering?.currentNumber === answering?.lastNumber
+                    ? '結果発表'
+                    : '次の問題へ'}
+                </PrimaryButton>
+              </div>
+            </AnimateQuestion>
+
+            {openDialog && (
+              <ImageDialog onClose={handleCloseDialog}>
+                <Image
+                  fill
+                  className="object-contain object-center"
+                  src={`/images/${year}${timeframe}/${currentQuestion?.img}.jpg`}
+                  alt={`問題${answering?.currentNumber}の画像`}
+                />
+              </ImageDialog>
+            )}
+          </div>
+        </div>
+      </Container>
+    </DefaultLayout>
+  )
+}
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const years = ['2021', '2020', '2019', '2018', '2017', '2016', '2015']

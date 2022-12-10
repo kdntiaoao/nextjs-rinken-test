@@ -1,7 +1,7 @@
 import { NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { memo, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 
@@ -17,7 +17,7 @@ type Inputs = {
 }
 
 // eslint-disable-next-line react/display-name
-const RegisterPage: NextPage = memo(() => {
+const RegisterPage: NextPage = () => {
   const router = useRouter()
   const [loading, setLoading] = useState<boolean>(false)
   // eslint-disable-next-line no-unused-vars
@@ -65,6 +65,6 @@ const RegisterPage: NextPage = memo(() => {
       </Container>
     </DefaultLayout>
   )
-})
+}
 
 export default RegisterPage

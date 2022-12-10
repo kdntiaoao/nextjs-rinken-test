@@ -1,6 +1,6 @@
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { memo, useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement } from 'chart.js'
 import { format } from 'date-fns'
@@ -18,7 +18,7 @@ import { timeframeToJapanese } from 'utils'
 ChartJS.register(CategoryScale, LinearScale, BarElement)
 
 // eslint-disable-next-line react/display-name
-const HistoryPage: NextPage = memo(() => {
+const HistoryPage: NextPage = () => {
   const router = useRouter()
   const authUser = useAtomValue(authUserAtom)
   const { history, loading } = useHistory(authUser?.uid)
@@ -144,6 +144,6 @@ const HistoryPage: NextPage = memo(() => {
       </Container>
     </DefaultLayout>
   )
-})
+}
 
 export default HistoryPage

@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, NextPage } from 'next'
 import Link from 'next/link'
-import { memo, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
 import { useUpdateAtom } from 'jotai/utils'
@@ -23,7 +23,7 @@ type PathsType = {
 }
 
 // eslint-disable-next-line react/display-name
-const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe }: PageProps) => {
+const TimeframePage: NextPage<PageProps> = ({ year, timeframe }: PageProps) => {
   const setAnswering = useUpdateAtom(answeringAtom)
 
   const timeframeToJapanese = useMemo(() => (timeframe === 'am' ? '午前' : '午後'), [timeframe])
@@ -92,7 +92,7 @@ const TimeframePage: NextPage<PageProps> = memo(({ year, timeframe }: PageProps)
       </Container>
     </DefaultLayout>
   )
-})
+}
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const years = ['2021', '2020', '2019', '2018', '2017', '2016', '2015']

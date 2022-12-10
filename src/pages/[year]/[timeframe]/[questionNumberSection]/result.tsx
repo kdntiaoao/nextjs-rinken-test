@@ -1,7 +1,7 @@
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { memo, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { useAtomValue } from 'jotai'
 import party from 'party-js'
@@ -32,90 +32,94 @@ type PathsType = {
 }
 
 // eslint-disable-next-line react/display-name
-const ResultPage: NextPage<PageProps> = memo(
-  ({ year, timeframe, questionNumberSection, questionData, answerData }: PageProps) => {
-    const router = useRouter()
-    const answering = useAtomValue(answeringAtom)
-    const percent = answering ? answering.correctCount / answering.selectedAnswers.length : 0
+const ResultPage: NextPage<PageProps> = ({
+  year,
+  timeframe,
+  questionNumberSection,
+  questionData,
+  answerData,
+}: PageProps) => {
+  const router = useRouter()
+  const answering = useAtomValue(answeringAtom)
+  const percent = answering ? answering.correctCount / answering.selectedAnswers.length : 0
 
-    useEffect(() => {
-      if (!answering) {
-        router.push(`/${year}/${timeframe}/${questionNumberSection}`)
-      }
-    }, [answering, questionNumberSection, router, timeframe, year])
-
-    useEffect(() => {
-      if (answering && percent >= 0.6) {
-        setTimeout(() => {
-          party.confetti(party.Rect.fromScreen(), {
-            count: 150 * percent ** 2,
-          })
-        }, 1000)
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
+  useEffect(() => {
     if (!answering) {
-      return <LoadingScreen />
+      router.push(`/${year}/${timeframe}/${questionNumberSection}`)
     }
+  }, [answering, questionNumberSection, router, timeframe, year])
 
-    return (
-      <DefaultLayout
-        title={`第${Number(year) - 1953}回${timeframeToJapanese(timeframe)}${questionNumberSection} | 臨検テスト`}
-      >
-        <Container>
-          <div className="py-10">
-            <Link href={`/${year}/${timeframe}`}>
-              <LinkButton reverse>
-                第{Number(year) - 1953}回{timeframeToJapanese(timeframe)}
-              </LinkButton>
-            </Link>
+  useEffect(() => {
+    if (answering && percent >= 0.6) {
+      setTimeout(() => {
+        party.confetti(party.Rect.fromScreen(), {
+          count: 150 * percent ** 2,
+        })
+      }, 1000)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-            <div className="relative mt-4">
-              <PageHeading component="h1">結果</PageHeading>
-            </div>
-            <div className="mt-8">
-              <div className="mx-auto h-80 w-80 max-w-full">
-                <CircleProgress percent={percent}>
-                  <div className="text-center">
-                    <p className="text-3xl font-bold">
-                      <span className="mr-2 text-6xl">
-                        <CountUp start={0} end={Math.round(percent * 100)} duration={1} />
-                      </span>
-                      %
-                    </p>
-                    <p className="mt-4">
-                      <span className="text-gray-500 dark:text-gray-400">
-                        {answering.correctCount}問正解 / {answering.selectedAnswers.length}問中
-                      </span>
-                    </p>
-                  </div>
-                </CircleProgress>
-              </div>
-            </div>
+  if (!answering) {
+    return <LoadingScreen />
+  }
 
-            <div className="mt-10 overflow-hidden rounded border border-primary-400">
-              {getRangeArray(answering.firstNumber, answering.lastNumber).map((number, index) => {
-                return (
-                  <div key={number} className={`${index !== 0 && 'border-t border-t-primary-400'}`}>
-                    <QuestionAccordionContainer
-                      answer={answerData[number - answering.firstNumber].map((answer) => answer - 1)}
-                      question={questionData[number - answering.firstNumber]}
-                      questionNumber={number}
-                      timeframe={timeframe}
-                      year={year}
-                      selectedAnswer={answering.selectedAnswers[index]}
-                    />
-                  </div>
-                )
-              })}
+  return (
+    <DefaultLayout
+      title={`第${Number(year) - 1953}回${timeframeToJapanese(timeframe)}${questionNumberSection} | 臨検テスト`}
+    >
+      <Container>
+        <div className="py-10">
+          <Link href={`/${year}/${timeframe}`}>
+            <LinkButton reverse>
+              第{Number(year) - 1953}回{timeframeToJapanese(timeframe)}
+            </LinkButton>
+          </Link>
+
+          <div className="relative mt-4">
+            <PageHeading component="h1">結果</PageHeading>
+          </div>
+          <div className="mt-8">
+            <div className="mx-auto h-80 w-80 max-w-full">
+              <CircleProgress percent={percent}>
+                <div className="text-center">
+                  <p className="text-3xl font-bold">
+                    <span className="mr-2 text-6xl">
+                      <CountUp start={0} end={Math.round(percent * 100)} duration={1} />
+                    </span>
+                    %
+                  </p>
+                  <p className="mt-4">
+                    <span className="text-gray-500 dark:text-gray-400">
+                      {answering.correctCount}問正解 / {answering.selectedAnswers.length}問中
+                    </span>
+                  </p>
+                </div>
+              </CircleProgress>
             </div>
           </div>
-        </Container>
-      </DefaultLayout>
-    )
-  }
-)
+
+          <div className="mt-10 overflow-hidden rounded border border-primary-400">
+            {getRangeArray(answering.firstNumber, answering.lastNumber).map((number, index) => {
+              return (
+                <div key={number} className={`${index !== 0 && 'border-t border-t-primary-400'}`}>
+                  <QuestionAccordionContainer
+                    answer={answerData[number - answering.firstNumber].map((answer) => answer - 1)}
+                    question={questionData[number - answering.firstNumber]}
+                    questionNumber={number}
+                    timeframe={timeframe}
+                    year={year}
+                    selectedAnswer={answering.selectedAnswers[index]}
+                  />
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </Container>
+    </DefaultLayout>
+  )
+}
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const years = ['2021', '2020', '2019', '2018', '2017', '2016', '2015']
