@@ -12,7 +12,7 @@ type Props = {
 export const HeaderNavButton = memo(({ pointerEvents = true, onClick, children }: Props) => {
   return (
     <span
-      className={`flex items-center gap-4 p-4 active:bg-primary-400/20 dark:active:bg-slate-400/20 md:hover:bg-primary-400/10 md:dark:hover:bg-slate-400/10 ${
+      className={`flex items-center gap-4 p-4 active:bg-primary-400/20 dark:active:bg-slate-400/20 [@media(any-hover:hover){&:hover}]:bg-primary-400/10 dark:[@media(any-hover:hover){&:hover}]:bg-slate-400/10 ${
         pointerEvents || 'pointer-events-none'
       }`}
       onClick={onClick}
