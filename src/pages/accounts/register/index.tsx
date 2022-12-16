@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react'
 
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 
-import { auth } from '../../../firebase/client'
+import { auth } from '../../../../firebase/client'
 
 import { Container, PrimaryButton } from 'components/atoms'
 import { LoadingScreen, UserForm } from 'components/molecules'
@@ -51,7 +51,7 @@ const RegisterPage: NextPage = () => {
               <PrimaryButton shape="square">新規登録</PrimaryButton>
             </li>
             <li className="flex-1 break-keep border-b-2 border-gray-200 dark:border-slate-600">
-              <Link href="/login">
+              <Link href="/accounts/login">
                 <PrimaryButton shape="square">
                   <span className="text-gray-500 dark:text-slate-400">ログイン</span>
                 </PrimaryButton>

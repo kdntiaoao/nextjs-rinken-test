@@ -98,7 +98,7 @@ const HistoryPage: NextPage = () => {
 
   useEffect(() => {
     if (authUser === null) {
-      router.push('/login')
+      router.push('/accounts/login')
     }
   }, [authUser, router])
 

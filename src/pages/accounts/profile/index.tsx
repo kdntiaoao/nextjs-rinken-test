@@ -10,13 +10,13 @@ import { LoadingScreen } from 'components/molecules'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 
 // eslint-disable-next-line react/display-name
-const UserPage: NextPage = () => {
+const ProfilePage: NextPage = () => {
   const router = useRouter()
   const authUser = useAtomValue(authUserAtom)
 
   useEffect(() => {
     if (authUser === null) {
-      router.push('/login')
+      router.push('/accounts/login')
     }
   }, [authUser, router])
 
@@ -48,4 +48,4 @@ const UserPage: NextPage = () => {
   )
 }
 
-export default UserPage
+export default ProfilePage
