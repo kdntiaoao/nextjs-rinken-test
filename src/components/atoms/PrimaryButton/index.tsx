@@ -35,7 +35,7 @@ export const PrimaryButton = memo(
         } else if (color === 'secondary') {
           return 'bg-secondary-600 text-white [@media(any-hover:hover){&:hover}]:bg-secondary-700 active:bg-secondary-800'
         } else if (color === 'error') {
-          return 'bg-red-600 text-white [@media(any-hover:hover){&:hover}]:bg-red-700 active:bg-red-800'
+          return 'bg-error-800 text-white [@media(any-hover:hover){&:hover}]:bg-error-700 active:bg-error-600'
         }
       } else if (variant === 'outlined') {
         if (color === 'primary') {
@@ -43,7 +43,7 @@ export const PrimaryButton = memo(
         } else if (color === 'secondary') {
           return 'border border-secondary-400 text-secondary-900 [@media(any-hover:hover){&:hover}]:bg-secondary-400/10 active:bg-secondary-400/20 dark:text-white'
         } else if (color === 'error') {
-          return 'border border-red-400 text-red-900 [@media(any-hover:hover){&:hover}]:bg-red-400/10 active:bg-red-400/20 dark:text-white'
+          return 'border border-error-400 text-error-900 [@media(any-hover:hover){&:hover}]:bg-error-400/10 active:bg-error-400/20 dark:text-white'
         }
       } else if (variant === 'text') {
         if (color === 'primary') {
@@ -51,7 +51,7 @@ export const PrimaryButton = memo(
         } else if (color === 'secondary') {
           return 'text-secondary-900 [@media(any-hover:hover){&:hover}]:bg-secondary-400/10 active:bg-secondary-400/20 dark:text-white'
         } else if (color === 'error') {
-          return 'text-red-900 [@media(any-hover:hover){&:hover}]:bg-red-400/10 active:bg-red-400/20 dark:text-white'
+          return 'text-error-900 [@media(any-hover:hover){&:hover}]:bg-error-400/10 active:bg-error-400/20 dark:text-white'
         }
       }
     }, [color, variant])
