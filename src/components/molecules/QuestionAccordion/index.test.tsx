@@ -34,7 +34,7 @@ describe('QuestionAccordion', () => {
       question: {
         num: 1,
         question: '臨床検査室の品質と能力に関する国際規格はどれか。',
-        options: ['', '', '', '', ''],
+        options: ['ISO 9001', 'ISO 13485', 'ISO 15189', 'ISO 17025', 'ISO 22870'],
         img: '',
       },
       questionNumber: 1,
