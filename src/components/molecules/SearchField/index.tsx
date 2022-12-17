@@ -15,7 +15,7 @@ export const SearchField = memo(({ onSubmit }: Props) => {
   const { register, handleSubmit } = useForm<{ inputText: string }>()
 
   return (
-    <form className="flex flex-wrap justify-center gap-2 sm:gap-4" onSubmit={handleSubmit(onSubmit)}>
+    <form role="search" className="flex flex-wrap justify-center gap-2 sm:gap-4" onSubmit={handleSubmit(onSubmit)}>
       <input
         enterKeyHint="search"
         type="search"
