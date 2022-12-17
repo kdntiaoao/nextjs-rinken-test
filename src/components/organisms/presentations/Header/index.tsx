@@ -1,4 +1,4 @@
-import { memo, MouseEvent, ReactNode } from 'react'
+import { memo, MouseEvent } from 'react'
 
 import { AnimatePresence, motion } from 'framer-motion'
 
@@ -9,7 +9,7 @@ import { AuthUserType } from 'types/AuthUserType'
 type Props = {
   authUser: AuthUserType | null | undefined
   darkMode: boolean
-  menus: { title: string; url: string; badge?: ReactNode; onClick?: () => void }[]
+  menus: { title: string; url: string; badge?: number; onClick?: () => void }[]
   openMenu: boolean
   changeTheme: () => void
   handleToggleMenu: () => void

@@ -39,7 +39,7 @@ const TimeframePage: NextPage<PageProps> = ({ year, timeframe }: PageProps) => {
     <DefaultLayout title={`第${Number(year) - 1953}回${timeframeToJapanese} | 臨検テスト`}>
       <Container>
         <div className="py-10">
-          <Link href="/">
+          <Link href="/" className="block w-fit">
             <LinkButton reverse>問題一覧へ</LinkButton>
           </Link>
 

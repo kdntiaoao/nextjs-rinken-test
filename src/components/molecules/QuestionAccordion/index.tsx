@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { memo, MouseEvent, ReactNode } from 'react'
+import { memo, MouseEvent, ReactNode, useCallback, useState } from 'react'
 
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -10,17 +10,11 @@ import { Overwrite } from 'types/utils'
 
 type Props = {
   answer: number[]
-  openAccordion: boolean
-  openDialog: boolean
   question: Overwrite<Question, { question: ReactNode; options: ReactNode[] }>
   questionNumber: number
   selectedAnswer: number[]
   timeframe: 'am' | 'pm'
   year: string
-  handleOpenAccordion: () => void
-  handleCloseAccordion: () => void
-  handleOpenDialog: () => void
-  handleCloseDialog: () => void
   handleDeleteQuestion?: (
     // eslint-disable-next-line no-unused-vars
     event: MouseEvent<HTMLButtonElement>,
@@ -35,21 +29,18 @@ type Props = {
 
 // eslint-disable-next-line react/display-name
 export const QuestionAccordion = memo(
-  ({
-    answer,
-    openAccordion,
-    openDialog,
-    question,
-    questionNumber,
-    selectedAnswer,
-    timeframe,
-    year,
-    handleOpenAccordion,
-    handleCloseAccordion,
-    handleOpenDialog,
-    handleCloseDialog,
-    handleDeleteQuestion,
-  }: Props) => {
+  ({ answer, question, questionNumber, timeframe, year, selectedAnswer, handleDeleteQuestion }: Props) => {
+    const [openAccordion, setOpenAccordion] = useState<boolean>(false)
+    const [openDialog, setOpenDialog] = useState<boolean>(false) // 画像ダイアログフラグ
+
+    const handleOpenAccordion = useCallback(() => setOpenAccordion(true), [])
+
+    const handleCloseAccordion = useCallback(() => setOpenAccordion(false), [])
+
+    const handleOpenDialog = useCallback(() => setOpenDialog(true), [])
+
+    const handleCloseDialog = useCallback(() => setOpenDialog(false), [])
+
     return (
       <div
         id={`accordion_${year}_${timeframe}_${questionNumber}`}

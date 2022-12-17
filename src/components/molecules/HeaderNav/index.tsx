@@ -1,17 +1,14 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { memo, ReactNode } from 'react'
+import { memo } from 'react'
 
 import { Badge, HeaderNavButton } from 'components/atoms'
 
 type Props = {
-  menus: { title: string; url: string; badge?: ReactNode; onClick?: () => void }[]
+  menus: { title: string; url: string; badge?: number; onClick?: () => void }[]
 }
 
 // eslint-disable-next-line react/display-name
 export const HeaderNav = memo(({ menus }: Props) => {
-  const router = useRouter()
-
   return (
     <nav>
       <ul>
@@ -20,19 +17,16 @@ export const HeaderNav = memo(({ menus }: Props) => {
             key={title}
             className={`${index !== 0 && 'border-t'} select-none border-t-primary-100 dark:border-t-slate-600`}
           >
-            {router.pathname === url ? (
-              <HeaderNavButton onClick={onClick} pointerEvents={false}>
+            <Link href={url}>
+              <HeaderNavButton onClick={onClick}>
                 {title}
-                {badge ? <Badge color="warning">{badge}</Badge> : null}
+                {badge ? (
+                  <Badge color="warning" aria-label={`見直しの問題が${badge}問あります。`}>
+                    {badge}
+                  </Badge>
+                ) : null}
               </HeaderNavButton>
-            ) : (
-              <Link href={url}>
-                <HeaderNavButton onClick={onClick}>
-                  {title}
-                  {badge ? <Badge color="warning">{badge}</Badge> : null}
-                </HeaderNavButton>
-              </Link>
-            )}
+            </Link>
           </li>
         ))}
       </ul>

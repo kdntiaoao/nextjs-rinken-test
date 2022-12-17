@@ -5,8 +5,7 @@ import InfiniteScroll from 'react-infinite-scroller'
 
 import { questions } from 'assets/questions'
 import { Container, PageHeading } from 'components/atoms'
-import { LoadingScreen, SearchField } from 'components/molecules'
-import { QuestionAccordionContainer } from 'components/organisms'
+import { LoadingScreen, QuestionAccordion, SearchField } from 'components/molecules'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 import { Question } from 'types/question'
 import { highlightWord, timeframeToJapanese } from 'utils'
@@ -170,7 +169,7 @@ const SearchPage: NextPage = () => {
                                     key={`${y}-${num}`}
                                     className={`${index !== 0 && 'border-t border-t-primary-400'}`}
                                   >
-                                    <QuestionAccordionContainer
+                                    <QuestionAccordion
                                       answer={answer.map((answer) => answer - 1)}
                                       question={{
                                         num,
