@@ -70,7 +70,7 @@ const ResultPage: NextPage<PageProps> = ({
     >
       <Container>
         <div className="py-10">
-          <Link href={`/${year}/${timeframe}`}>
+          <Link href={`/${year}/${timeframe}`} className="block w-fit">
             <LinkButton reverse>
               第{Number(year) - 1953}回{timeframeToJapanese(timeframe)}
             </LinkButton>
