@@ -1,10 +1,5 @@
 {
-  "extends": [
-    "next/core-web-vitals",
-    "eslint:recommended",
-    "plugin:import/recommended",
-    "plugin:import/typescript"
-  ],
+  "extends": ["next/core-web-vitals", "eslint:recommended", "plugin:import/recommended", "plugin:import/typescript"],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "import/order": [
@@ -23,5 +18,8 @@
         "newlines-between": "always"
       }
     ]
+  },
+  "env": {
+    "jest": true
   }
 }
