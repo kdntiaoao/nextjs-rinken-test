@@ -3,14 +3,14 @@ import { MouseEvent, ReactNode } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import { QuestionAccordionContainer } from '.'
+import { QuestionAccordion } from '.'
 
 import { Question } from 'types/question'
 import { Overwrite } from 'types/utils'
 
 window.scrollTo = jest.fn()
 
-describe('QuestionAccordionContainer', () => {
+describe('QuestionAccordion', () => {
   it('アコーディオンが開いて閉じるか', async () => {
     const dummyProps: {
       answer: number[]
@@ -44,7 +44,7 @@ describe('QuestionAccordionContainer', () => {
       handleDeleteQuestion: jest.fn(),
     }
 
-    render(<QuestionAccordionContainer {...dummyProps} />)
+    render(<QuestionAccordion {...dummyProps} />)
     // 閉じているときは選択肢が表示されていない
     expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
     await userEvent.click(screen.getByLabelText('アコーディオンを開く'))

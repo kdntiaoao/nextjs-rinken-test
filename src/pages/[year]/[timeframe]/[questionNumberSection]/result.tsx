@@ -10,8 +10,7 @@ import CountUp from 'react-countup'
 import { questions } from 'assets/questions'
 import { answeringAtom } from 'atoms/answeringAtom'
 import { CircleProgress, Container, LinkButton, PageHeading } from 'components/atoms'
-import { LoadingScreen } from 'components/molecules'
-import { QuestionAccordionContainer } from 'components/organisms'
+import { LoadingScreen, QuestionAccordion } from 'components/molecules'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 import { getRangeArray, timeframeToJapanese } from 'utils'
 
@@ -103,7 +102,7 @@ const ResultPage: NextPage<PageProps> = ({
             {getRangeArray(answering.firstNumber, answering.lastNumber).map((number, index) => {
               return (
                 <div key={number} className={`${index !== 0 && 'border-t border-t-primary-400'}`}>
-                  <QuestionAccordionContainer
+                  <QuestionAccordion
                     answer={answerData[number - answering.firstNumber].map((answer) => answer - 1)}
                     question={questionData[number - answering.firstNumber]}
                     questionNumber={number}

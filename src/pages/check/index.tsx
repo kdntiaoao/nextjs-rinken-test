@@ -8,8 +8,7 @@ import { useAtom } from 'jotai'
 import { questions } from 'assets/questions'
 import { incorrectsAtom } from 'atoms/incorrectsAtom'
 import { Container, PageHeading, PrimaryButton } from 'components/atoms'
-import { AlertDialog, LoadingScreen } from 'components/molecules'
-import { QuestionAccordionContainer } from 'components/organisms'
+import { AlertDialog, LoadingScreen, QuestionAccordion } from 'components/molecules'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 import { useHasMounted } from 'hooks'
 
@@ -105,7 +104,7 @@ const CheckPage: NextPage = () => {
                             transition={{ duration: 0.3 }}
                             className={`${index !== 0 && 'border-t border-t-primary-400'}`}
                           >
-                            <QuestionAccordionContainer
+                            <QuestionAccordion
                               answer={questions[(year + timeframe) as keyof typeof questions].answerData[
                                 questionNumber - 1
                               ].map((answer) => answer - 1)}
