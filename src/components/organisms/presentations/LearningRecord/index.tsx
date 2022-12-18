@@ -51,8 +51,7 @@ export const LearningRecord = memo(({ calendarArray, learningDays, today }: Prop
                     <td
                       key={j.toString()}
                       className={`h-10 rounded text-sm ${
-                        Number(format(day, 'd')) === Number(format(today, 'd')) &&
-                        'border-2 border-gray-400 dark:border-slate-400'
+                        Number(format(day, 'd')) === Number(format(today, 'd')) && 'border-2 border-secondary-500'
                       } ${getDayBgcolor(learningDays[Number(format(day, 'd')) - 1])}`}
                       aria-label={`${format(day, 'M月d日')}は${
                         learningDays[Number(format(day, 'd')) - 1]
