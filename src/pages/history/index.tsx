@@ -11,6 +11,7 @@ import { authUserAtom } from 'atoms/authUserAtom'
 import { darkModeAtom } from 'atoms/darkModeAtom'
 import { Container, PageHeading } from 'components/atoms'
 import { LoadingScreen } from 'components/molecules'
+import { LearningRecordContainer } from 'components/organisms'
 import { DefaultLayout } from 'components/template/DefaultLayout'
 import { useHistory } from 'hooks'
 import { timeframeToJapanese } from 'utils'
@@ -96,6 +97,13 @@ const HistoryPage: NextPage = () => {
     return sortedHistory
   }, [history])
 
+  const learningTimestampArray = useMemo(() => {
+    if (!history) {
+      return []
+    }
+    return Object.keys(history).map((timestamp) => Number(timestamp))
+  }, [history])
+
   useEffect(() => {
     if (authUser === null) {
       router.push('/accounts/login')
@@ -115,25 +123,34 @@ const HistoryPage: NextPage = () => {
             {history && Object.keys(history).length > 0 ? (
               <>
                 <Bar options={options} data={data} />
+
                 <div className="mt-10">
+                  <h2 className="text-xl">過去10回分の正答率</h2>
                   <table className="mr-auto ml-auto w-full max-w-2xl table-fixed">
                     <thead>
                       <tr className="border-b">
                         <th className="p-4"></th>
                         <th className="p-4">正答率 (%)</th>
-                        <th className="p-4">解答時刻</th>
+                        <th className="p-4">解答日</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {tableData.map((d) => (
+                      {tableData.slice(0, 10).map((d) => (
                         <tr key={d[0]} className="border-b">
                           <td className="p-4 text-left">{d[1].questionNumber}</td>
                           <td className="p-4 text-center">{d[1].percent * 100}</td>
-                          <td className="p-4 text-center">{format(Number(d[0]), 'MM/dd HH:mm')}</td>
+                          <td className="p-4 text-center">
+                            {format(Number(d[0]), 'MM/dd')}{' '}
+                            <span className="hidden md:inline">{format(Number(d[0]), 'HH:mm')}</span>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
+                </div>
+
+                <div className="mt-20">
+                  <LearningRecordContainer learningTimestampArray={learningTimestampArray} />
                 </div>
               </>
             ) : (
