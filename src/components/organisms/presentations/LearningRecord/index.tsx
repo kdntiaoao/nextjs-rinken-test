@@ -18,7 +18,7 @@ const getDayBgcolor = (count: number) => {
   } else if (count < 15) {
     return 'bg-primary-400 dark:bg-primary-500/80 dark:text-black'
   } else if (count < 20) {
-    return 'bg-primary-500 dark:bg-primary-500 dark:text-black'
+    return 'bg-primary-500 text-black dark:bg-primary-500 dark:text-black'
   }
 }
 
