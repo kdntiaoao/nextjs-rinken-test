@@ -22,7 +22,7 @@ export const Header = memo(
   ({ authUser, darkMode, menus, openMenu, changeTheme, handleToggleMenu, preventPropagation }: Props) => {
     return (
       <header>
-        <div className="z-10 flex h-20 items-center justify-between border-b border-primary-100 bg-white px-4 dark:border-slate-600 dark:bg-slate-800 xl:fixed xl:top-0 xl:left-0 xl:right-0">
+        <div className="z-10 flex h-16 items-center justify-between border-b border-primary-100 bg-white px-4 dark:border-slate-600 dark:bg-slate-800 xl:fixed xl:top-0 xl:left-0 xl:right-0 xl:h-20">
           <HeaderTitle>臨検テスト</HeaderTitle>
 
           <div className="flex items-center gap-2">
@@ -50,7 +50,7 @@ export const Header = memo(
                   className="mr-0 ml-auto h-full w-4/5 max-w-xs cursor-auto bg-white p-0 dark:bg-slate-800 dark:text-white"
                   onClick={preventPropagation}
                 >
-                  <div className="flex h-20 items-center justify-between px-4">
+                  <div className="flex h-16 items-center justify-between px-4">
                     <DarkModeButton darkMode={darkMode} onClick={changeTheme} />
                     <HeaderCloseButton onClose={handleToggleMenu} />
                   </div>
