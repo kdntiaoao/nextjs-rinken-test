@@ -8,7 +8,7 @@ type Props = {
 // eslint-disable-next-line react/display-name
 export const PageHeading = memo(({ component: CustomTag = 'p', children }: Props) => {
   return (
-    <CustomTag className="border-l-4 border-primary-400 pl-4 text-2xl dark:border-l-primary-600 sm:text-3xl">
+    <CustomTag className="border-l-4 border-primary-400 pl-4 text-xl dark:border-l-primary-600 sm:text-2xl">
       {children}
     </CustomTag>
   )

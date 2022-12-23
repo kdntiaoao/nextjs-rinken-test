@@ -12,7 +12,7 @@ const NotFoundPage: NextPage = () => {
     <DefaultLayout title="臨検テスト">
       <Container className="absolute inset-0 flex items-center justify-center">
         <div>
-          <h1 className="text-center font-bold sm:text-xl md:text-3xl">お探しのページが見つかりません</h1>
+          <h1 className="text-center font-bold sm:text-xl md:text-2xl">お探しのページが見つかりません</h1>
           <div className="mt-20">
             <div className="mx-auto max-w-full md:w-80">
               <Link href="/">
