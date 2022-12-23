@@ -4,6 +4,8 @@
 
 @layer base {
   body {
+    font-family: 'Helvetica Neue', 'Helvetica', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Arial', 'Yu Gothic',
+      'Meiryo', sans-serif;
     @apply overflow-y-scroll text-primary-900 dark:bg-slate-800 dark:text-white;
   }
 

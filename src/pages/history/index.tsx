@@ -125,7 +125,7 @@ const HistoryPage: NextPage = () => {
                 <Bar options={options} data={data} />
 
                 <div className="mt-10">
-                  <h2 className="text-xl">過去10回分の正答率</h2>
+                  <h2 className="text-xl">過去{tableData.length < 10 ? tableData.length : 10}回分の正答率</h2>
                   <table className="mr-auto ml-auto w-full max-w-2xl table-fixed">
                     <thead>
                       <tr className="border-b">

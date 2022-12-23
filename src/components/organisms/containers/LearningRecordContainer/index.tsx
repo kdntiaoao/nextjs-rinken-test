@@ -14,7 +14,6 @@ export const LearningRecordContainer = memo(({ learningTimestampArray }: Props) 
 
   const learningDays = useMemo(() => {
     const days = Array(Number(format(endOfMonth(today), 'd'))).fill(0)
-    console.log(days)
     learningTimestampArray
       .filter((timestamp) => format(timestamp, 'M') === format(today, 'M'))
       .forEach((timestamp) => {
