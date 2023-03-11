@@ -217,6 +217,7 @@ const QuestionNumberPage: NextPage<PageProps> = ({
                   disabled={disabled}
                   shape="rounded-full"
                   variant="contained"
+                  className="mx-auto max-w-md"
                   onClick={() => (thinking ? checkAnswer() : handleNextQuestion())}
                 >
                   {thinking
