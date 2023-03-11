@@ -1,5 +1,7 @@
 import { memo, ReactNode } from 'react'
 
+import { XMarkIcon } from '@heroicons/react/24/outline'
+
 type Props = {
   onClose: () => void
   children: ReactNode
@@ -23,16 +25,7 @@ export const FilterGroup = memo(({ onClose, children }: Props) => {
             className="-translate-y-2 rounded-full p-2 [@media(any-hover:hover){&:hover}]:bg-primary-400/10 dark:[@media(any-hover:hover){&:hover}]:bg-slate-400/10"
             onClick={onClose}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="h-8 w-8"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <XMarkIcon className="h-8 w-8" />
           </button>
         </div>
         <div className="relative mt-6 flex flex-wrap gap-8">{children}</div>

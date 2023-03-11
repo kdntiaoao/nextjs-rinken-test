@@ -9,7 +9,7 @@ import { AuthUserType } from 'types/AuthUserType'
 type Props = {
   authUser: AuthUserType | null | undefined
   darkMode: boolean
-  menus: { title: string; url: string; badge?: number; onClick?: () => void }[]
+  menus: { title: string; url?: string; badge?: number; isLink?: boolean; onClick?: () => void }[]
   openMenu: boolean
   changeTheme: () => void
   handleToggleMenu: () => void
