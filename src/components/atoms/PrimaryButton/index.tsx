@@ -69,7 +69,7 @@ export const PrimaryButton = memo(
         type={type || (CustomTag === 'button' ? 'button' : undefined)}
         className={`relative flex w-full select-none items-center justify-center gap-2 overflow-hidden ${paddingY} px-3 text-center sm:px-8 ${
           shape === 'square' ? '' : shape
-        } ${bgcolor}`}
+        } ${bgcolor} ${rest['className']}`}
         disabled={disabled}
         aria-label={rest['aria-label']}
         onClick={onClick}
