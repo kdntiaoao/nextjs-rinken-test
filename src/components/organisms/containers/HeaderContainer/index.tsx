@@ -46,7 +46,7 @@ export const HeaderContainer = memo(() => {
   const handleToggleMenu = useCallback(() => setOpenMenu((prev) => !prev), [])
 
   const menus = useMemo(() => {
-    const array: { title: string; url: string; badge?: number; onClick?: () => void }[] = [
+    const array: { title: string; url?: string; badge?: number; isLink?: boolean; onClick?: () => void }[] = [
       { title: 'ホーム', url: '/' },
       { title: '見直し', url: '/check', badge: incorrects?.length },
       { title: '検索', url: '/search' },
