@@ -211,7 +211,7 @@ const SearchPage: NextPage = () => {
                 variant="outlined"
                 size="sm"
                 aria-label="フィルター"
-                className="ml-auto w-40"
+                className="ml-auto w-16 sm:w-40"
                 onClick={handleToggleFilter}
               >
                 {<FunnelIcon className="h-4 w-4" />}
