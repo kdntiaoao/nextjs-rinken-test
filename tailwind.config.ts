@@ -1,4 +1,4 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: [
@@ -46,21 +46,8 @@ const config: Config = {
           900: '#940821',
         },
       },
-      animation: {
-        'fade-in': 'fade-in 1.2s cubic-bezier(0.390, 0.575, 0.565, 1.000)   both',
-      },
-      keyframes: {
-        'fade-in': {
-          '0%': {
-            opacity: '0',
-          },
-          to: {
-            opacity: '1',
-          },
-        },
-      },
     },
   },
   plugins: [],
-}
-export default config
+};
+export default config;
