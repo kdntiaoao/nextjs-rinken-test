@@ -10,8 +10,8 @@ export default function Home() {
 
       <div className="mt-12">
         <ul className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-10">
-          {years.map((year) => (
-            <li key={year}>
+          {years.map((year, index) => (
+            <li key={index.toString()}>
               <h3>
                 <span className="text-2xl">{year}</span>
                 <span className="ml-1 text-sm">年度</span>

@@ -6,6 +6,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { PrimaryButton } from '@/components'
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/16/solid'
+// import { useAtom } from 'jotai'
+// import { answeredQuestionListAtom, selectedOptionListAtom } from '@/states'
 
 type Props = {
   yearTimeframe: string
@@ -31,8 +33,9 @@ export const PageContents = ({
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([])
-  const [isCorrect, setIsCorrect] = useState<boolean>(false)
+  // const [selectedOptionList, setSelectedOptionList] = useAtom(selectedOptionListAtom)
+  // const [answeredQuestionList, setAnsweredQuestionList] = useAtom(answeredQuestionListAtom)
+  const [selectedOptionList, setSelectedOptionList] = useState<string[]>([])
   const [answeredQuestionList, setAnsweredQuestionList] = useState<AnsweredQuestion[]>([])
 
   const currentNum = Number(searchParams.get('num'))
@@ -43,9 +46,9 @@ export const PageContents = ({
   const handleChangeOption = (event: ChangeEvent<HTMLInputElement>) => {
     const target = event.target
     if (target.checked) {
-      setSelectedOptions((options) => Array.from(new Set([...options, target.value])))
+      setSelectedOptionList((optionList) => Array.from(new Set([...optionList, target.value])))
     } else {
-      setSelectedOptions((options) => options.filter((item) => item !== target.value))
+      setSelectedOptionList((optionList) => optionList.filter((item) => item !== target.value))
     }
   }
 
@@ -60,17 +63,16 @@ export const PageContents = ({
   }
 
   const answerQuestion = () => {
-    const currentSelectedOptions = selectedOptions
+    const currentSelectedOptionList = selectedOptionList
       .filter((item) => item.startsWith(`${currentNum}`))
       .map((item) => Number(item.split('_')[1]))
       .sort((a, b) => a - b)
-    const isCorrect = JSON.stringify(currentSelectedOptions) === JSON.stringify(currentAnswer)
-    setIsCorrect(isCorrect)
+    const isCorrect = JSON.stringify(currentSelectedOptionList) === JSON.stringify(currentAnswer)
     setAnsweredQuestionList((list) => [
       ...list.filter((item) => item.num !== currentNum),
       { num: currentNum, isCorrect },
     ])
-    console.log(isCorrect, currentSelectedOptions, currentAnswer)
+    console.log(isCorrect, currentSelectedOptionList, currentAnswer)
 
     setTimeout(() => {
       changeQuestion(1)
@@ -84,7 +86,7 @@ export const PageContents = ({
     const params = new URLSearchParams(searchParams)
     params.set('num', currentQuestionList[0].num.toString())
     router.replace(`${pathname}?${params}`)
-  }, [currentNum])
+  }, [currentNum, currentQuestionList, pathname, router, searchParams])
 
   if (!currentQuestion || !currentAnswer) {
     return null
@@ -107,12 +109,12 @@ export const PageContents = ({
       <div>
         <p>{currentQuestion.statement}</p>
         <div className="grid gap-2">
-          {currentQuestion.options.map((option, optionIndex) => (
+          {currentQuestion.optionList.map((option, optionIndex) => (
             <label key={optionIndex.toString()} className="flex gap-2 bg-primary-600">
               <input
                 type="checkbox"
                 value={`${currentQuestion.num}_${optionIndex + 1}`}
-                checked={selectedOptions.includes(`${currentQuestion.num}_${optionIndex + 1}`)}
+                checked={selectedOptionList.includes(`${currentQuestion.num}_${optionIndex + 1}`)}
                 onChange={handleChangeOption}
               />
               {option}

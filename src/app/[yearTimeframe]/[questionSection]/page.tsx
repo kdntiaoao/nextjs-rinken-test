@@ -1,9 +1,7 @@
-import { useSearchParams } from 'next/navigation'
-
-import { questionSectionList } from '../page'
-import questionData from '@/assets/json/question-data.json'
-import { PageContents } from './_components/PageContents'
 import Link from 'next/link'
+import { PageContents } from './_components/PageContents'
+import questionData from '@/assets/json/question-data.json'
+import questionSectionList from '@/assets/json/question-section-list.json'
 
 type Props = {
   params: {

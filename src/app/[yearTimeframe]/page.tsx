@@ -1,58 +1,12 @@
-import questionData from '@/assets/json/question-data.json'
 import Link from 'next/link'
+import questionData from '@/assets/json/question-data.json'
+import questionSectionList from '@/assets/json/question-section-list.json'
 
 type Props = {
   params: {
     yearTimeframe: string
   }
 }
-
-export const questionSectionList = [
-  {
-    from: 0,
-    to: 9,
-  },
-  {
-    from: 10,
-    to: 19,
-  },
-  {
-    from: 20,
-    to: 29,
-  },
-  {
-    from: 30,
-    to: 39,
-  },
-  {
-    from: 40,
-    to: 49,
-  },
-  {
-    from: 50,
-    to: 59,
-  },
-  {
-    from: 60,
-    to: 69,
-  },
-  {
-    from: 70,
-    to: 79,
-  },
-  {
-    from: 80,
-    to: 89,
-  },
-  {
-    from: 90,
-    to: 99,
-  },
-  {
-    from: 0,
-    to: 99,
-  },
-]
 
 const getTitle = (yearTimeframe: string): string => {
   const year = Number(yearTimeframe.slice(0, 4))
