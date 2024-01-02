@@ -37,8 +37,6 @@ export const PageContents = ({
 
   const timerID = useRef<number>(0)
 
-  console.log(selectedOptionList, answeredQuestionList)
-
   const currentNum = Number(searchParams.get('num'))
   const firstNum = Number(questionSection.split('-')[0])
   const currentQuestionAnswerList = currentAnswerList[currentNum - firstNum]
@@ -72,7 +70,6 @@ export const PageContents = ({
 
   const handleChangeOption = (event: ChangeEvent<HTMLInputElement>) => {
     const target = event.target
-    console.log(target.checked, target.value)
     if (target.checked) {
       setSelectedOptionList((optionList) => changeOption(optionList, target.value))
     } else {
@@ -102,7 +99,6 @@ export const PageContents = ({
       ...list.filter((item) => item.num !== currentNum),
       { num: currentNum, isCorrect },
     ])
-    console.log(isCorrect, currentSelectedOptionList, currentQuestionAnswerList)
 
     // TODO: 一定時間後に次の問題に進む
     // if (isCorrect) {
@@ -135,6 +131,7 @@ export const PageContents = ({
             <QuestionNavItem
               key={index.toString()}
               selected={question.num === currentNum}
+              completed={answeredQuestionList.map((item) => item.num).includes(question.num)}
               href={{ pathname: `/${yearTimeframe}/${questionSection}`, query: { num: question.num } }}
             />
           ))}
