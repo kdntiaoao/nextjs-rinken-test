@@ -1,13 +1,17 @@
 'use client'
 
+import { ChangeEvent, Fragment, useEffect, useMemo, useRef } from 'react'
 import Link from 'next/link'
-import questionData from '@/assets/json/question-data.json'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { useAtom } from 'jotai'
 import { PrimaryButton } from '@/components'
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/16/solid'
-// import { useAtom } from 'jotai'
-// import { answeredQuestionListAtom, selectedOptionListAtom } from '@/states'
+import { OptionListItem } from './OptionListItem'
+import { OptionList } from './OptionList'
+import { answeredQuestionListAtom, selectedOptionListAtom } from '@/states'
+import questionData from '@/assets/json/question-data.json'
+import { QuestionNav } from './QuestionNav'
+import { QuestionNavItem } from './QuestionNavItem'
 
 type Props = {
   yearTimeframe: string
@@ -15,11 +19,6 @@ type Props = {
   title: string
   currentQuestionList: (typeof questionData)[0]['questionList']
   currentAnswerList: (typeof questionData)[0]['answerList']
-}
-
-type AnsweredQuestion = {
-  num: number
-  isCorrect: boolean
 }
 
 export const PageContents = ({
@@ -33,26 +32,56 @@ export const PageContents = ({
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  // const [selectedOptionList, setSelectedOptionList] = useAtom(selectedOptionListAtom)
-  // const [answeredQuestionList, setAnsweredQuestionList] = useAtom(answeredQuestionListAtom)
-  const [selectedOptionList, setSelectedOptionList] = useState<string[]>([])
-  const [answeredQuestionList, setAnsweredQuestionList] = useState<AnsweredQuestion[]>([])
+  const [selectedOptionList, setSelectedOptionList] = useAtom(selectedOptionListAtom)
+  const [answeredQuestionList, setAnsweredQuestionList] = useAtom(answeredQuestionListAtom)
+
+  const timerID = useRef<number>(0)
+
+  console.log(selectedOptionList, answeredQuestionList)
 
   const currentNum = Number(searchParams.get('num'))
-  const currentQuestion = currentQuestionList.find((item) => item.num === currentNum)
   const firstNum = Number(questionSection.split('-')[0])
-  const currentAnswer = currentAnswerList[currentNum - firstNum]
+  const currentQuestionAnswerList = currentAnswerList[currentNum - firstNum]
+
+  const currentQuestion = useMemo(
+    () => currentQuestionList.find((item) => item.num === currentNum),
+    [currentQuestionList, currentNum],
+  )
+
+  const isAnswered = useMemo(
+    () => answeredQuestionList.map((item) => item.num).includes(currentNum),
+    [answeredQuestionList, currentNum],
+  )
+
+  const changeOption = <T extends string>(optionList: T[], selectedOption: T | null, deselectedOption?: T): T[] => {
+    let result = [...optionList]
+    if (selectedOption) {
+      result = result.concat(selectedOption)
+    }
+    if (deselectedOption) {
+      result = result.filter((item) => item !== deselectedOption)
+    }
+    const currentSelectedOptionList = result.filter((item) =>
+      item.startsWith(`${yearTimeframe}_${questionSection}_${currentNum}`),
+    )
+    if (currentSelectedOptionList.length > currentQuestionAnswerList.length) {
+      result = result.filter((item) => item !== currentSelectedOptionList[0])
+    }
+    return Array.from(new Set(result))
+  }
 
   const handleChangeOption = (event: ChangeEvent<HTMLInputElement>) => {
     const target = event.target
+    console.log(target.checked, target.value)
     if (target.checked) {
-      setSelectedOptionList((optionList) => Array.from(new Set([...optionList, target.value])))
+      setSelectedOptionList((optionList) => changeOption(optionList, target.value))
     } else {
-      setSelectedOptionList((optionList) => optionList.filter((item) => item !== target.value))
+      setSelectedOptionList((optionList) => changeOption(optionList, null, target.value))
     }
   }
 
   const changeQuestion = (step: number) => {
+    window.clearTimeout(timerID.current)
     const nextNum = currentNum + step
     const min = currentQuestionList[0].num
     const max = currentQuestionList[currentQuestionList.length - 1].num
@@ -63,20 +92,24 @@ export const PageContents = ({
   }
 
   const answerQuestion = () => {
+    window.clearTimeout(timerID.current)
     const currentSelectedOptionList = selectedOptionList
-      .filter((item) => item.startsWith(`${currentNum}`))
-      .map((item) => Number(item.split('_')[1]))
+      .filter((item) => item.startsWith(`${yearTimeframe}_${questionSection}_${currentNum}`))
+      .map((item) => Number(item.split('_')[3]))
       .sort((a, b) => a - b)
-    const isCorrect = JSON.stringify(currentSelectedOptionList) === JSON.stringify(currentAnswer)
+    const isCorrect = JSON.stringify(currentSelectedOptionList) === JSON.stringify(currentQuestionAnswerList)
     setAnsweredQuestionList((list) => [
       ...list.filter((item) => item.num !== currentNum),
       { num: currentNum, isCorrect },
     ])
-    console.log(isCorrect, currentSelectedOptionList, currentAnswer)
+    console.log(isCorrect, currentSelectedOptionList, currentQuestionAnswerList)
 
-    setTimeout(() => {
-      changeQuestion(1)
-    }, 1000)
+    // TODO: 一定時間後に次の問題に進む
+    // if (isCorrect) {
+    //   timerID.current = window.setTimeout(() => {
+    //     changeQuestion(1)
+    //   }, 800)
+    // }
   }
 
   useEffect(() => {
@@ -88,7 +121,7 @@ export const PageContents = ({
     router.replace(`${pathname}?${params}`)
   }, [currentNum, currentQuestionList, pathname, router, searchParams])
 
-  if (!currentQuestion || !currentAnswer) {
+  if (!currentQuestion || !currentQuestionAnswerList) {
     return null
   }
 
@@ -96,31 +129,40 @@ export const PageContents = ({
     <>
       <h1>{title}</h1>
 
-      <ul className="flex gap-2">
-        {currentQuestionList.map((question, index) => (
-          <li key={index.toString()} className={question.num === currentNum ? 'bg-primary-600' : ''}>
-            <Link href={{ pathname: `/${yearTimeframe}/${questionSection}`, query: { num: question.num } }}>
-              {question.num}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <div className="mx-auto">
+        <QuestionNav>
+          {currentQuestionList.map((question, index) => (
+            <QuestionNavItem
+              key={index.toString()}
+              selected={question.num === currentNum}
+              href={{ pathname: `/${yearTimeframe}/${questionSection}`, query: { num: question.num } }}
+            />
+          ))}
+        </QuestionNav>
+      </div>
 
       <div>
-        <p>{currentQuestion.statement}</p>
-        <div className="grid gap-2">
-          {currentQuestion.optionList.map((option, optionIndex) => (
-            <label key={optionIndex.toString()} className="flex gap-2 bg-primary-600">
-              <input
-                type="checkbox"
-                value={`${currentQuestion.num}_${optionIndex + 1}`}
-                checked={selectedOptionList.includes(`${currentQuestion.num}_${optionIndex + 1}`)}
+        <p>
+          <span className="text-sm">問題 {currentNum}</span>
+          <br />
+          {currentQuestion.statement}
+        </p>
+        <OptionList>
+          {currentQuestion.optionList.map((option, index) => (
+            <Fragment key={index.toString()}>
+              {index !== 0 && <hr className="border-primary-400" />}
+              <OptionListItem
+                disabled={isAnswered}
+                option={option}
+                value={`${yearTimeframe}_${questionSection}_${currentQuestion.num}_${index + 1}`}
+                checked={selectedOptionList.includes(
+                  `${yearTimeframe}_${questionSection}_${currentQuestion.num}_${index + 1}`,
+                )}
                 onChange={handleChangeOption}
               />
-              {option}
-            </label>
+            </Fragment>
           ))}
-        </div>
+        </OptionList>
       </div>
 
       {answeredQuestionList.map((item) => item.num).includes(currentNum) && (
@@ -137,10 +179,7 @@ export const PageContents = ({
         <PrimaryButton onClick={() => changeQuestion(-1)}>
           <ArrowLeftIcon aria-hidden="false" title="前の問題に戻る" className="h-6 w-6" />
         </PrimaryButton>
-        <PrimaryButton
-          disabled={answeredQuestionList.map((item) => item.num).includes(currentNum)}
-          onClick={answerQuestion}
-        >
+        <PrimaryButton disabled={isAnswered} onClick={answerQuestion}>
           解答
         </PrimaryButton>
         <PrimaryButton onClick={() => changeQuestion(1)}>

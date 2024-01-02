@@ -1,6 +1,6 @@
-import { CSSProperties } from 'react'
+import { CSSProperties, ComponentProps } from 'react'
 
-type Props = React.ComponentProps<'button'>
+type Props = ComponentProps<'button'>
 
 export const PrimaryButton = ({ children, ...props }: Props) => {
   const styles: CSSProperties = {}
