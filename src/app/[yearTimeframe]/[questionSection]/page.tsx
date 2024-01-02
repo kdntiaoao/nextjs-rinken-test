@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { PageContents } from './_components/PageContents'
 import questionData from '@/assets/json/question-data.json'
 import questionSectionList from '@/assets/json/question-section-list.json'
+import { Suspense } from 'react'
 
 type Props = {
   params: {
@@ -19,18 +20,20 @@ const getTitle = (yearTimeframe: string, questionSection: string): string => {
   return `第${number}回${timeframe2} ${questionSection2}`
 }
 
-export async function generateStaticParams() {
-  const paths = questionData.map((question) =>
-    questionSectionList.map((section) => ({
-      yearTimeframe: `${question.year}${question.timeframe}`,
-      questionSection: `${section.from + 1}-${section.to + 1}`,
-    })),
-  )
+export const generateStaticParams = async () => {
+  const paths = questionData
+    .map((question) =>
+      questionSectionList.map((section) => ({
+        yearTimeframe: `${question.year}${question.timeframe}`,
+        questionSection: `${section.from + 1}-${section.to + 1}`,
+      })),
+    )
+    .flat()
 
   return paths
 }
 
-export async function generateMetadata({ params }: Props) {
+export const generateMetadata = async ({ params }: Props) => {
   const title = getTitle(params.yearTimeframe, params.questionSection)
 
   return {
@@ -59,13 +62,16 @@ export default function Page({ params }: Props) {
   return (
     <>
       <Link href={`/${params.yearTimeframe}`}>&lt; {params.yearTimeframe}</Link>
-      <PageContents
-        yearTimeframe={params.yearTimeframe}
-        questionSection={params.questionSection}
-        title={title}
-        currentQuestionList={currentQuestionList}
-        currentAnswerList={currentAnswerList}
-      />
+
+      <Suspense fallback={<p>Loading...</p>}>
+        <PageContents
+          yearTimeframe={params.yearTimeframe}
+          questionSection={params.questionSection}
+          title={title}
+          currentQuestionList={currentQuestionList}
+          currentAnswerList={currentAnswerList}
+        />
+      </Suspense>
     </>
   )
 }
