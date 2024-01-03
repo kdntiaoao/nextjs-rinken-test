@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import questionData from '@/assets/json/question-data.json'
 import questionSectionList from '@/assets/json/question-section-list.json'
+import { ChevronLeftIcon } from '@heroicons/react/16/solid'
+import { Heading } from '@/components/Heading'
 
 type Props = {
   params: {
@@ -10,8 +12,8 @@ type Props = {
 
 const getTitle = (yearTimeframe: string): string => {
   const year = Number(yearTimeframe.slice(0, 4))
-  const timeframe = yearTimeframe.slice(4)
-  return `第${year - 1953}回${timeframe.toUpperCase()}`
+  const timeframe = yearTimeframe.slice(4) === 'am' ? '午前' : '午後'
+  return `第${year - 1953}回 ${timeframe}`
 }
 
 export const generateStaticParams = async () => {
@@ -35,21 +37,30 @@ export default function Page({ params }: Props) {
 
   return (
     <>
-      <Link href="/">問題一覧へ</Link>
+      <Link href="/" className="flex items-center">
+        <ChevronLeftIcon className="h-6 w-6" />
+        問題一覧へ
+      </Link>
 
-      <h1>{title}</h1>
+      <Heading>{title}</Heading>
 
-      <div>
-        <ul>
-          {questionSectionList.map((section, index) => (
-            <li key={index.toString()} className="break-keep">
-              <Link href={`/${params.yearTimeframe}/${section.from + 1}-${section.to + 1}`}>
-                {section.from + 1}〜{section.to + 1}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ul
+        className="grid place-content-center gap-4"
+        style={{
+          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+        }}
+      >
+        {questionSectionList.map((section, index) => (
+          <li key={index.toString()} className="break-keep">
+            <Link
+              href={`/${params.yearTimeframe}/${section.from + 1}-${section.to + 1}`}
+              className="block rounded bg-primary-600 px-4 py-2 text-center"
+            >
+              {section.from + 1}〜{section.to + 1}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </>
   )
 }

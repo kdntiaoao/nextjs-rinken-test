@@ -12,6 +12,7 @@ import { answeredQuestionListAtom, selectedOptionListAtom } from '@/states'
 import questionData from '@/assets/json/question-data.json'
 import { QuestionNav } from './QuestionNav'
 import { QuestionNavItem } from './QuestionNavItem'
+import { Heading } from '@/components/Heading'
 
 type Props = {
   yearTimeframe: string
@@ -123,44 +124,40 @@ export const PageContents = ({
 
   return (
     <>
-      <h1>{title}</h1>
+      <Heading>{title}</Heading>
 
-      <div className="mx-auto">
-        <QuestionNav>
-          {currentQuestionList.map((question, index) => (
-            <QuestionNavItem
-              key={index.toString()}
-              selected={question.num === currentNum}
-              completed={answeredQuestionList.map((item) => item.num).includes(question.num)}
-              href={{ pathname: `/${yearTimeframe}/${questionSection}`, query: { num: question.num } }}
+      <QuestionNav>
+        {currentQuestionList.map((question, index) => (
+          <QuestionNavItem
+            key={index.toString()}
+            selected={question.num === currentNum}
+            completed={answeredQuestionList.map((item) => item.num).includes(question.num)}
+            href={{ pathname: `/${yearTimeframe}/${questionSection}`, query: { num: question.num } }}
+          />
+        ))}
+      </QuestionNav>
+
+      <p>
+        <span>問題 {currentNum}</span>
+        <br />
+        {currentQuestion.statement}
+      </p>
+      <OptionList>
+        {currentQuestion.optionList.map((option, index) => (
+          <Fragment key={index.toString()}>
+            {index !== 0 && <hr className="border-primary-400" />}
+            <OptionListItem
+              disabled={isAnswered}
+              option={option}
+              value={`${yearTimeframe}_${questionSection}_${currentQuestion.num}_${index + 1}`}
+              checked={selectedOptionList.includes(
+                `${yearTimeframe}_${questionSection}_${currentQuestion.num}_${index + 1}`,
+              )}
+              onChange={handleChangeOption}
             />
-          ))}
-        </QuestionNav>
-      </div>
-
-      <div>
-        <p>
-          <span className="text-sm">問題 {currentNum}</span>
-          <br />
-          {currentQuestion.statement}
-        </p>
-        <OptionList>
-          {currentQuestion.optionList.map((option, index) => (
-            <Fragment key={index.toString()}>
-              {index !== 0 && <hr className="border-primary-400" />}
-              <OptionListItem
-                disabled={isAnswered}
-                option={option}
-                value={`${yearTimeframe}_${questionSection}_${currentQuestion.num}_${index + 1}`}
-                checked={selectedOptionList.includes(
-                  `${yearTimeframe}_${questionSection}_${currentQuestion.num}_${index + 1}`,
-                )}
-                onChange={handleChangeOption}
-              />
-            </Fragment>
-          ))}
-        </OptionList>
-      </div>
+          </Fragment>
+        ))}
+      </OptionList>
 
       {answeredQuestionList.map((item) => item.num).includes(currentNum) && (
         <div className="my-8">

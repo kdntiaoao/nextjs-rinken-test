@@ -19,7 +19,7 @@ export const QuestionNavItem = ({ selected, completed, href }: Props) => {
   return (
     <li>
       <Link href={href} className="block py-2">
-        <span className={`block h-1 w-12 rounded-full`} style={{ background }} />
+        <span className="block h-1 rounded-full" style={{ background }} />
       </Link>
     </li>
   )

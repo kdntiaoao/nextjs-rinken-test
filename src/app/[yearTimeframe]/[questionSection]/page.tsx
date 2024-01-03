@@ -3,6 +3,7 @@ import { PageContents } from './_components/PageContents'
 import questionData from '@/assets/json/question-data.json'
 import questionSectionList from '@/assets/json/question-section-list.json'
 import { Suspense } from 'react'
+import { ChevronLeftIcon } from '@heroicons/react/16/solid'
 
 type Props = {
   params: {
@@ -45,6 +46,7 @@ export const generateMetadata = async ({ params }: Props) => {
 export default function Page({ params }: Props) {
   const year = Number(params.yearTimeframe.slice(0, 4))
   const timeframe = params.yearTimeframe.slice(4)
+  const yearTimeframeString = `第${year - 1953}回 ${timeframe === 'am' ? '午前' : '午後'}`
   const title = getTitle(params.yearTimeframe, params.questionSection)
   const sectionFrom = Number(params.questionSection.split('-')[0]) - 1
   const sectionTo = Number(params.questionSection.split('-')[1]) - 1
@@ -61,7 +63,10 @@ export default function Page({ params }: Props) {
 
   return (
     <>
-      <Link href={`/${params.yearTimeframe}`}>&lt; {params.yearTimeframe}</Link>
+      <Link href={`/${params.yearTimeframe}`} className="flex w-fit items-center">
+        <ChevronLeftIcon className="h-6 w-6" />
+        {yearTimeframeString}
+      </Link>
 
       <Suspense fallback={<p>Loading...</p>}>
         <PageContents

@@ -5,7 +5,14 @@ type Props = {
 export const QuestionNav = ({ children }: Props) => {
   return (
     <nav>
-      <ul className="flex flex-wrap gap-2">{children}</ul>
+      <ul
+        className="grid place-content-center gap-2"
+        style={{
+          gridTemplateColumns: 'repeat(auto-fit, minmax(44px, 1fr))',
+        }}
+      >
+        {children}
+      </ul>
     </nav>
   )
 }
