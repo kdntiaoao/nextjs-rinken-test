@@ -1,2 +1,5 @@
+export { Heading } from './Heading'
+export { LinkList } from './LinkList'
+export { LinkListItem } from './LinkListItem'
 export { PrimaryButton } from './PrimaryButton'
 export { Providers } from './Providers'

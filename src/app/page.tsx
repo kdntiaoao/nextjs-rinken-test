@@ -1,7 +1,5 @@
-import { LinkList } from '@/components/LinkList'
-import { LinkListItem } from '@/components/LinkListItem'
+import { Heading, LinkList, LinkListItem } from '@/components'
 import questionData from '@/assets/json/question-data.json'
-import { Heading } from '@/components/Heading'
 
 const years = questionData.map((q) => q.year)
 

@@ -1,8 +1,8 @@
 import Link from 'next/link'
+import { ChevronLeftIcon } from '@heroicons/react/16/solid'
+import { Heading } from '@/components'
 import questionData from '@/assets/json/question-data.json'
 import questionSectionList from '@/assets/json/question-section-list.json'
-import { ChevronLeftIcon } from '@heroicons/react/16/solid'
-import { Heading } from '@/components/Heading'
 
 type Props = {
   params: {

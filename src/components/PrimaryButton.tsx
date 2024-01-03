@@ -7,6 +7,7 @@ export const PrimaryButton = ({ children, ...props }: Props) => {
 
   if (props.disabled) {
     styles.filter = 'grayscale(1)'
+    styles.pointerEvents = 'none'
   }
 
   return (

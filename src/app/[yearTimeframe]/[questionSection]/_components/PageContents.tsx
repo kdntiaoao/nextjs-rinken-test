@@ -1,18 +1,18 @@
 'use client'
 
 import { ChangeEvent, Fragment, useEffect, useMemo, useRef } from 'react'
-import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useAtom } from 'jotai'
-import { PrimaryButton } from '@/components'
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/16/solid'
+import { Heading, PrimaryButton } from '@/components'
 import { OptionListItem } from './OptionListItem'
 import { OptionList } from './OptionList'
-import { answeredQuestionListAtom, selectedOptionListAtom } from '@/states'
-import questionData from '@/assets/json/question-data.json'
 import { QuestionNav } from './QuestionNav'
 import { QuestionNavItem } from './QuestionNavItem'
-import { Heading } from '@/components/Heading'
+import { answeredQuestionListAtom, selectedOptionListAtom } from '@/states'
+import questionData from '@/assets/json/question-data.json'
+import { get } from 'http'
+import Link from 'next/link'
 
 type Props = {
   yearTimeframe: string
@@ -40,6 +40,8 @@ export const PageContents = ({
 
   const currentNum = Number(searchParams.get('num'))
   const firstNum = Number(questionSection.split('-')[0])
+  const lastNum = Number(questionSection.split('-')[1])
+  const currentQuestionID = `${yearTimeframe}_${questionSection}_${currentNum}`
   const currentQuestionAnswerList = currentAnswerList[currentNum - firstNum]
 
   const currentQuestion = useMemo(
@@ -47,10 +49,20 @@ export const PageContents = ({
     [currentQuestionList, currentNum],
   )
 
-  const isAnswered = useMemo(
-    () => answeredQuestionList.map((item) => item.num).includes(currentNum),
-    [answeredQuestionList, currentNum],
-  )
+  const getQuestionNum = (questionID: string): number => {
+    return Number(questionID.split('_')[2])
+  }
+
+  const getQuestionOption = (questionID: string): number => {
+    return Number(questionID.split('_')[3])
+  }
+
+  const getIsAnswered = (num: number): boolean => {
+    return answeredQuestionList.map((item) => getQuestionNum(item.questionID)).includes(num)
+  }
+
+  const isAnswered = getIsAnswered(currentNum)
+  const isCorrect = answeredQuestionList.find((item) => getQuestionNum(item.questionID) === currentNum)?.isCorrect
 
   const changeOption = <T extends string>(optionList: T[], selectedOption: T | null, deselectedOption?: T): T[] => {
     let result = [...optionList]
@@ -81,9 +93,7 @@ export const PageContents = ({
   const changeQuestion = (step: number) => {
     window.clearTimeout(timerID.current)
     const nextNum = currentNum + step
-    const min = currentQuestionList[0].num
-    const max = currentQuestionList[currentQuestionList.length - 1].num
-    if (nextNum < min || nextNum > max) {
+    if (nextNum < firstNum || nextNum > lastNum) {
       return
     }
     router.push(`${pathname}?num=${currentNum + step}`)
@@ -92,13 +102,13 @@ export const PageContents = ({
   const answerQuestion = () => {
     window.clearTimeout(timerID.current)
     const currentSelectedOptionList = selectedOptionList
-      .filter((item) => item.startsWith(`${yearTimeframe}_${questionSection}_${currentNum}`))
-      .map((item) => Number(item.split('_')[3]))
+      .filter((item) => item.startsWith(currentQuestionID))
+      .map((item) => getQuestionOption(item))
       .sort((a, b) => a - b)
     const isCorrect = JSON.stringify(currentSelectedOptionList) === JSON.stringify(currentQuestionAnswerList)
     setAnsweredQuestionList((list) => [
-      ...list.filter((item) => item.num !== currentNum),
-      { num: currentNum, isCorrect },
+      ...list.filter((item) => item.questionID !== currentQuestionID),
+      { questionID: currentQuestionID, isCorrect },
     ])
 
     // TODO: 一定時間後に次の問題に進む
@@ -109,14 +119,24 @@ export const PageContents = ({
     // }
   }
 
-  useEffect(() => {
-    if (currentNum) {
-      return
-    }
+  const resetAnswer = () => {
+    setSelectedOptionList((optionList) =>
+      optionList.filter((item) => !item.startsWith(`${yearTimeframe}_${questionSection}`)),
+    )
+    setAnsweredQuestionList((list) =>
+      list.filter((item) => !item.questionID.startsWith(`${yearTimeframe}_${questionSection}`)),
+    )
     const params = new URLSearchParams(searchParams)
     params.set('num', currentQuestionList[0].num.toString())
     router.replace(`${pathname}?${params}`)
-  }, [currentNum, currentQuestionList, pathname, router, searchParams])
+  }
+
+  useEffect(() => {
+    if (currentNum >= firstNum && currentNum <= lastNum) {
+      return
+    }
+    resetAnswer()
+  }, [currentNum, firstNum, lastNum])
 
   if (!currentQuestion || !currentQuestionAnswerList) {
     return null
@@ -131,7 +151,7 @@ export const PageContents = ({
           <QuestionNavItem
             key={index.toString()}
             selected={question.num === currentNum}
-            completed={answeredQuestionList.map((item) => item.num).includes(question.num)}
+            completed={getIsAnswered(question.num)}
             href={{ pathname: `/${yearTimeframe}/${questionSection}`, query: { num: question.num } }}
           />
         ))}
@@ -149,6 +169,7 @@ export const PageContents = ({
             <OptionListItem
               disabled={isAnswered}
               option={option}
+              isAnswer={currentQuestionAnswerList.includes(index + 1)}
               value={`${yearTimeframe}_${questionSection}_${currentQuestion.num}_${index + 1}`}
               checked={selectedOptionList.includes(
                 `${yearTimeframe}_${questionSection}_${currentQuestion.num}_${index + 1}`,
@@ -159,26 +180,30 @@ export const PageContents = ({
         ))}
       </OptionList>
 
-      {answeredQuestionList.map((item) => item.num).includes(currentNum) && (
+      {isAnswered && (
         <div className="my-8">
-          {answeredQuestionList.find((item) => item.num === currentNum)?.isCorrect ? (
-            <p className="text-green-600">正解</p>
-          ) : (
-            <p className="text-red-600">不正解</p>
-          )}
+          {isCorrect ? <p className="text-green-600">正解</p> : <p className="text-red-600">不正解</p>}
         </div>
       )}
 
       <div className="my-8 flex gap-4">
-        <PrimaryButton onClick={() => changeQuestion(-1)}>
+        <PrimaryButton disabled={currentNum <= firstNum} onClick={() => changeQuestion(-1)}>
           <ArrowLeftIcon aria-hidden="false" title="前の問題に戻る" className="h-6 w-6" />
         </PrimaryButton>
         <PrimaryButton disabled={isAnswered} onClick={answerQuestion}>
           解答
         </PrimaryButton>
-        <PrimaryButton onClick={() => changeQuestion(1)}>
+        <PrimaryButton disabled={currentNum >= lastNum} onClick={() => changeQuestion(1)}>
           <ArrowRightIcon aria-hidden="false" title="次の問題に進む" className="h-6 w-6" />
         </PrimaryButton>
+      </div>
+
+      <div className="my-8">
+        <Link href={`/${yearTimeframe}/${questionSection}/result`}>結果</Link>
+      </div>
+
+      <div className="my-8">
+        <PrimaryButton onClick={resetAnswer}>解答をリセット</PrimaryButton>
       </div>
     </>
   )

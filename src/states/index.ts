@@ -1,10 +1,10 @@
-import { atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 
 type AnsweredQuestion = {
-  num: number
+  questionID: string
   isCorrect: boolean
 }
 
-export const selectedOptionListAtom = atom<string[]>([])
+export const selectedOptionListAtom = atomWithStorage<string[]>('selectedOptionList', [])
 
-export const answeredQuestionListAtom = atom<AnsweredQuestion[]>([])
+export const answeredQuestionListAtom = atomWithStorage<AnsweredQuestion[]>('answeredQuestionList', [])
