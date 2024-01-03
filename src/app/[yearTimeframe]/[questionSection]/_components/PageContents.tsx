@@ -11,7 +11,6 @@ import { QuestionNav } from './QuestionNav'
 import { QuestionNavItem } from './QuestionNavItem'
 import { answeredQuestionListAtom, selectedOptionListAtom } from '@/states'
 import questionData from '@/assets/json/question-data.json'
-import { get } from 'http'
 import Link from 'next/link'
 
 type Props = {

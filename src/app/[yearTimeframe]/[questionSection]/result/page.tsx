@@ -1,9 +1,12 @@
-import Link from 'next/link'
-import { PageContents } from './_components/PageContents'
 import questionData from '@/assets/json/question-data.json'
 import questionSectionList from '@/assets/json/question-section-list.json'
-import { Suspense } from 'react'
+import { Heading } from '@/components'
+import { answeredQuestionListAtom, selectedOptionListAtom } from '@/states'
 import { ChevronLeftIcon } from '@heroicons/react/16/solid'
+import { useAtom } from 'jotai'
+import Link from 'next/link'
+import { Suspense } from 'react'
+import { PageContents } from './_components/PageContents'
 
 type Props = {
   params: {
@@ -18,7 +21,7 @@ const getTitle = (yearTimeframe: string, questionSection: string): string => {
   const number = year - 1953
   const timeframe2 = timeframe.toUpperCase()
   const questionSection2 = questionSection.replace('-', '〜')
-  return `第${number}回${timeframe2} ${questionSection2}`
+  return `第${number}回${timeframe2} ${questionSection2} 結果`
 }
 
 export const generateStaticParams = async () => {
@@ -39,7 +42,7 @@ export const generateMetadata = async ({ params }: Props) => {
 
   return {
     title: `${title} | 臨検テスト`,
-    description: `${title}の問題を解くことができます。`,
+    description: `${title}のページです。`,
   }
 }
 
