@@ -77,6 +77,15 @@ export default function Page({ params }: Props) {
           currentAnswerList={currentAnswerList}
         />
       </Suspense>
+
+      <div className="flex gap-4">
+        <Link href={`/${params.yearTimeframe}`} className="bg-primary-600 px-4 py-2">
+          一覧に戻る
+        </Link>
+        <Link href={`/${params.yearTimeframe}/${params.questionSection}`} className="bg-primary-600 px-4 py-2">
+          再チャレンジ
+        </Link>
+      </div>
     </>
   )
 }

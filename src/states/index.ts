@@ -1,6 +1,6 @@
 import { atomWithStorage } from 'jotai/utils'
 
-type AnsweredQuestion = {
+export type AnsweredQuestion = {
   questionID: string
   isCorrect: boolean
 }

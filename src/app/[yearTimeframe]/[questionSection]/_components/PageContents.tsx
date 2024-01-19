@@ -57,11 +57,11 @@ export const PageContents = ({
   }
 
   const getIsAnswered = (num: number): boolean => {
-    return answeredQuestionList.map((item) => getQuestionNum(item.questionID)).includes(num)
+    return answeredQuestionList.findIndex(item => item.questionID === `${yearTimeframe}_${questionSection}_${num}`) >= 0
   }
 
   const isAnswered = getIsAnswered(currentNum)
-  const isCorrect = answeredQuestionList.find((item) => getQuestionNum(item.questionID) === currentNum)?.isCorrect
+  const isCorrect = answeredQuestionList.find((item) => (item.questionID) === currentQuestionID)?.isCorrect
 
   const changeOption = <T extends string>(optionList: T[], selectedOption: T | null, deselectedOption?: T): T[] => {
     let result = [...optionList]
@@ -72,7 +72,7 @@ export const PageContents = ({
       result = result.filter((item) => item !== deselectedOption)
     }
     const currentSelectedOptionList = result.filter((item) =>
-      item.startsWith(`${yearTimeframe}_${questionSection}_${currentNum}`),
+      item.startsWith(currentQuestionID),
     )
     if (currentSelectedOptionList.length > currentQuestionAnswerList.length) {
       result = result.filter((item) => item !== currentSelectedOptionList[0])
